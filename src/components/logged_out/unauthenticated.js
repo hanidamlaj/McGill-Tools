@@ -1,19 +1,70 @@
-import React from "react";
-import {
-	AppBar,
-	Toolbar,
-	Typography,
-	Grid,
-	Button,
-	IconButton
-} from "@material-ui/core";
+import React, { useState } from "react";
+
+import AppBar from "@material-ui/core/AppBar";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 
+import * as firebase from "firebase/app";
+import "firebase/auth";
+
+const firebaseConfig = {
+	apiKey: "AIzaSyCT2qv1HiWP5J9ixp3sDr3mmDumgEL4is4",
+	authDomain: "mcgill-tools.firebaseapp.com",
+	databaseURL: "https://mcgill-tools.firebaseio.com",
+	projectId: "mcgill-tools",
+	storageBucket: "mcgill-tools.appspot.com",
+	messagingSenderId: "698871000166",
+	appId: "1:698871000166:web:8d0b16ed5da49987"
+};
+
+firebase.initializeApp(firebaseConfig);
+
 // lazy load desktop styles
 const useStylesDesktop = () =>
 	makeStyles(theme => ({
+		// dialog styles
+		dialog: {
+			padding: theme.spacing(4, 4)
+		},
+		continueWithProvider: {
+			display: "block",
+			width: "80%",
+			minWidth: 170
+		},
+		separator: {
+			position: "relative",
+			width: "100%",
+			margin: theme.spacing(1, 0),
+			"&::after": {
+				display: "block",
+				content: '""',
+				borderBottom: "1px #e5e5e5 solid",
+				position: "absolute",
+				top: "50%",
+				left: 0,
+				right: 0,
+				transform: "translateY(-50%)"
+			},
+			"& > p": {
+				textAlign: "center",
+				"& > span": {
+					display: "inline-block",
+					position: "relative",
+					zIndex: 1,
+					backgroundColor: "white",
+					padding: theme.spacing(0, 4)
+				}
+			}
+		},
 		// navigation bar styles
 		appbar: {
 			backgroundColor: "white",
@@ -72,6 +123,7 @@ const useStylesDesktop = () =>
 				display: "none"
 			}
 		},
+		// body styles
 		section: {
 			display: "flex",
 			justifyContent: "center",
@@ -92,23 +144,6 @@ const useStylesDesktop = () =>
 				},
 				width: "100%",
 				marginBottom: theme.spacing(4)
-			}
-		},
-		sectionText: {
-			[theme.breakpoints.up("lg")]: {
-				padding: theme.spacing(8, 0),
-				"& > p": { fontSize: "24px" },
-				color: "black"
-			},
-
-			[theme.breakpoints.down("md")]: {
-				padding: theme.spacing(2, 0),
-				"& > p": {
-					fontSize: 16,
-					color: "rgba(0, 0, 0, 0.6)",
-					textAlign: "center"
-				},
-				color: "black"
 			}
 		},
 		sectionButton: {
@@ -167,11 +202,67 @@ const useStylesDesktop = () =>
 			width: "100%",
 			height: "100%",
 			padding: theme.spacing(4)
+		},
+		sectionText: {
+			[theme.breakpoints.up("lg")]: {
+				padding: theme.spacing(8, 0),
+				"& > p": { fontSize: "24px" },
+				color: "black"
+			},
+
+			[theme.breakpoints.down("md")]: {
+				padding: theme.spacing(2, 0),
+				"& > p": {
+					fontSize: 16,
+					color: "rgba(0, 0, 0, 0.6)",
+					textAlign: "center"
+				},
+				color: "black"
+			}
 		}
 	}));
 
 function UnauthenticatedDesktop(props) {
 	const classes = useStylesDesktop()();
+
+	/**
+	 * controls the state of the modal that allows user to continue with preferred provider
+	 * @type {[boolean, function]}
+	 */
+	const [continueWithProvider, setContinueWithProvider] = useState(false);
+
+	// handles clicks to get users started
+	function handleGetStarted() {
+		setContinueWithProvider(true);
+	}
+
+	// handles closing dialogs when user clicks away
+	function handleDialogClose() {
+		setContinueWithProvider(false);
+	}
+
+	/**
+	 * firebase authentication providers (Google and Facebook)
+	 */
+	const googleProvider = new firebase.auth.GoogleAuthProvider();
+	function handleGoogleAuth() {
+		setContinueWithProvider(false);
+		firebase
+			.auth()
+			.signInWithPopup(googleProvider)
+			.then(result => {
+				var token = result.credential.accessToken;
+				var user = result.user;
+				console.log(user, token);
+			})
+			.catch(function(error) {
+				var errorCode = error.code;
+				var errorMessage = error.message;
+				var email = error.email;
+				var credential = error.credential;
+				console.error(error);
+			});
+	}
 
 	/**
 	 * boolean flag to indicate if viewport matches small/medium device
@@ -191,7 +282,7 @@ function UnauthenticatedDesktop(props) {
 	];
 
 	/**
-	 * @typedef {Object} Section
+	 * @typedef {Object} Section a section (e.g. row/card) of the body
 	 * @property {string} buttonText the button text
 	 * @property {string} imgSrc the src attribute of img tag
 	 * @property {string[]} sectionBodyText the paragraphs of the body
@@ -200,7 +291,7 @@ function UnauthenticatedDesktop(props) {
 	 */
 
 	/**
-	 * array of sections
+	 * array of sections to render to the page
 	 * @type {Section[]} sectionsData
 	 */
 	const sectionsData = [
@@ -235,11 +326,11 @@ function UnauthenticatedDesktop(props) {
 		}
 	];
 
-	// react element containing the sections of the page
+	// react element for the sections
 	const sections = sectionsData.map((section, index) => {
 		// half of the section that contains text
 		const description = (
-			<Grid item xs={12} lg={6}>
+			<Grid item lg={6} xs={12}>
 				<Typography className={classes.sectionTitle} variant="h3">
 					{section.sectionTitle}
 				</Typography>
@@ -253,6 +344,7 @@ function UnauthenticatedDesktop(props) {
 				<Button
 					className={classes.sectionButton}
 					color="primary"
+					onClick={handleGetStarted}
 					variant="outlined"
 				>
 					{section.buttonText}
@@ -262,14 +354,9 @@ function UnauthenticatedDesktop(props) {
 
 		// other half of section that contains the image
 		const image = (
-			// <div className={classes.sectionImageContainer}>
-			// 	<div className={classes.sectionImageOuter}>
-			// 		<img src={section.imgSrc} className={classes.sectionImage} />
-			// 	</div>
-			// </div>
-			<Grid item lg={6} className={classes.sectionImageContainer}>
+			<Grid className={classes.sectionImageContainer} item lg={6}>
 				<div className={classes.sectionImageOuter}>
-					<img src={section.imgSrc} className={classes.sectionImage} />
+					<img className={classes.sectionImage} src={section.imgSrc} />
 				</div>
 			</Grid>
 		);
@@ -277,8 +364,8 @@ function UnauthenticatedDesktop(props) {
 		return (
 			<div
 				className={classes.section}
-				key={section.sectionId}
 				id={section.sectionId}
+				key={section.sectionId}
 			>
 				<div className={classes.sectionContent}>
 					{smallDevice || index % 2 !== 0 ? (
@@ -297,9 +384,42 @@ function UnauthenticatedDesktop(props) {
 
 	return (
 		<React.Fragment>
+			{/* CONTINUE WITH PROVIDER DIALOG */}
+			{continueWithProvider && (
+				<Dialog
+					fullWidth
+					maxWidth="xs"
+					open={continueWithProvider}
+					onClose={handleDialogClose}
+				>
+					<DialogContent className={classes.dialog}>
+						<Grid
+							alignItems="center"
+							container
+							direction="column"
+							justify="center"
+						>
+							<img
+								className={classes.continueWithProvider}
+								src="/btn_facebook.svg"
+							/>
+							<div className={classes.separator}>
+								<p>
+									<span>OR</span>
+								</p>
+							</div>
+							<img
+								className={classes.continueWithProvider}
+								onClick={handleGoogleAuth}
+								src="/btn_google.svg"
+							/>
+						</Grid>
+					</DialogContent>
+				</Dialog>
+			)}
 			{/* NAVIGATION BAR */}
 			<div>
-				<AppBar position="fixed" className={classes.appbar}>
+				<AppBar className={classes.appbar} position="fixed">
 					<Toolbar className={classes.toolbar}>
 						<IconButton className={classes.menuIcon}>
 							<MenuIcon />
@@ -319,7 +439,13 @@ function UnauthenticatedDesktop(props) {
 							))}
 						</div>
 						<div className={classes.signUp}>
-							<Button variant="outlined">Sign up</Button>
+							<Button
+								color="primary"
+								onClick={handleGetStarted}
+								variant="outlined"
+							>
+								Sign up
+							</Button>
 						</div>
 					</Toolbar>
 				</AppBar>
