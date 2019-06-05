@@ -42,7 +42,11 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-function ContinueWithDialog({ handleGoogleAuth, ...props }) {
+function ContinueWithDialog({
+	handleGoogleAuth,
+	handleFacebookAuth,
+	...props
+}) {
 	const classes = useStyles();
 	return (
 		<Dialog {...props}>
@@ -51,6 +55,7 @@ function ContinueWithDialog({ handleGoogleAuth, ...props }) {
 					<img
 						alt="Continue with Facebook"
 						className={classes.continueWithProvider}
+						onClick={handleFacebookAuth}
 						src="/btn_facebook.svg"
 					/>
 					<div className={classes.separator}>

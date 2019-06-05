@@ -1,12 +1,12 @@
 import React from "react";
-import Unauthenticated from "./components/logged_out/Unauthenticated";
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "./shared/theme";
+import UnauthenticatedContainer from "./containers/logged_out/UnauthenticatedContainer";
 
 function app(props) {
 	return (
 		<ThemeProvider theme={theme}>
-			<Unauthenticated />
+			<UnauthenticatedContainer />
 		</ThemeProvider>
 	);
 }

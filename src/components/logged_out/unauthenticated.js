@@ -89,7 +89,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-function UnauthenticatedDesktop(props) {
+function Unauthenticated({ login }) {
 	const classes = useStyles();
 
 	/**
@@ -112,21 +112,38 @@ function UnauthenticatedDesktop(props) {
 	 * firebase authentication providers (Google and Facebook)
 	 */
 	const googleProvider = new firebase.auth.GoogleAuthProvider();
+	const facebookProvider = new firebase.auth.FacebookAuthProvider();
+	facebookProvider.addScope("email");
+
+	/**
+	 * handle authentication with specified providers
+	 */
 	function handleGoogleAuth() {
 		setContinueWithProvider(false);
 		firebase
 			.auth()
 			.signInWithPopup(googleProvider)
-			.then(result => {
-				var token = result.credential.accessToken;
-				var user = result.user;
-				console.log(user, token);
+			.then(async result => {
+				// var user = result.user;
+				const idToken = await firebase.auth().currentUser.getIdToken(true);
+				login(idToken);
 			})
 			.catch(function(error) {
-				// var errorCode = error.code;
-				// var errorMessage = error.message;
-				// var email = error.email;
-				// var credential = error.credential;
+				console.error(error);
+			});
+	}
+
+	function handleFacebookAuth() {
+		setContinueWithProvider(false);
+		firebase
+			.auth()
+			.signInWithPopup(facebookProvider)
+			.then(async result => {
+				// var user = result.user;
+				const idToken = await firebase.auth().currentUser.getIdToken(true);
+				login(idToken);
+			})
+			.catch(function(error) {
 				console.error(error);
 			});
 	}
@@ -147,6 +164,7 @@ function UnauthenticatedDesktop(props) {
 			{continueWithProvider && (
 				<ContinueWithDialog
 					fullWidth
+					handleFacebookAuth={handleFacebookAuth}
 					handleGoogleAuth={handleGoogleAuth}
 					maxWidth="xs"
 					onClose={handleDialogClose}
@@ -194,4 +212,4 @@ function UnauthenticatedDesktop(props) {
 	);
 }
 
-export default UnauthenticatedDesktop;
+export default Unauthenticated;
