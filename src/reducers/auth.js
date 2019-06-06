@@ -1,18 +1,25 @@
 import { SET_TOKEN, SET_USER } from "../actions/auth";
 
 /**
+ * @const {Object} initialState
+ */
+const initialState = {
+	token: null,
+	user: { photoUrl: "/avatar.png", displayName: "", email: "", phoneNumber: "" }
+};
+
+/**
  * @typedef {Object} Action
  * @property {string} type the type of action
  * @property {string | Object} payload the data (payload) contained in the action
  */
 
 /**
- *
+ * reducer
  * @param {Object} state current state of app
  * @param {Action} action the dispatched action
  */
-
-function auth(state = {}, action) {
+function auth(state = initialState, action) {
 	switch (action.type) {
 		case SET_TOKEN:
 			return { ...state, token: action.payload };

@@ -6,8 +6,8 @@ import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
-import AggregateSections from "./AggregateSections";
-import ContinueWithDialog from "./ContinueWithDialog";
+import AggregateSections from "./aggregateSections";
+import ContinueWithDialog from "./continueWithDialog";
 
 import { makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";

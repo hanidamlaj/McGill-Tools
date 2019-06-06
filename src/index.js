@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./app";
+import AppContainer from "./containers/appContainer";
 
 import { Provider } from "react-redux";
 import configureStore from "./configureStore";
@@ -11,13 +11,13 @@ const store = configureStore(loadState());
 
 store.subscribe(
 	throttle(() => {
-		saveState({ state: store.getState() });
+		saveState(store.getState());
 	}, 1000)
 );
 
 ReactDOM.render(
 	<Provider store={store}>
-		<App />
+		<AppContainer />
 	</Provider>,
 	document.getElementById("root")
 );

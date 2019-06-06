@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import Unauthenticated from "../../components/logged_out/Unauthenticated";
+import Unauthenticated from "../../components/logged_out/unauthenticated";
 import { login } from "../../actions/auth";
 
 const mapDispatchToProps = dispatch => ({

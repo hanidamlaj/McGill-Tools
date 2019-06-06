@@ -1,3 +1,5 @@
+import { addLoaderKey, removeLoaderKey } from "./loaders";
+
 /**
  * represents the type of action
  * @typedef {string} ActionType
@@ -18,6 +20,7 @@ export const SET_TOKEN = "SET_TOKEN";
  */
 export function login(idToken) {
 	return dispatch => {
+		dispatch(addLoaderKey("login"));
 		fetch("http://localhost:8080/login", {
 			body: JSON.stringify({ idToken }),
 			headers: {
@@ -32,12 +35,17 @@ export function login(idToken) {
 						type: SET_TOKEN,
 						payload: json.token
 					});
+					dispatch({
+						type: SET_USER,
+						payload: json.user
+					});
 					console.log(json);
 					return;
 				}
 				throw json;
 			})
 			.catch(err => console.error(err.error));
+		dispatch(removeLoaderKey("login"));
 	};
 }
 
