@@ -1,19 +1,25 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 
 /**
- * represents the type of action
- * @typedef {string} ActionType
- */
-
-/**
- * @type {string} SET_USER async action to set user data
+ * action type for user object retrieved from server
+ * @type {string} SET_USER
  */
 export const SET_USER = "SET_USER";
+export const setUser = user => ({ type: SET_USER, payload: user });
 
 /**
- * @type {string} SET_TOKEN async action to set jwtToken retrieved from server
+ * action type for jwtToken holding user claims
+ * @type {string} SET_TOKEN
  */
 export const SET_TOKEN = "SET_TOKEN";
+export const setToken = token => ({ type: SET_TOKEN, payload: token });
+
+/**
+ * set both token and user
+ * @type {string} SET_AUTH
+ */
+export const SET_AUTH = "SET_AUTH";
+export const setAuth = auth => ({ type: SET_AUTH, payload: auth });
 
 /**
  * @param {string} idToken the idToken provided by firebase
@@ -31,21 +37,17 @@ export function login(idToken) {
 			.then(res => res.json())
 			.then(json => {
 				if (!json.error) {
-					dispatch({
-						type: SET_TOKEN,
-						payload: json.token
-					});
-					dispatch({
-						type: SET_USER,
-						payload: json.user
-					});
+					dispatch(setToken(json.token));
+					dispatch(setUser(json.user));
 					console.log(json);
 					return;
 				}
 				throw json;
 			})
-			.catch(err => console.error(err.error));
-		dispatch(removeLoaderKey("login"));
+			.catch(err => console.error(err.error))
+			.finally(() => {
+				dispatch(removeLoaderKey("login"));
+			});
 	};
 }
 

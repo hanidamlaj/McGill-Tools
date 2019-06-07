@@ -1,24 +1,32 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import Grid from "@material-ui/core/Grid";
-
 import { makeStyles } from "@material-ui/core/styles";
 
+import {
+	ContinueWithGoogle,
+	ContinueWithFacebook
+} from "./continueWithButtons";
+
 const useStyles = makeStyles(theme => ({
-	dialog: {
-		padding: theme.spacing(4, 4)
+	paper: {
+		[theme.breakpoints.down("xs")]: {
+			margin: theme.spacing(6, 1)
+		}
 	},
-	continueWithProvider: {
-		display: "block",
-		width: "80%",
-		minWidth: 170
+	dialogContent: {
+		padding: theme.spacing(4, 4),
+		[theme.breakpoints.down("xs")]: {
+			padding: theme.spacing(4, 0)
+		}
 	},
 	separator: {
 		position: "relative",
 		width: "100%",
-		margin: theme.spacing(1, 0),
+		padding: theme.spacing(1, 0),
 		"&::after": {
 			display: "block",
 			content: '""',
@@ -49,30 +57,24 @@ function ContinueWithDialog({
 }) {
 	const classes = useStyles();
 	return (
-		<Dialog {...props}>
-			<DialogContent className={classes.dialog}>
+		<Dialog {...props} classes={{ paper: classes.paper }}>
+			<DialogContent className={classes.dialogContent}>
 				<Grid alignItems="center" container direction="column" justify="center">
-					<img
-						alt="Continue with Facebook"
-						className={classes.continueWithProvider}
-						onClick={handleFacebookAuth}
-						src="/btn_facebook.svg"
-					/>
+					<ContinueWithFacebook handleClick={handleFacebookAuth} />
 					<div className={classes.separator}>
 						<p>
 							<span>OR</span>
 						</p>
 					</div>
-					<img
-						alt="Continue with Google"
-						className={classes.continueWithProvider}
-						onClick={handleGoogleAuth}
-						src="/btn_google.svg"
-					/>
+					<ContinueWithGoogle handleClick={handleGoogleAuth} />
 				</Grid>
 			</DialogContent>
 		</Dialog>
 	);
 }
 
+ContinueWithDialog.propTypes = {
+	handleFacebookAuth: PropTypes.func.isRequired,
+	handleGoogleAuth: PropTypes.func.isRequired
+};
 export default ContinueWithDialog;

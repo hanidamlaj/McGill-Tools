@@ -3,10 +3,8 @@ import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
 	section: {
@@ -24,11 +22,11 @@ const useStyles = makeStyles(theme => ({
 		},
 
 		[theme.breakpoints.down("md")]: {
+			margin: theme.spacing(4, 0),
 			"&:nth-child(2)": {
 				marginTop: theme.spacing(10)
 			},
-			width: "100%",
-			marginBottom: theme.spacing(4)
+			width: "100%"
 		}
 	},
 	sectionButton: {
@@ -154,18 +152,18 @@ const sectionsData = [
 
 /**
  * React component that returns a single section of the landing page
- * @param {Section} section
- * @param {number} index
- * @param {boolean} smallDevice
+ * @param {Section} section the section data to render
+ * @param {number} index the index of the section/row being mapped
+ * @param {boolean} isSmallDevice
+ * @param {Function} handleClick callback to attach to the "get started" buttons
  */
-function SingleSection({ classes, index, section, handleClick }) {
-	/**
-	 * boolean flag to indicate if viewport matches small/medium device
-	 * same as theme.breakpoints.down("md")
-	 * @type {boolean}
-	 */
-	const smallDevice = useMediaQuery("(max-width:1279.95px)");
-
+function SingleSection({
+	classes,
+	handleClick,
+	index,
+	section,
+	isSmallDevice
+}) {
 	// half of the section that contains text
 	const description = (
 		<Grid item lg={6} xs={12}>
@@ -206,7 +204,7 @@ function SingleSection({ classes, index, section, handleClick }) {
 			key={section.sectionId}
 		>
 			<div className={classes.sectionContent}>
-				{smallDevice || index % 2 !== 0 ? (
+				{isSmallDevice || index % 2 !== 0 ? (
 					<React.Fragment>
 						{image} {description}
 					</React.Fragment>
@@ -222,31 +220,33 @@ function SingleSection({ classes, index, section, handleClick }) {
 
 SingleSection.propTypes = {
 	classes: PropTypes.object.isRequired,
+	handleClick: PropTypes.func.isRequired,
 	index: PropTypes.number.isRequired,
-	section: PropTypes.object.isRequired,
-	handleClick: PropTypes.func.isRequired
+	isSmallDevice: PropTypes.bool.isRequired,
+	section: PropTypes.object.isRequired
 };
 
 /**
  * React component that returns the aggregate of all sections
  */
-function AggregateSections({ handleClick }) {
+function AggregateSections(props) {
 	const classes = useStyles();
 
 	// react element for the sections
 	return sectionsData.map((section, index) => (
 		<SingleSection
 			classes={classes}
-			handleClick={handleClick}
 			index={index}
 			key={section.sectionId}
 			section={section}
+			{...props}
 		/>
 	));
 }
 
 AggregateSections.propTypes = {
-	handleClick: PropTypes.func.isRequired
+	handleClick: PropTypes.func.isRequired,
+	isSmallDevice: PropTypes.bool.isRequired
 };
 
 export default AggregateSections;

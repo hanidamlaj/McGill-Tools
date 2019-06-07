@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
+import Divider from "@material-ui/core/Divider";
+import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+
+import CodeIcon from "@material-ui/icons/Code";
+import MenuIcon from "@material-ui/icons/Menu";
+import NotificationIcon from "@material-ui/icons/NotificationsActive";
+import PeopleIcon from "@material-ui/icons/People";
+import SignInIcon from "@material-ui/icons/VpnKey";
 
 import AggregateSections from "./aggregateSections";
 import ContinueWithDialog from "./continueWithDialog";
-
-import { makeStyles } from "@material-ui/core/styles";
-import MenuIcon from "@material-ui/icons/Menu";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -27,7 +39,6 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// lazy load desktop styles
 const useStyles = makeStyles(theme => ({
 	// navigation bar styles
 	appbar: {
@@ -82,19 +93,52 @@ const useStyles = makeStyles(theme => ({
 			display: "none"
 		}
 	},
-	signUp: {
+	signIn: {
 		[theme.breakpoints.down("md")]: {
 			display: "none"
 		}
 	}
 }));
 
-function Unauthenticated({ login }) {
+function Unauthenticated({
+	addLoaderKey,
+	history,
+	isLoading,
+	login,
+	removeLoaderKey
+}) {
 	const classes = useStyles();
 
 	/**
+	 * boolean flag to indicate if viewport matches small/medium device
+	 * same as theme.breakpoints.down("md")
+	 * @type {boolean}
+	 */
+	const isSmallDevice = useMediaQuery("(max-width:1279.95px)");
+
+	/**
+	 * state of the navigation bar for mobile
+	 * @type {[boolean], Function}
+	 */
+	const [navbarOpen, setNavbarOpen] = useState(false);
+
+	/**
+	 * the id of the dom element to scroll to
+	 * due to the limitations of scrolling when mobile drawer is open
+	 */
+	const [scrollIntoView, setScrollIntoView] = useState("");
+
+	useEffect(() => {
+		if (scrollIntoView) {
+			document
+				.getElementById(scrollIntoView)
+				.scrollIntoView({ behavior: "smooth", block: "center" });
+		}
+	}, [scrollIntoView]);
+
+	/**
 	 * controls the state of the modal that allows user to continue with preferred provider
-	 * @type {[boolean, function]}
+	 * @type {[boolean, Function]}
 	 */
 	const [continueWithProvider, setContinueWithProvider] = useState(false);
 
@@ -116,52 +160,57 @@ function Unauthenticated({ login }) {
 	facebookProvider.addScope("email");
 
 	/**
-	 * handle authentication with specified providers
+	 * handles authentication based on chosen provider
+	 * implemented using redirect for small devices and popup for desktop
+	 * @param {Object} provider the identity provider
 	 */
-	function handleGoogleAuth() {
+	function handleAuth(provider) {
 		setContinueWithProvider(false);
-		firebase
-			.auth()
-			.signInWithPopup(googleProvider)
-			.then(async result => {
-				// var user = result.user;
-				const idToken = await firebase.auth().currentUser.getIdToken(true);
-				login(idToken);
-			})
-			.catch(function(error) {
-				console.error(error);
-			});
-	}
+		addLoaderKey("beginAuth");
 
-	function handleFacebookAuth() {
-		setContinueWithProvider(false);
-		firebase
-			.auth()
-			.signInWithPopup(facebookProvider)
-			.then(async result => {
-				// var user = result.user;
-				const idToken = await firebase.auth().currentUser.getIdToken(true);
-				login(idToken);
-			})
-			.catch(function(error) {
-				console.error(error);
-			});
+		if (isSmallDevice) {
+			history.push("/ouath_redirect", { provider });
+		} else
+			firebase
+				.auth()
+				.signInWithPopup(provider)
+				.then(async result => {
+					const idToken = await firebase.auth().currentUser.getIdToken(true);
+					login(idToken);
+				})
+				.catch(function(error) {
+					console.error(error);
+				})
+				.finally(() => {
+					removeLoaderKey("beginAuth");
+				});
 	}
 
 	/**
-	 * array of tuples containing [buttonName, targetSectionId]
-	 * @type {[string, string]}
+	 * handle authentication with specified providers
+	 */
+	function handleGoogleAuth() {
+		handleAuth(googleProvider);
+	}
+
+	function handleFacebookAuth() {
+		handleAuth(facebookProvider);
+	}
+
+	/**
+	 * array of tuples containing [buttonName, targetSectionId, icon]
+	 * @type {[string, string, Object]}
 	 */
 	const menuButtons = [
-		["find a seat", "find_a_seat"],
-		["developers", "developers"],
-		["join us", "join_us"]
+		["find a seat", "find_a_seat", <NotificationIcon />],
+		["developers", "developers", <CodeIcon />],
+		["join us", "join_us", <PeopleIcon />]
 	];
 
 	return (
-		<React.Fragment>
-			{/* CONTINUE WITH PROVIDER DIALOG */}
-			{continueWithProvider && (
+		!isLoading && (
+			<React.Fragment>
+				{/* continue with provider dialog*/}
 				<ContinueWithDialog
 					fullWidth
 					handleFacebookAuth={handleFacebookAuth}
@@ -170,46 +219,107 @@ function Unauthenticated({ login }) {
 					onClose={handleDialogClose}
 					open={continueWithProvider}
 				/>
-			)}
-
-			{/* NAVIGATION BAR */}
-			<div>
-				<AppBar className={classes.appbar} position="fixed">
-					<Toolbar className={classes.toolbar}>
-						<IconButton className={classes.menuIcon}>
-							<MenuIcon />
-						</IconButton>
-						<Typography className={classes.logo}>mcgill tools</Typography>
-						<div className={classes.links}>
-							{menuButtons.map(arr => (
-								<Button
-									className={classes.menuButton}
-									key={arr[1]}
-									onClick={() =>
-										document.getElementById(arr[1]).scrollIntoView()
-									}
-								>
-									{arr[0]}
-								</Button>
-							))}
-						</div>
-						<div className={classes.signUp}>
-							<Button
-								color="primary"
-								onClick={handleGetStarted}
-								variant="outlined"
+				{/* top navigation bar for both desktop and mobile */}
+				<div className={classes.root}>
+					<AppBar className={classes.appbar} position="fixed">
+						<Toolbar className={classes.toolbar}>
+							<IconButton
+								className={classes.menuIcon}
+								onClick={() => setNavbarOpen(!navbarOpen)}
 							>
-								Sign up
-							</Button>
-						</div>
-					</Toolbar>
-				</AppBar>
-			</div>
+								<MenuIcon />
+							</IconButton>
+							<Typography className={classes.logo}>mcgill tools</Typography>
+							<div className={classes.links}>
+								{menuButtons.map(arr => (
+									<Button
+										className={classes.menuButton}
+										key={arr[1]}
+										onClick={() => setScrollIntoView(arr[1])}
+									>
+										{arr[0]}
+									</Button>
+								))}
+							</div>
+							<div className={classes.signIn}>
+								<Button
+									color="primary"
+									onClick={handleGetStarted}
+									variant="outlined"
+								>
+									Sign In
+								</Button>
+							</div>
+						</Toolbar>
+					</AppBar>
 
-			{/* SECTIONS */}
-			<AggregateSections handleClick={handleGetStarted} />
-		</React.Fragment>
+					<Drawer
+						anchor="top"
+						className={classes.drawer}
+						open={navbarOpen}
+						onClose={() => setNavbarOpen(false)}
+					>
+						<div className={classes.list}>
+							<List>
+								{menuButtons.map(item => (
+									<ListItem
+										button
+										key={item[1]}
+										onClick={() => {
+											setNavbarOpen(false);
+											setScrollIntoView(item[1]);
+										}}
+									>
+										<ListItemIcon>{item[2]}</ListItemIcon>
+										<ListItemText
+											primaryTypographyProps={{ variant: "button" }}
+										>
+											{item[0]}
+										</ListItemText>
+									</ListItem>
+								))}
+							</List>
+							<Divider />
+							<List>
+								<ListItem
+									button
+									onClick={() => {
+										setNavbarOpen(false);
+										setContinueWithProvider(true);
+									}}
+								>
+									<ListItemIcon>
+										<SignInIcon />
+									</ListItemIcon>
+									<ListItemText
+										primaryTypographyProps={{
+											color: "primary",
+											variant: "button"
+										}}
+									>
+										Sign In
+									</ListItemText>
+								</ListItem>
+							</List>
+						</div>
+					</Drawer>
+				</div>
+				{/* feature sections */}
+				<AggregateSections
+					handleClick={handleGetStarted}
+					isSmallDevice={isSmallDevice}
+				/>
+			</React.Fragment>
+		)
 	);
 }
+
+Unauthenticated.propTypes = {
+	addLoaderKey: PropTypes.func.isRequired,
+	history: PropTypes.object.isRequired,
+	isLoading: PropTypes.bool.isRequired,
+	login: PropTypes.func.isRequired,
+	removeLoaderKey: PropTypes.func.isRequired
+};
 
 export default Unauthenticated;
