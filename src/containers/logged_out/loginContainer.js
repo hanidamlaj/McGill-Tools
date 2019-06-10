@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import OAuthRedirect from "../../components/logged_out/OAuthRedirect";
+import Login from "../../components/logged_out/login";
 import { login } from "../../actions/auth";
 import { removeLoaderKey } from "../../actions/loaders";
 
@@ -15,4 +15,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
 	null,
 	mapDispatchToProps
-)(OAuthRedirect);
+)(Login);

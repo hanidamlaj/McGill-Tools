@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
-function OAuthRedirect({ login, removeLoaderKey, location }) {
+function Login({ login, removeLoaderKey, location }) {
 	if (location.state && location.state.provider) {
 		firebase.auth().signInWithRedirect(location.state.provider);
 	}
@@ -30,10 +30,10 @@ function OAuthRedirect({ login, removeLoaderKey, location }) {
 	return <React.Fragment />;
 }
 
-OAuthRedirect.propTypes = {
+Login.propTypes = {
 	location: PropTypes.object.isRequired,
 	login: PropTypes.func.isRequired,
 	removeLoaderKey: PropTypes.func.isRequired
 };
 
-export default OAuthRedirect;
+export default Login;

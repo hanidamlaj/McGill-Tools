@@ -5,7 +5,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import FindASeat from "./findASeat";
+import FindASeatContainer from "../containers/findASeatContainer";
 import NavigationDesktopContainer from "../containers/navigationDesktopContainer";
 import NavigationMobileContainer from "../containers/navigationMobileContainer";
 
@@ -65,12 +65,8 @@ function Home() {
 			<div className={classes.content}>
 				<Switch>
 					{/* handle redirect after user has been authenticated */}
-					<Route
-						exact
-						path="/ouath_redirect"
-						render={() => <Redirect to="/" />}
-					/>
-					<Route path="/" component={FindASeat} />
+					<Route exact path="/login" render={() => <Redirect to="/" />} />
+					<Route path="/" component={FindASeatContainer} />
 				</Switch>
 			</div>
 		</div>

@@ -36,13 +36,10 @@ export function login(idToken) {
 		})
 			.then(res => res.json())
 			.then(json => {
-				if (!json.error) {
-					dispatch(setToken(json.token));
-					dispatch(setUser(json.user));
-					console.log(json);
-					return;
-				}
-				throw json;
+				if (json.error) throw json;
+				dispatch(setToken(json.token));
+				dispatch(setUser(json.user));
+				console.log(json);
 			})
 			.catch(err => console.error(err.error))
 			.finally(() => {

@@ -169,7 +169,7 @@ function Unauthenticated({
 		addLoaderKey("beginAuth");
 
 		if (isSmallDevice) {
-			history.push("/ouath_redirect", { provider });
+			history.push("/login", { provider });
 		} else
 			firebase
 				.auth()

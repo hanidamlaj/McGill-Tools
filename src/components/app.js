@@ -5,7 +5,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { ThemeProvider } from "@material-ui/styles";
 
 import HomeContainer from "../containers/homeContainer";
-import OAuthRedirectContainer from "../containers/logged_out/OAuthRedirectContainer";
+import LoginContainer from "../containers/logged_out/loginContainer";
 import UnauthenticatedContainer from "../containers/logged_out/unauthenticatedContainer";
 
 import theme from "../shared/theme";
@@ -24,11 +24,7 @@ function App({ token, loaders }) {
 				<HomeContainer />
 			) : (
 				<Switch>
-					<Route
-						exact
-						path="/ouath_redirect"
-						component={OAuthRedirectContainer}
-					/>
+					<Route exact path="/login" component={LoginContainer} />
 					<Route path="/" component={UnauthenticatedContainer} />
 				</Switch>
 			)}
