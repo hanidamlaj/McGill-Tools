@@ -13,7 +13,6 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import CodeIcon from "@material-ui/icons/Code";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -23,6 +22,8 @@ import SignInIcon from "@material-ui/icons/VpnKey";
 
 import AggregateSections from "./aggregateSections";
 import ContinueWithDialog from "./continueWithDialog";
+
+import { IsSmallContext } from "../../shared";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -109,12 +110,7 @@ function Unauthenticated({
 }) {
 	const classes = useStyles();
 
-	/**
-	 * boolean flag to indicate if viewport matches small/medium device
-	 * same as theme.breakpoints.down("md")
-	 * @type {boolean}
-	 */
-	const isSmallDevice = useMediaQuery("(max-width:1279.95px)");
+	const isSmallDevice = React.useContext(IsSmallContext);
 
 	/**
 	 * state of the navigation bar for mobile

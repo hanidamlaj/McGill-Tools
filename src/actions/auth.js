@@ -15,18 +15,20 @@ export const SET_TOKEN = "SET_TOKEN";
 export const setToken = token => ({ type: SET_TOKEN, payload: token });
 
 /**
- * set both token and user
+ * action type for data retrieved from login
  * @type {string} SET_AUTH
  */
-export const SET_AUTH = "SET_AUTH";
-export const setAuth = auth => ({ type: SET_AUTH, payload: auth });
+export const SET_LOGIN = "SET_LOGIN";
+export const setLogin = auth => ({ type: SET_LOGIN, payload: auth });
 
+const REQUEST_LOGIN = "REQUEST_LOGIN";
 /**
+ * Sends ajax request to fetch token and user data.
  * @param {string} idToken the idToken provided by firebase
  */
 export function login(idToken) {
 	return dispatch => {
-		dispatch(addLoaderKey("login"));
+		dispatch(addLoaderKey(REQUEST_LOGIN));
 		fetch("http://localhost:8080/login", {
 			body: JSON.stringify({ idToken }),
 			headers: {
@@ -37,17 +39,36 @@ export function login(idToken) {
 			.then(res => res.json())
 			.then(json => {
 				if (json.error) throw json;
-				dispatch(setToken(json.token));
-				dispatch(setUser(json.user));
+				dispatch(setLogin(json));
 				console.log(json);
 			})
 			.catch(err => console.error(err.error))
 			.finally(() => {
-				dispatch(removeLoaderKey("login"));
+				dispatch(removeLoaderKey(REQUEST_LOGIN));
 			});
 	};
 }
 
-export function getUser() {}
-
-export function getToken() {}
+const REQUEST_USER = "REQUEST_USER";
+/**
+ * async action to retrieve user profile
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
+export const getUser = (dispatch, getState) => {
+	const token = getState().auth.token;
+	dispatch(addLoaderKey(REQUEST_USER));
+	fetch("http://localhost:8080/profile", {
+		headers: {
+			"x-access-token": token
+		}
+	})
+		.then(res => res.json)
+		.then(json => {
+			if (json.error) throw json;
+			dispatch(setUser(json));
+		})
+		.catch(err => {
+			console.error(err);
+		});
+};

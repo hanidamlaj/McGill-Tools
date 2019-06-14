@@ -3,11 +3,12 @@ import { Redirect, Route, Switch } from "react-router-dom";
 // import PropTypes from "prop-types";
 
 import { makeStyles } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import FindASeatContainer from "../containers/findASeatContainer";
 import NavigationDesktopContainer from "../containers/navigationDesktopContainer";
 import NavigationMobileContainer from "../containers/navigationMobileContainer";
+
+import { IsSmallContext } from "../shared";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -38,13 +39,7 @@ const useStyles = makeStyles(theme => ({
 
 function Home() {
 	const classes = useStyles();
-
-	/**
-	 * boolean flag to indicate if viewport matches small/medium device
-	 * same as theme.breakpoints.down("md")
-	 * @type {boolean}
-	 */
-	const isSmallDevice = useMediaQuery("(max-width:1279.95px)");
+	const isSmallDevice = React.useContext(IsSmallContext);
 
 	// componentDidUnmout() -- sign out from firebase user
 	// TODO: implement this in the action rather than here

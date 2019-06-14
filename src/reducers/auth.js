@@ -1,4 +1,4 @@
-import { SET_TOKEN, SET_USER } from "../actions/auth";
+import { SET_TOKEN, SET_USER, SET_LOGIN } from "../actions/auth";
 
 /**
  * @typedef {Object} User
@@ -43,6 +43,12 @@ function auth(state = initialState, action) {
 			return { ...state, token: action.payload };
 		case SET_USER:
 			return { ...state, user: { ...action.payload } };
+		case SET_LOGIN:
+			return {
+				...state,
+				token: action.payload.token,
+				user: { ...action.payload.user }
+			};
 		default:
 			return state;
 	}
