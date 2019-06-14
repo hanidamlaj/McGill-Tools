@@ -20,8 +20,8 @@ import NotificationIcon from "@material-ui/icons/NotificationsActive";
 import PeopleIcon from "@material-ui/icons/People";
 import SignInIcon from "@material-ui/icons/VpnKey";
 
-import AggregateSections from "./aggregateSections";
-import ContinueWithDialog from "./continueWithDialog";
+import AggregateSections from "./AggregateSections";
+import ContinueWithDialog from "./ContinueWithDialog";
 
 import { IsSmallContext } from "../../shared";
 

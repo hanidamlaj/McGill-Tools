@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
 	ContinueWithGoogle,
 	ContinueWithFacebook
-} from "./continueWithButtons";
+} from "./ContinueWithButtons";
 
 const useStyles = makeStyles(theme => ({
 	paper: {

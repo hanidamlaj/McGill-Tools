@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import AppContainer from "./containers/appContainer";
+import AppContainer from "./containers/AppContainer";
 
 import { Provider } from "react-redux";
 import configureStore from "./configureStore";

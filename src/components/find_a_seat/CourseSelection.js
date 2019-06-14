@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
 		width: "80%",
 		minWidth: 500
 	},
+	button: {
+		marginTop: theme.spacing(4)
+	},
 	card: {
 		border: "2px solid #eeeeee",
 		margin: `32px auto`,
@@ -36,6 +39,9 @@ function CourseSelection({ course, handleBack }) {
 	const isSmallDevice = React.useContext(IsSmallContext);
 	const bigViewport = (
 		<React.Fragment>
+			<Typography gutterBottom variant="h4">{`${course.subject}-${
+				course.course
+			}`}</Typography>
 			<div className={classes.root}>
 				<Table className={classes.table}>
 					<TableHead>
@@ -64,16 +70,21 @@ function CourseSelection({ course, handleBack }) {
 					</TableBody>
 				</Table>
 			</div>
-			<Button onClick={handleBack}>Choose Another Course</Button>
+			<Button className={classes.button} onClick={handleBack}>
+				Choose Another Course
+			</Button>
 		</React.Fragment>
 	);
 
 	const smallViewport = (
 		<React.Fragment>
+			<Typography variant="h4">{`${course.subject}-${
+				course.course
+			}`}</Typography>
 			{course.sections.map(section => {
 				return (
-					<div>
-						<Card className={classes.card} elevation={0} key={section.section}>
+					<div key={section.section}>
+						<Card className={classes.card} elevation={0}>
 							<CardHeader title={`Section ${section.section}`} />
 							<CardContent>
 								<Typography>Instructor(s): {section.instructor}</Typography>
@@ -88,6 +99,9 @@ function CourseSelection({ course, handleBack }) {
 					</div>
 				);
 			})}
+			<Button className={classes.button} onClick={handleBack}>
+				Choose Another Course
+			</Button>
 		</React.Fragment>
 	);
 

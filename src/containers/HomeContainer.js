@@ -1,6 +1,5 @@
 import { connect } from "react-redux";
-
-import NavigationDesktop from "../components/navigation/navigationDesktop";
+import Home from "../components/Home";
 import { setToken, setUser } from "../actions/auth";
 import { initialUser } from "../reducers/auth";
 
@@ -19,4 +18,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(NavigationDesktop);
+)(Home);

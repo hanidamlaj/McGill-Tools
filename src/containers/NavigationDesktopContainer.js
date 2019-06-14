@@ -1,9 +1,12 @@
 import { connect } from "react-redux";
 
-import NavigationMobile from "../components/navigation/navigationMobile";
-
-import { initialUser } from "../reducers/auth";
+import NavigationDesktop from "../components/navigation/NavigationDesktop";
 import { setToken, setUser } from "../actions/auth";
+import { initialUser } from "../reducers/auth";
+
+const mapStateToProps = state => ({
+	user: state.auth.user
+});
 
 const mapDispatchToProps = dispatch => ({
 	logout() {
@@ -14,6 +17,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(
-	null,
+	mapStateToProps,
 	mapDispatchToProps
-)(NavigationMobile);
+)(NavigationDesktop);

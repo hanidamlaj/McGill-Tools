@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import FindASeat from "../components/find_a_seat/findASeat";
+import FindASeat from "../components/find_a_seat/FindASeat";
 import { requestCourse, requestCourseSuggestions } from "../actions/courses";
 
 const mapStateToProps = state => ({

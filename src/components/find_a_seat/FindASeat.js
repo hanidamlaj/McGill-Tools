@@ -2,8 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {} from "@material-ui/core";
 
-import CourseSearch from "./SubscribeToCourse";
-import CourseSubscriptions from "./courseSubscriptions";
+import CourseSubscriptions from "./CourseSubscriptions";
 import SubscribeToCourse from "./SubscribeToCourse";
 
 function FindASeat({ requestCourse, requestCourseSuggestions, token }) {

@@ -16,7 +16,7 @@ function SubscribeToCourse({ requestCourse, requestCourseSuggestions }) {
 	const [activeStep, setActiveStep] = useState(0);
 	const [selectedCourse, setSelectedCourse] = useState({});
 
-	const steps = ["Search for a course", "Select a course section"];
+	const steps = ["Search for a course", "Subscribe"];
 	/**
 	 * handles moving forward one step
 	 */

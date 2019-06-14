@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import Unauthenticated from "../../components/logged_out/unauthenticated";
+import Unauthenticated from "../../components/logged_out/Unauthenticated";
 import { login } from "../../actions/auth";
 import { addLoaderKey, removeLoaderKey } from "../../actions/loaders";
 

@@ -5,11 +5,11 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import HomeContainer from "../containers/homeContainer";
-import LoginContainer from "../containers/logged_out/loginContainer";
-import UnauthenticatedContainer from "../containers/logged_out/unauthenticatedContainer";
+import HomeContainer from "../containers/HomeContainer";
+import LoginContainer from "../containers/logged_out/LoginContainer";
+import UnauthenticatedContainer from "../containers/logged_out/UnauthenticatedContainer";
 
-import { theme, IsSmallContext } from "../shared/";
+import { theme, IsSmallContext } from "../shared";
 
 function App({ token, loaders }) {
 	/**

@@ -4,9 +4,9 @@ import { Redirect, Route, Switch } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import FindASeatContainer from "../containers/findASeatContainer";
-import NavigationDesktopContainer from "../containers/navigationDesktopContainer";
-import NavigationMobileContainer from "../containers/navigationMobileContainer";
+import FindASeatContainer from "../containers/FindASeatContainer";
+import NavigationDesktopContainer from "../containers/NavigationDesktopContainer";
+import NavigationMobileContainer from "../containers/NavigationMobileContainer";
 
 import { IsSmallContext } from "../shared";
 
