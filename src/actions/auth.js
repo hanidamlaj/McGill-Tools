@@ -58,17 +58,18 @@ const REQUEST_USER = "REQUEST_USER";
 export const getUser = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_USER));
-	fetch("http://localhost:8080/profile", {
+	fetch("http://localhost:8080/user/profile", {
 		headers: {
 			"x-access-token": token
 		}
 	})
-		.then(res => res.json)
+		.then(res => res.json())
 		.then(json => {
 			if (json.error) throw json;
 			dispatch(setUser(json));
 		})
 		.catch(err => {
 			console.error(err);
-		});
+		})
+		.finally(() => dispatch(removeLoaderKey(REQUEST_USER)));
 };

@@ -12,7 +12,8 @@ const store = configureStore(loadState());
 
 store.subscribe(
 	throttle(() => {
-		saveState(store.getState());
+		const { auth } = store.getState();
+		saveState({ auth });
 	}, 1000)
 );
 

@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 		left: 0,
 		padding: theme.spacing(2, 0),
 		top: 0,
-		width: 300
+		width: 250
 	},
 	logo: {
 		color: "white",

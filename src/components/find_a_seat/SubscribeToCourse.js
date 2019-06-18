@@ -4,17 +4,30 @@ import PropTypes from "prop-types";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Button, CardActions } from "@material-ui/core";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 
-import CourseSearch from "./CourseSearch";
-import CourseSelection from "./CourseSelection";
+import CourseSearchContainer from "../../containers/find_a_seat/CourseSearchContainer";
+import CourseSelectionContainer from "../../containers/find_a_seat/CourseSelectionContainer";
 
-function SubscribeToCourse({ requestCourse, requestCourseSuggestions }) {
+const useStyles = makeStyles(theme => ({
+	root: {
+		overflow: "visible"
+	},
+	stepper: {
+		width: "100%",
+		maxWidth: 1000,
+		minWidth: 300,
+		marginBottom: theme.spacing(4)
+	}
+}));
+
+function SubscribeToCourse() {
+	const classes = useStyles();
 	const [activeStep, setActiveStep] = useState(0);
-	const [selectedCourse, setSelectedCourse] = useState({});
+	const [selectedCourse, setSelectedCourse] = useState(null);
 
 	const steps = ["Search for a course", "Subscribe"];
 	/**
@@ -28,6 +41,7 @@ function SubscribeToCourse({ requestCourse, requestCourseSuggestions }) {
 	 * handles going back one step
 	 */
 	const handleBack = () => {
+		setSelectedCourse(null);
 		setActiveStep(curStep => curStep - 1);
 	};
 
@@ -35,24 +49,19 @@ function SubscribeToCourse({ requestCourse, requestCourseSuggestions }) {
 	 * contains the react element to render for a given step
 	 */
 	const stepContent = [
-		<CourseSearch
+		<CourseSearchContainer
 			handleNext={handleNext}
-			requestCourse={requestCourse}
-			requestCourseSuggestions={requestCourseSuggestions}
 			setSelectedCourse={setSelectedCourse}
 		/>,
-		<CourseSelection course={selectedCourse} handleBack={handleBack} />
+		<CourseSelectionContainer course={selectedCourse} handleBack={handleBack} />
 	];
 
 	return (
-		<Card style={{ overflow: "visible" }}>
+		<Card className={classes.root}>
 			<CardHeader title="Subscribe To Course Notifications" />
 			<CardContent>
 				<div style={{ display: "flex", justifyContent: "center" }}>
-					<Stepper
-						activeStep={activeStep}
-						style={{ width: "65%", minWidth: 300, marginBottom: 32 }}
-					>
+					<Stepper activeStep={activeStep} className={classes.stepper}>
 						{steps.map(label => {
 							return (
 								<Step key={label}>
@@ -62,16 +71,17 @@ function SubscribeToCourse({ requestCourse, requestCourseSuggestions }) {
 						})}
 					</Stepper>
 				</div>
-
 				{stepContent[activeStep]}
 			</CardContent>
+			{selectedCourse && (
+				<CardActions>
+					<Button className={classes.button} onClick={handleBack}>
+						Choose Another Course
+					</Button>
+				</CardActions>
+			)}
 		</Card>
 	);
-	// return <CourseSearch token={token} />;
 }
-
-SubscribeToCourse.propTypes = {
-	requestCourseSuggestions: PropTypes.func.isRequired
-};
 
 export default SubscribeToCourse;

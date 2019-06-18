@@ -1,27 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {} from "@material-ui/core";
 
-import CourseSubscriptions from "./CourseSubscriptions";
+import CourseSubscriptionsContainer from "../../containers/find_a_seat/CourseSubscriptionsContainer";
 import SubscribeToCourse from "./SubscribeToCourse";
 
-function FindASeat({ requestCourse, requestCourseSuggestions, token }) {
+function FindASeat() {
 	return (
 		<React.Fragment>
-			<SubscribeToCourse
-				requestCourse={requestCourse}
-				requestCourseSuggestions={requestCourseSuggestions}
-				token={token}
-			/>
-			<CourseSubscriptions />
+			<SubscribeToCourse />
+			<CourseSubscriptionsContainer />
 		</React.Fragment>
 	);
 }
-
-FindASeat.propTypes = {
-	requestCourse: PropTypes.func.isRequired,
-	requestCourseSuggestions: PropTypes.func.isRequired,
-	token: PropTypes.string.isRequired
-};
 
 export default FindASeat;

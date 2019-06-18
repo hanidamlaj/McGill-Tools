@@ -4,7 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import FindASeatContainer from "../containers/FindASeatContainer";
+import FindASeatContainer from "../containers/find_a_seat/FindASeatContainer";
 import NavigationDesktopContainer from "../containers/NavigationDesktopContainer";
 import NavigationMobileContainer from "../containers/NavigationMobileContainer";
 
@@ -26,13 +26,17 @@ const useStyles = makeStyles(theme => ({
 		// adjustments due to varying height in material appbar
 
 		[theme.breakpoints.up("lg")]: {
-			width: "calc(100vw - 300px)",
+			width: "calc(100vw - 250px)",
 			padding: theme.spacing(8, 8)
 		},
 
 		[theme.breakpoints.down("md")]: {
 			flexGrow: 1,
-			padding: theme.spacing(10, 2)
+			padding: theme.spacing(10, 1)
+		},
+
+		"& > div": {
+			margin: theme.spacing(4, 0)
 		}
 	}
 }));

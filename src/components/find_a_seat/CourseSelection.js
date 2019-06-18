@@ -25,28 +25,45 @@ const useStyles = makeStyles(theme => ({
 		width: "80%",
 		minWidth: 500
 	},
-	button: {
-		marginTop: theme.spacing(4)
-	},
 	card: {
 		border: "2px solid #eeeeee",
 		margin: `32px auto`,
 		minWidth: 280
 	}
 }));
-function CourseSelection({ course, handleBack }) {
+
+/**
+ *
+ * @param {{course: Object, handleBack: Function, subscribeToCourse: Function}} param0
+ */
+function CourseSelection({
+	course: { courseData, courseIdentifier },
+	subscribeToCourse
+}) {
 	const classes = useStyles();
 	const isSmallDevice = React.useContext(IsSmallContext);
-	const bigViewport = (
+	const { faculty, course, year, semester } = courseIdentifier;
+
+	const handleSubscribe = section => {
+		subscribeToCourse({
+			faculty,
+			course,
+			year,
+			semester,
+			section
+		});
+	};
+
+	const BigViewport = () => (
 		<React.Fragment>
-			<Typography gutterBottom variant="h4">{`${course.subject}-${
-				course.course
+			<Typography gutterBottom variant="h4">{`${courseData.subject}${
+				courseData.course
 			}`}</Typography>
 			<div className={classes.root}>
 				<Table className={classes.table}>
 					<TableHead>
 						<TableRow>
-							<TableCell>Section Number</TableCell>
+							<TableCell>Section</TableCell>
 							<TableCell>Instructor(s)</TableCell>
 							<TableCell>Location</TableCell>
 							<TableCell>Days</TableCell>
@@ -55,7 +72,7 @@ function CourseSelection({ course, handleBack }) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{course.sections.map(section => (
+						{courseData.sections.map(section => (
 							<TableRow key={section.section}>
 								<TableCell>{section.section}</TableCell>
 								<TableCell>{section.instructor}</TableCell>
@@ -63,25 +80,27 @@ function CourseSelection({ course, handleBack }) {
 								<TableCell>{section.days}</TableCell>
 								<TableCell>{section.time}</TableCell>
 								<TableCell>
-									<Button color="primary">Subscribe</Button>
+									<Button
+										color="primary"
+										onClick={() => handleSubscribe(section.section)}
+									>
+										Subscribe
+									</Button>
 								</TableCell>
 							</TableRow>
 						))}
 					</TableBody>
 				</Table>
 			</div>
-			<Button className={classes.button} onClick={handleBack}>
-				Choose Another Course
-			</Button>
 		</React.Fragment>
 	);
 
-	const smallViewport = (
+	const SmallViewport = () => (
 		<React.Fragment>
-			<Typography variant="h4">{`${course.subject}-${
-				course.course
+			<Typography variant="h4">{`${courseData.subject}-${
+				courseData.course
 			}`}</Typography>
-			{course.sections.map(section => {
+			{courseData.sections.map(section => {
 				return (
 					<div key={section.section}>
 						<Card className={classes.card} elevation={0}>
@@ -93,19 +112,21 @@ function CourseSelection({ course, handleBack }) {
 								<Typography>Time: {section.time}</Typography>
 							</CardContent>
 							<CardActions>
-								<Button color="primary">Subscribe</Button>
+								<Button
+									color="primary"
+									onClick={() => handleSubscribe(section.section)}
+								>
+									Subscribe
+								</Button>
 							</CardActions>
 						</Card>
 					</div>
 				);
 			})}
-			<Button className={classes.button} onClick={handleBack}>
-				Choose Another Course
-			</Button>
 		</React.Fragment>
 	);
 
-	return isSmallDevice ? smallViewport : bigViewport;
+	return isSmallDevice ? <SmallViewport /> : <BigViewport />;
 }
 
 CourseSelection.propTypes = {

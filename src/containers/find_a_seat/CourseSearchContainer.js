@@ -1,10 +1,8 @@
 import { connect } from "react-redux";
-import FindASeat from "../components/find_a_seat/FindASeat";
-import { requestCourse, requestCourseSuggestions } from "../actions/courses";
+import CourseSearch from "../../components/find_a_seat/CourseSearch";
+import { requestCourse, requestCourseSuggestions } from "../../actions/courses";
 
-const mapStateToProps = state => ({
-	token: state.auth.token
-});
+const mapStateToProps = null;
 
 const mapDispatchToProps = dispatch => ({
 	requestCourse(courseQuery) {
@@ -18,4 +16,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(FindASeat);
+)(CourseSearch);

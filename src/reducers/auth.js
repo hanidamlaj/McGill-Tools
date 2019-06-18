@@ -1,4 +1,5 @@
 import { SET_TOKEN, SET_USER, SET_LOGIN } from "../actions/auth";
+import { SET_COURSE_SUBSCRIPTIONS } from "../actions/courses";
 
 /**
  * @typedef {Object} User
@@ -12,7 +13,7 @@ import { SET_TOKEN, SET_USER, SET_LOGIN } from "../actions/auth";
  * @const {User} initialUser
  */
 export const initialUser = {
-	photoUrl: "/avatar.png",
+	photoURL: "/avatar.png",
 	displayName: "",
 	email: "",
 	phoneNumber: ""
@@ -43,6 +44,11 @@ function auth(state = initialState, action) {
 			return { ...state, token: action.payload };
 		case SET_USER:
 			return { ...state, user: { ...action.payload } };
+		case SET_COURSE_SUBSCRIPTIONS:
+			return {
+				...state,
+				user: { ...state.user, notificationCourses: action.payload }
+			};
 		case SET_LOGIN:
 			return {
 				...state,

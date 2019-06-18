@@ -42,7 +42,8 @@ const useStyles = makeStyles(theme => ({
 	autoCompleteContainer: {
 		flex: "1 1 100%",
 		position: "relative",
-		top: -30
+		top: -30,
+		zIndex: 1000
 	},
 	suggestions: {
 		position: "absolute",
@@ -174,7 +175,7 @@ function CourseSearch({
 				<div className={classes.autoCompleteContainer}>
 					<Paper className={classes.suggestions} elevation={4}>
 						<List>
-							{suggestions.map(suggestion => (
+							{suggestions.map((suggestion, index) => (
 								<ListItem
 									button
 									key={suggestion.courseCode}
@@ -188,23 +189,26 @@ function CourseSearch({
 										const [_semester, year] = semester.split("-");
 
 										// information check
-										console.log(faculty, courseNumber, _semester, year);
+										console.log(faculty, courseNumber, year, _semester);
 
-										requestCourse({
+										// data to identify a given course
+										const courseIdentifier = {
 											faculty,
 											course: courseNumber,
 											year,
 											semester: _semester
-										}).then(course => {
+										};
+
+										requestCourse(courseIdentifier).then(course => {
 											if (!course.error) {
-												setSelectedCourse(course);
+												setSelectedCourse({
+													courseData: course,
+													courseIdentifier
+												});
 												handleNext();
 											}
 											console.log(course);
 										});
-										// clear input and suggestions
-										// setCourseSearch("");
-										// setSuggestions([]);
 									}}
 								>
 									<ListItemText
