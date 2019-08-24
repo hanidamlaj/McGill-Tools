@@ -30,7 +30,7 @@ const REQUEST_LOGIN = "REQUEST_LOGIN";
 export function login(idToken) {
 	return dispatch => {
 		dispatch(addLoaderKey(REQUEST_LOGIN));
-		fetch("http://localhost:8080/login", {
+		fetch("https://mcgilltools.com/login", {
 			body: JSON.stringify({ idToken }),
 			headers: {
 				"Content-Type": "application/json"
@@ -61,7 +61,7 @@ const REQUEST_USER = "REQUEST_USER";
 export const getUser = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_USER));
-	fetch("http://localhost:8080/user/profile", {
+	fetch("https://mcgilltools.com/user/profile", {
 		headers: {
 			"x-access-token": token
 		}
@@ -81,7 +81,7 @@ const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
 export const updateUserProfile = user => (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
-	fetch("http://localhost:8080/user/profile", {
+	fetch("https://mcgilltools.com/user/profile", {
 		body: JSON.stringify(user),
 		headers: {
 			"Content-Type": "application/json",

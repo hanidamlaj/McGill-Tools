@@ -20,7 +20,7 @@ function Login({ login, removeLoaderKey, match }) {
 						firebase
 							.auth()
 							.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
-					if (provider === "facebook")
+					else if (provider === "facebook")
 						firebase
 							.auth()
 							.signInWithRedirect(new firebase.auth.FacebookAuthProvider());

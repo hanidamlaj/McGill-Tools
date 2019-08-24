@@ -7,6 +7,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
+	hidden: {
+		height: 1,
+		visibility: "hidden"
+	},
 	section: {
 		display: "flex",
 		justifyContent: "center",
@@ -233,15 +237,20 @@ function AggregateSections(props) {
 	const classes = useStyles();
 
 	// react element for the sections
-	return sectionsData.map((section, index) => (
-		<SingleSection
-			classes={classes}
-			index={index}
-			key={section.sectionId}
-			section={section}
-			{...props}
-		/>
-	));
+	return (
+		<React.Fragment>
+			{sectionsData.map((section, index) => (
+				<SingleSection
+					classes={classes}
+					index={index}
+					key={section.sectionId}
+					section={section}
+					{...props}
+				/>
+			))}
+			<div className={classes.hidden}></div>
+		</React.Fragment>
+	);
 }
 
 AggregateSections.propTypes = {

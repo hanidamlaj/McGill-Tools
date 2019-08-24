@@ -47,7 +47,9 @@ const useStyles = makeStyles(theme => ({
 	},
 	suggestions: {
 		position: "absolute",
-		width: "100%"
+		width: "100%",
+		maxHeight: 175,
+		overflowY: "scroll"
 	},
 	formControl: {
 		display: "block",
@@ -104,10 +106,12 @@ function CourseSearch({
 	 */
 	const handleSearchChange = e => {
 		const input = e.target.value;
+		const filteredInput = e.target.value.replace(/\s/g, "");
+
 		// only send request if string contains 5 characters
 		// faculty + first number of course code (e.g. COMP2)
-		if (input.length > 4) {
-			requestCourseSuggestions(input).then(res => {
+		if (filteredInput.length > 4) {
+			requestCourseSuggestions(filteredInput).then(res => {
 				if (res instanceof Error) console.error(res);
 				else {
 					setSuggestions(res);
@@ -197,21 +201,19 @@ function CourseSearch({
 											year,
 											semester: _semester
 										}).then(course => {
-											if (!course.error) {
-												setSelectedCourse({
-													courseData: course,
-													courseId
-												});
-												handleNext();
-											}
-											console.log(course);
+											if (course instanceof Error) return;
+
+											// pass data to the next step (subscribing to a specific section)
+											setSelectedCourse({
+												courseData: course,
+												courseId
+											});
+											handleNext();
 										});
 									}}
 								>
 									<ListItemText
-										primary={`${suggestion.courseCode} - ${
-											suggestion.courseName
-										}`}
+										primary={`${suggestion.courseCode} - ${suggestion.courseName}`}
 									/>
 								</ListItem>
 							))}

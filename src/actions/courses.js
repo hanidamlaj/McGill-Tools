@@ -18,7 +18,7 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
 	const query = [faculty, course, year, semester].join("/");
 
 	dispatch(addLoaderKey(REQUEST_COURSE));
-	return fetch(`http://localhost:8080/courses/${query}`, {
+	return fetch(`https://mcgilltools.com/courses/${query}`, {
 		headers: {
 			"x-access-token": token
 		}
@@ -45,7 +45,7 @@ const REQUEST_COURSE_SUGGESTIONS = "REQUEST_COURSE_SUGGESTIONS";
 export const requestCourseSuggestions = searchKey => (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_COURSE_SUGGESTIONS));
-	return fetch(`http://localhost:8080/courses/autocomplete/${searchKey}`, {
+	return fetch(`https://mcgilltools.com/courses/autocomplete/${searchKey}`, {
 		headers: {
 			"x-access-token": token
 		}
@@ -89,7 +89,7 @@ export const requestSectionSubscribe = ({
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	fetch(`http://localhost:8080/notify/subscribe/${query}`, {
+	fetch(`https://mcgilltools.com/notify/subscribe/${query}`, {
 		headers: {
 			"x-access-token": token
 		},
@@ -124,7 +124,7 @@ export const requestSectionUnsubscribe = ({
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_UNSUBSCRIBE));
-	fetch(`http://localhost:8080/notify/unsubscribe/${query}`, {
+	fetch(`https://mcgilltools.com/notify/unsubscribe/${query}`, {
 		headers: {
 			"x-access-token": token
 		},
@@ -146,7 +146,7 @@ export const requestSectionUnsubscribe = ({
 export const requestSubscribedSections = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	fetch("http://localhost:8080/user/profile/subscribedSections", {
+	fetch("https://mcgilltools.com/user/profile/subscribedSections", {
 		headers: {
 			"x-access-token": token
 		}
