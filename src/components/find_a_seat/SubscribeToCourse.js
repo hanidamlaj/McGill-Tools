@@ -10,7 +10,7 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 
 import CourseSearchContainer from "../../containers/find_a_seat/CourseSearchContainer";
-import CourseSelectionContainer from "../../containers/find_a_seat/CourseSelectionContainer";
+import SectionSelectionContainer from "../../containers/find_a_seat/SectionSelectionContainer";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -19,8 +19,7 @@ const useStyles = makeStyles(theme => ({
 	stepper: {
 		width: "100%",
 		maxWidth: 1000,
-		minWidth: 300,
-		marginBottom: theme.spacing(4)
+		minWidth: 300
 	}
 }));
 
@@ -53,7 +52,10 @@ function SubscribeToCourse() {
 			handleNext={handleNext}
 			setSelectedCourse={setSelectedCourse}
 		/>,
-		<CourseSelectionContainer course={selectedCourse} handleBack={handleBack} />
+		<SectionSelectionContainer
+			course={selectedCourse}
+			handleBack={handleBack}
+		/>
 	];
 
 	return (
@@ -76,7 +78,7 @@ function SubscribeToCourse() {
 			{selectedCourse && (
 				<CardActions>
 					<Button className={classes.button} onClick={handleBack}>
-						Choose Another Course
+						Go Back
 					</Button>
 				</CardActions>
 			)}

@@ -59,7 +59,8 @@ function CourseSearch({
 	handleNext,
 	requestCourse,
 	requestCourseSuggestions,
-	setSelectedCourse
+	setSelectedCourse,
+	setSnackbar
 }) {
 	const classes = useStyles();
 
@@ -69,7 +70,7 @@ function CourseSearch({
 	 * State to control semester input from user
 	 * @type {[string, Function]}
 	 */
-	const [semester, setSemester] = useState("fall-2019");
+	const [semester, setSemester] = useState("FALL-2019");
 
 	/**
 	 * State to control course search input from user
@@ -107,7 +108,7 @@ function CourseSearch({
 		// faculty + first number of course code (e.g. COMP2)
 		if (input.length > 4) {
 			requestCourseSuggestions(input).then(res => {
-				if (res.error) console.error(res);
+				if (res instanceof Error) console.error(res);
 				else {
 					setSuggestions(res);
 					setShowSuggestions(res.length > 0 ? true : false);
@@ -141,13 +142,13 @@ function CourseSearch({
 						className={classes.formGroupLabel}
 						control={<Radio color="primary" />}
 						label="Fall 2019"
-						value="fall-2019"
+						value="FALL-2019"
 					/>
 					<FormControlLabel
 						className={classes.formGroupLabel}
 						control={<Radio color="primary" />}
 						label="Winter 2020"
-						value="winter-2020"
+						value="WINTER-2020"
 					/>
 				</RadioGroup>
 			</FormControl>
@@ -180,30 +181,26 @@ function CourseSearch({
 									button
 									key={suggestion.courseCode}
 									onMouseDown={() => {
-										// extract faculty and courseNumber from the courseCode
+										// extract course identification data from inputs
 										const [faculty, courseNumber] = [
 											suggestion.courseCode.slice(0, 4),
 											suggestion.courseCode.slice(4)
 										];
-										// extract semester and year from the select input
 										const [_semester, year] = semester.split("-");
 
-										// information check
-										console.log(faculty, courseNumber, year, _semester);
+										// data to identify a given course (e.g. COMP_250_2019_FALL)
+										const courseId = [faculty, courseNumber, year, _semester];
 
-										// data to identify a given course
-										const courseIdentifier = {
+										requestCourse({
 											faculty,
 											course: courseNumber,
 											year,
 											semester: _semester
-										};
-
-										requestCourse(courseIdentifier).then(course => {
+										}).then(course => {
 											if (!course.error) {
 												setSelectedCourse({
 													courseData: course,
-													courseIdentifier
+													courseId
 												});
 												handleNext();
 											}
@@ -229,7 +226,8 @@ CourseSearch.propTypes = {
 	handleNext: PropTypes.func.isRequired,
 	requestCourse: PropTypes.func.isRequired,
 	requestCourseSuggestions: PropTypes.func.isRequired,
-	setSelectedCourse: PropTypes.func.isRequired
+	setSelectedCourse: PropTypes.func.isRequired,
+	setSnackbar: PropTypes.func.isRequired
 };
 
 export default CourseSearch;

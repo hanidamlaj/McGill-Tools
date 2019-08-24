@@ -165,17 +165,17 @@ function Unauthenticated({
 		addLoaderKey("beginAuth");
 
 		if (isSmallDevice) {
-			history.push("/login", { provider });
+			history.push(`/auth/${provider.providerId.replace(".com", "")}`);
 		} else
 			firebase
 				.auth()
 				.signInWithPopup(provider)
-				.then(async result => {
+				.then(async () => {
 					const idToken = await firebase.auth().currentUser.getIdToken(true);
 					login(idToken);
 				})
-				.catch(function(error) {
-					console.error(error);
+				.catch(err => {
+					console.error(err);
 				})
 				.finally(() => {
 					removeLoaderKey("beginAuth");

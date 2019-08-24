@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-// import PropTypes from "prop-types";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -12,6 +11,7 @@ import { IsSmallContext } from "../shared";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import SettingsContainer from "../containers/SettingsContainer";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -24,10 +24,9 @@ const useStyles = makeStyles(theme => ({
 	},
 	content: {
 		// adjustments due to varying height in material appbar
-
 		[theme.breakpoints.up("lg")]: {
 			width: "calc(100vw - 250px)",
-			padding: theme.spacing(8, 8)
+			padding: theme.spacing(6, 8)
 		},
 
 		[theme.breakpoints.down("md")]: {
@@ -36,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 		},
 
 		"& > div": {
-			margin: theme.spacing(4, 0)
+			marginBottom: theme.spacing(4)
 		}
 	}
 }));
@@ -54,7 +53,6 @@ function Home() {
 	}, []);
 
 	return (
-		// <Grid className={classes.root} container justify="flex-end">
 		<div className={classes.root}>
 			{isSmallDevice ? (
 				<NavigationMobileContainer />
@@ -64,12 +62,16 @@ function Home() {
 			<div className={classes.content}>
 				<Switch>
 					{/* handle redirect after user has been authenticated */}
-					<Route exact path="/login" render={() => <Redirect to="/" />} />
+					<Route
+						exact
+						path="/auth/:provider"
+						render={() => <Redirect to="/" />}
+					/>
+					<Route exact path="/settings" component={SettingsContainer} />
 					<Route path="/" component={FindASeatContainer} />
 				</Switch>
 			</div>
 		</div>
-		// </Grid>
 	);
 }
 

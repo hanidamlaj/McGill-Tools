@@ -1,21 +1,22 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
+import { setSnackbar } from "./snackbar";
 
 /**
- * action type for user object retrieved from server
+ * action type and creator for user object retrieved from server
  * @type {string} SET_USER
  */
 export const SET_USER = "SET_USER";
 export const setUser = user => ({ type: SET_USER, payload: user });
 
 /**
- * action type for jwtToken holding user claims
+ * action type and creator for jwtToken holding user claims
  * @type {string} SET_TOKEN
  */
 export const SET_TOKEN = "SET_TOKEN";
 export const setToken = token => ({ type: SET_TOKEN, payload: token });
 
 /**
- * action type for data retrieved from login
+ * action type and creator for data retrieved from login
  * @type {string} SET_AUTH
  */
 export const SET_LOGIN = "SET_LOGIN";
@@ -23,7 +24,7 @@ export const setLogin = auth => ({ type: SET_LOGIN, payload: auth });
 
 const REQUEST_LOGIN = "REQUEST_LOGIN";
 /**
- * Sends ajax request to fetch token and user data.
+ * sends ajax request to fetch access token and user data
  * @param {string} idToken the idToken provided by firebase
  */
 export function login(idToken) {
@@ -38,11 +39,13 @@ export function login(idToken) {
 		})
 			.then(res => res.json())
 			.then(json => {
-				if (json.error) throw json;
+				if (json.error) throw new Error(json.message);
 				dispatch(setLogin(json));
-				console.log(json);
 			})
-			.catch(err => console.error(err.error))
+			.catch(err => {
+				dispatch(setSnackbar(err.message));
+				return err;
+			})
 			.finally(() => {
 				dispatch(removeLoaderKey(REQUEST_LOGIN));
 			});
@@ -65,11 +68,34 @@ export const getUser = (dispatch, getState) => {
 	})
 		.then(res => res.json())
 		.then(json => {
-			if (json.error) throw json;
+			if (json.error) throw new Error(json.message);
 			dispatch(setUser(json));
 		})
 		.catch(err => {
-			console.error(err);
+			dispatch(setSnackbar(err.message));
 		})
 		.finally(() => dispatch(removeLoaderKey(REQUEST_USER)));
+};
+
+const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
+export const updateUserProfile = user => (dispatch, getState) => {
+	const token = getState().auth.token;
+	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
+	fetch("http://localhost:8080/user/profile", {
+		body: JSON.stringify(user),
+		headers: {
+			"Content-Type": "application/json",
+			"x-access-token": token
+		},
+		method: "POST"
+	})
+		.then(res => res.json())
+		.then(json => {
+			if (json.error) throw new Error(json.message);
+			dispatch(setUser(json));
+		})
+		.catch(err => {
+			dispatch(setSnackbar(err.message));
+		})
+		.finally(() => dispatch(removeLoaderKey(UPDATE_USER_PROFILE)));
 };

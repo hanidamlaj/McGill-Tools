@@ -5,10 +5,9 @@ const theme = createMuiTheme({
 		fontFamily: ["Quicksand", "sans-serif"]
 	},
 	palette: {
-		primary: { main: "#E24945" }
+		primary: { main: "#E24945" },
+		secondaryText: "eeeeee"
 	}
 });
-
-console.log(theme);
 
 export default theme;

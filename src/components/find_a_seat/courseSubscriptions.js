@@ -33,16 +33,21 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
+/**
+ * finds the index of the target section in a course object
+ * @param {{subject: string, course: string, sections: object[]}} course
+ * @param {string} section the number of the target section
+ */
 function getSectionIndex(course, section) {
-	if (course.error) return -1;
+	if (!course.sections) return -1;
 	return course.sections.findIndex(s => s.section === section);
 }
 
 function CourseSubscriptions({
 	requestCourse,
-	requestSubscribedCourses,
-	subscribedCourses,
-	unsubscribeFromCourse
+	requestSubscribedSections,
+	subscribedSections,
+	requestSectionUnsubscribe
 }) {
 	const classes = useStyles();
 
@@ -60,27 +65,27 @@ function CourseSubscriptions({
 
 	// on component mount, request the user's subscribed courses
 	useEffect(() => {
-		requestSubscribedCourses();
+		requestSubscribedSections();
 	}, []);
 
 	useEffect(() => {
 		// create a set of courseIds to maintain uniqueness and calculate difference
 		// between the previous and new courses
 		const courseIdsSet = new Set(courseIds);
-		const diff = subscribedCourses.filter(
+		const diff = subscribedSections.filter(
 			courseId => !courseIdsSet.has(courseId)
 		);
 		setCourseIds(courseIds => [...courseIds, ...diff]);
 
-		// only request the data in the difference of the two arrays
-		const _subscribedCourses = diff.map(courseId => {
+		// only request the data in the difference of the two array (the new subscriptions)
+		const newSubscriptions = diff.map(courseId => {
 			const [faculty, course, year, semester] = courseId.split("_");
 			return requestCourse({ faculty, course, year, semester });
 		});
-		Promise.all(_subscribedCourses).then(res =>
+		Promise.all(newSubscriptions).then(res =>
 			setCourses(courses => [...courses, ...res])
 		);
-	}, [subscribedCourses]);
+	}, [subscribedSections]);
 
 	/**
 	 * Handles unsubscribing the user
@@ -92,16 +97,10 @@ function CourseSubscriptions({
 		);
 
 		// update state to reflect removal of subscription
-		setCourseIds(courseIds => [
-			...courseIds.slice(0, index),
-			...courseIds.slice(index + 1)
-		]);
-		setCourses(courses => [
-			...courses.slice(0, index),
-			...courses.slice(index + 1)
-		]);
+		setCourseIds(courseIds => courseIds.filter((_, idx) => index !== idx));
+		setCourses(courses => courses.filter((_, idx) => index !== idx));
 
-		unsubscribeFromCourse({ faculty, course, year, semester, section });
+		requestSectionUnsubscribe({ faculty, course, year, semester, section });
 	};
 
 	const BigViewport = () => (
@@ -214,15 +213,29 @@ function CourseSubscriptions({
 				title="Course Subscriptions"
 				subheader="We will notify you when seats are available for these courses"
 			/>
-			<CardContent>{isSmall ? <SmallViewPort /> : <BigViewport />}</CardContent>
+			<CardContent>
+				{subscribedSections.length > 0 ? (
+					isSmall ? (
+						<SmallViewPort />
+					) : (
+						<BigViewport />
+					)
+				) : (
+					<Typography>
+						You are not subscribed to any courses. Please add your courses
+						below.
+					</Typography>
+				)}
+			</CardContent>
 		</Card>
 	);
 }
+
 CourseSubscriptions.propTypes = {
 	requestCourse: PropTypes.func.isRequired,
-	requestSubscribedCourses: PropTypes.func.isRequired,
-	subscribedCourses: PropTypes.array.isRequired,
-	unsubscribeFromCourse: PropTypes.func.isRequired
+	requestSubscribedSections: PropTypes.func.isRequired,
+	subscribedSections: PropTypes.array.isRequired,
+	requestSectionUnsubscribe: PropTypes.func.isRequired
 };
 
 export default CourseSubscriptions;

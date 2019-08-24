@@ -121,7 +121,7 @@ const useStyles = makeStyles(theme => ({
 const sectionsData = [
 	{
 		buttonText: "Get Started",
-		imgSrc: "/notification.svg",
+		imgSrc: "/static/images/notification.svg",
 		sectionBodyText: [
 			"Are you tired of constantly refreshing Minerva to see if a seat has become available?",
 			"If so, sign up to get notified immediately!"
@@ -131,7 +131,7 @@ const sectionsData = [
 	},
 	{
 		buttonText: "Get Coding",
-		imgSrc: "/developer.svg",
+		imgSrc: "/static/images/developer.svg",
 		sectionBodyText: [
 			"Are you interested in building your own tools for the McGill community?",
 			"Register now and obtain an access token to leverage our existing APIs such as querying course data!"
@@ -141,7 +141,7 @@ const sectionsData = [
 	},
 	{
 		buttonText: "Start Innovating",
-		imgSrc: "/community.svg",
+		imgSrc: "/static/images/community.svg",
 		sectionBodyText: [
 			"If you’re interested in joining our mission to innovate for the community, we would love to hear from you!"
 		],
@@ -161,8 +161,8 @@ function SingleSection({
 	classes,
 	handleClick,
 	index,
-	section,
-	isSmallDevice
+	isSmallDevice,
+	section
 }) {
 	// half of the section that contains text
 	const description = (

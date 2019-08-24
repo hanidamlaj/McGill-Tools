@@ -168,7 +168,7 @@ function NavigationDesktop({ logout, user }) {
 					/>
 				</div>
 				<div className={classes.profileInformation}>
-					<Typography align="center" variant="h4">
+					<Typography align="center" variant="h5">
 						{authenticatedUser.displayName}
 					</Typography>
 					<Typography align="center" gutterBottom variant="body1">

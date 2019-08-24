@@ -4,11 +4,8 @@ import PropTypes from "prop-types";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
-function Login({ login, removeLoaderKey, location }) {
-	if (location.state && location.state.provider) {
-		firebase.auth().signInWithRedirect(location.state.provider);
-	}
-
+function Login({ login, removeLoaderKey, match }) {
+	const provider = match.params.provider;
 	useEffect(() => {
 		firebase
 			.auth()
@@ -18,11 +15,21 @@ function Login({ login, removeLoaderKey, location }) {
 				if (result.user) {
 					const idToken = await firebase.auth().currentUser.getIdToken(true);
 					login(idToken);
-					removeLoaderKey("beginAuth");
+				} else {
+					if (provider === "google")
+						firebase
+							.auth()
+							.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+					if (provider === "facebook")
+						firebase
+							.auth()
+							.signInWithRedirect(new firebase.auth.FacebookAuthProvider());
 				}
 			})
 			.catch(function(error) {
 				console.error(error);
+			})
+			.finally(() => {
 				removeLoaderKey("beginAuth");
 			});
 	}, []);

@@ -62,7 +62,11 @@ export function ContinueWithGoogle({ handleClick }) {
 			className={`${classes.root} ${classes.google}`}
 			onClick={handleClick}
 		>
-			<img alt="" className={classes.providerImage} src="/btn_google.svg" />
+			<img
+				alt=""
+				className={classes.providerImage}
+				src="/static/images/btn_google.svg"
+			/>
 			Continue With Google
 		</Button>
 	);
@@ -83,7 +87,11 @@ export function ContinueWithFacebook({ handleClick }) {
 			className={`${classes.root} ${classes.facebook}`}
 			onClick={handleClick}
 		>
-			<img alt="" className={classes.providerImage} src="/btn_facebook.png" />
+			<img
+				alt=""
+				className={classes.providerImage}
+				src="/static/images/btn_facebook.png"
+			/>
 			Continue With Facebook
 		</Button>
 	);
