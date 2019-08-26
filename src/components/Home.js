@@ -16,7 +16,6 @@ import SettingsContainer from "../containers/SettingsContainer";
 const useStyles = makeStyles(theme => ({
 	root: {
 		display: "flex",
-		justifyContent: "flex-end",
 		minHeight: "100vh",
 		"& div": {
 			boxSizing: "border-box"
@@ -25,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 	content: {
 		// adjustments due to varying height in material appbar
 		[theme.breakpoints.up("lg")]: {
-			width: "calc(100vw - 250px)",
+			flexGrow: 1,
 			padding: theme.spacing(6, 8)
 		},
 

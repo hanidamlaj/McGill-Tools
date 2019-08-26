@@ -18,6 +18,7 @@ import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles(theme => ({
 	root: {
+		width: "100%",
 		marginTop: theme.spacing(4)
 	},
 	formGroupLabel: { alignSelf: "flex-start" },
@@ -40,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 		}
 	},
 	autoCompleteContainer: {
-		flex: "1 1 100%",
+		width: "100%",
 		position: "relative",
 		top: -30,
 		zIndex: 1000
@@ -49,7 +50,8 @@ const useStyles = makeStyles(theme => ({
 		position: "absolute",
 		width: "100%",
 		maxHeight: 175,
-		overflowY: "scroll"
+		overflowY: "scroll",
+		marginBottom: theme.spacing(2)
 	},
 	formControl: {
 		display: "block",
@@ -176,6 +178,7 @@ function CourseSearch({
 				</Paper>
 				<FormHelperText>e.g. COMP273, MATH240</FormHelperText>
 			</FormControl>
+
 			{showSuggestions && (
 				<div className={classes.autoCompleteContainer}>
 					<Paper className={classes.suggestions} elevation={4}>

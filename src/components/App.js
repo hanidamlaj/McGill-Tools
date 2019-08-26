@@ -46,7 +46,8 @@ function App({ token, loaders, snackbar, setSnackbar }) {
 						style={{
 							position: "absolute",
 							top: 0,
-							width: "100%",
+							left: 0,
+							right: 0,
 							zIndex: 1200
 						}}
 					>

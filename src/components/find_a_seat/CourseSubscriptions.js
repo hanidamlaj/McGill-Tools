@@ -134,9 +134,12 @@ function CourseSubscriptions({
 							] = courseIds[index].split("_");
 
 							const sectionIndex = getSectionIndex(course, sectionNumber);
+							// should not happen, integrity check
 							if (sectionIndex < 0)
 								return <React.Fragment key={courseIds[index]} />;
+
 							const section = course.sections[sectionIndex];
+
 							return (
 								<TableRow key={courseIds[index]}>
 									<TableCell>{`${faculty}${courseCode}`}</TableCell>

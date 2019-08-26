@@ -15,7 +15,10 @@ import PeopleIcon from "@material-ui/icons/People";
 import SettingsIcon from "@material-ui/icons/Settings";
 
 const useStyles = makeStyles(theme => ({
-	sideBar: {
+	sidebarContainer: {
+		flexBasis: 250
+	},
+	sidebar: {
 		display: "flex",
 		position: "fixed",
 		alignItems: "center",
@@ -154,54 +157,56 @@ function NavigationDesktop({ logout, user }) {
 	];
 
 	return (
-		<div className={classes.sideBar}>
-			{/* logo */}
-			<Typography className={classes.logo}>McGill Tools</Typography>
+		<div className={classes.sidebarContainer}>
+			<div className={classes.sidebar}>
+				{/* logo */}
+				<Typography className={classes.logo}>McGill Tools</Typography>
 
-			{/* profile section */}
-			<div className={classes.profile}>
-				<div className={classes.profileImageContainer}>
-					<img
-						alt=""
-						className={classes.profileImage}
-						src={`${authenticatedUser.photoURL}?type=large`}
-					/>
-				</div>
-				<div className={classes.profileInformation}>
-					<Typography align="center" variant="h5">
-						{authenticatedUser.displayName}
-					</Typography>
-					<Typography align="center" gutterBottom variant="body1">
-						{authenticatedUser.email}
-					</Typography>
-				</div>
-			</div>
-
-			{/* links section */}
-			<div className={classes.links}>
-				{links.map(link => (
-					<div className={classes.linkContainer} key={link.name}>
-						{link.icon}
-						{renderLink({
-							classes,
-							linkTo: link.linkTo,
-							buttonText: link.name
-						})}
+				{/* profile section */}
+				<div className={classes.profile}>
+					<div className={classes.profileImageContainer}>
+						<img
+							alt=""
+							className={classes.profileImage}
+							src={`${authenticatedUser.photoURL}?type=large`}
+						/>
 					</div>
-				))}
+					<div className={classes.profileInformation}>
+						<Typography align="center" variant="h5">
+							{authenticatedUser.displayName}
+						</Typography>
+						<Typography align="center" gutterBottom variant="body1">
+							{authenticatedUser.email}
+						</Typography>
+					</div>
+				</div>
 
-				{/* logout button handled separately due to non-link behaviour */}
-				<div className={classes.linkContainer}>
-					<LogoutIcon className={classes.linkIcon} />
-					<Button
-						classes={{ label: classes.linkButtonLabel }}
-						className={classes.linkButton}
-						color="primary"
-						fullWidth
-						onClick={logout}
-					>
-						Log Out
-					</Button>
+				{/* links section */}
+				<div className={classes.links}>
+					{links.map(link => (
+						<div className={classes.linkContainer} key={link.name}>
+							{link.icon}
+							{renderLink({
+								classes,
+								linkTo: link.linkTo,
+								buttonText: link.name
+							})}
+						</div>
+					))}
+
+					{/* logout button handled separately due to non-link behaviour */}
+					<div className={classes.linkContainer}>
+						<LogoutIcon className={classes.linkIcon} />
+						<Button
+							classes={{ label: classes.linkButtonLabel }}
+							className={classes.linkButton}
+							color="primary"
+							fullWidth
+							onClick={logout}
+						>
+							Log Out
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>
