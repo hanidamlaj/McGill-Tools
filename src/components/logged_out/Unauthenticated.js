@@ -106,7 +106,8 @@ function Unauthenticated({
 	history,
 	isLoading,
 	login,
-	removeLoaderKey
+	removeLoaderKey,
+	setSnackbar
 }) {
 	const classes = useStyles();
 
@@ -170,12 +171,18 @@ function Unauthenticated({
 			firebase
 				.auth()
 				.signInWithPopup(provider)
-				.then(async () => {
-					const idToken = await firebase.auth().currentUser.getIdToken(true);
-					login(idToken);
+				.then(async result => {
+					if (result.user) {
+						const idToken = await result.user.getIdToken(true);
+						login(idToken);
+					}
 				})
 				.catch(err => {
-					console.error(err);
+					if (err.code === "auth/account-exists-with-different-credential") {
+						setSnackbar(
+							"This email address is already in use with another sign-in method."
+						);
+					}
 				})
 				.finally(() => {
 					removeLoaderKey("beginAuth");

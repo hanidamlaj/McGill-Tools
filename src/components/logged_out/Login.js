@@ -4,8 +4,19 @@ import PropTypes from "prop-types";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
-function Login({ login, removeLoaderKey, match }) {
+function Login({ login, removeLoaderKey, match, setSnackbar, history }) {
 	const provider = match.params.provider;
+	const loginWithProvider = provider => {
+		if (provider === "google")
+			firebase
+				.auth()
+				.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+		else if (provider === "facebook")
+			firebase
+				.auth()
+				.signInWithRedirect(new firebase.auth.FacebookAuthProvider());
+	};
+
 	useEffect(() => {
 		firebase
 			.auth()
@@ -16,18 +27,16 @@ function Login({ login, removeLoaderKey, match }) {
 					const idToken = await firebase.auth().currentUser.getIdToken(true);
 					login(idToken);
 				} else {
-					if (provider === "google")
-						firebase
-							.auth()
-							.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
-					else if (provider === "facebook")
-						firebase
-							.auth()
-							.signInWithRedirect(new firebase.auth.FacebookAuthProvider());
+					loginWithProvider(provider);
 				}
 			})
 			.catch(function(error) {
-				console.error(error);
+				if (error.code === "auth/account-exists-with-different-credential") {
+					history.push("/");
+					setSnackbar(
+						"This email address is already in use with another sign-in method."
+					);
+				}
 			})
 			.finally(() => {
 				removeLoaderKey("beginAuth");
