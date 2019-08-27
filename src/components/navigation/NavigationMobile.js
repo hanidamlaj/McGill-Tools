@@ -92,16 +92,16 @@ function NavigationMobile({ logout }) {
 			icon: <NotificationIcon />,
 			linkTo: "/"
 		},
-		{
-			buttonText: "Develop",
-			icon: <CodeIcon />,
-			linkTo: "/develop"
-		},
-		{
-			buttonText: "Join Us",
-			icon: <PeopleIcon />,
-			linkTo: "/join"
-		},
+		// {
+		// 	buttonText: "Develop",
+		// 	icon: <CodeIcon />,
+		// 	linkTo: "/develop"
+		// },
+		// {
+		// 	buttonText: "Join Us",
+		// 	icon: <PeopleIcon />,
+		// 	linkTo: "/join"
+		// },
 		{
 			buttonText: "Settings",
 			icon: <SettingsIcon />,

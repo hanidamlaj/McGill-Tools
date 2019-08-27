@@ -139,16 +139,16 @@ function NavigationDesktop({ logout, user }) {
 			icon: <NotificationIcon className={classes.linkIcon} />,
 			linkTo: "/"
 		},
-		{
-			name: "Develop",
-			icon: <CodeIcon className={classes.linkIcon} />,
-			linkTo: "/develop"
-		},
-		{
-			name: "Join Us",
-			icon: <PeopleIcon className={classes.linkIcon} />,
-			linkTo: "/join"
-		},
+		// {
+		// 	name: "Develop",
+		// 	icon: <CodeIcon className={classes.linkIcon} />,
+		// 	linkTo: "/develop"
+		// },
+		// {
+		// 	name: "Join Us",
+		// 	icon: <PeopleIcon className={classes.linkIcon} />,
+		// 	linkTo: "/join"
+		// },
 		{
 			name: "Settings",
 			icon: <SettingsIcon className={classes.linkIcon} />,

@@ -2,9 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
+import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import { Divider } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
 	hidden: {
@@ -44,6 +46,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	sectionContent: {
 		display: "flex",
+		position: "relative",
 		// transform section title to uppercase letters
 		"& h3": {
 			textTransform: "uppercase",
@@ -54,6 +57,8 @@ const useStyles = makeStyles(theme => ({
 		},
 
 		[theme.breakpoints.up("lg")]: {
+			flexWrap: "wrap",
+			width: "80%",
 			maxWidth: 1800,
 			padding: theme.spacing(8)
 		},
@@ -89,6 +94,22 @@ const useStyles = makeStyles(theme => ({
 		width: "100%",
 		height: "100%",
 		padding: theme.spacing(4)
+	},
+	chipContainer: {
+		[theme.breakpoints.down("md")]: {
+			display: "flex",
+			width: "100%",
+			justifyContent: "center"
+		},
+
+		[theme.breakpoints.up("lg")]: {
+			position: "absolute",
+			top: 16,
+			right: 16,
+			"& > div": {
+				width: 200
+			}
+		}
 	},
 	sectionText: {
 		[theme.breakpoints.up("lg")]: {
@@ -135,6 +156,7 @@ const sectionsData = [
 	},
 	{
 		buttonText: "Get Coding",
+		comingSoon: true,
 		imgSrc: "/static/images/developer.svg",
 		sectionBodyText: [
 			"Are you interested in building your own tools for the McGill community?",
@@ -145,6 +167,7 @@ const sectionsData = [
 	},
 	{
 		buttonText: "Start Innovating",
+		comingSoon: true,
 		imgSrc: "/static/images/community.svg",
 		sectionBodyText: [
 			"If you’re interested in joining our mission to innovate for the community, we would love to hear from you!"
@@ -194,7 +217,7 @@ function SingleSection({
 
 	// other half of section that contains the image
 	const image = (
-		<Grid className={classes.sectionImageContainer} item lg={6}>
+		<Grid className={classes.sectionImageContainer} item lg={6} xs={12}>
 			<div className={classes.sectionImageOuter}>
 				<img alt="" className={classes.sectionImage} src={section.imgSrc} />
 			</div>
@@ -208,6 +231,11 @@ function SingleSection({
 			key={section.sectionId}
 		>
 			<div className={classes.sectionContent}>
+				{section.comingSoon && (
+					<div className={classes.chipContainer}>
+						<Chip label="Coming Soon" variant="outlined"></Chip>
+					</div>
+				)}
 				{isSmallDevice || index % 2 !== 0 ? (
 					<React.Fragment>
 						{image} {description}
