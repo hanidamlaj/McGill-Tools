@@ -54,14 +54,22 @@ function CourseSubscriptions({
 	const isSmall = useContext(IsSmallContext);
 
 	/**
-	 * State to control the user's subscribed courseIds
+	 * state to control the user's subscribed courseIds
+	 * (e.g. courseId: "COMP_202_2019_FALL")
 	 */
 	const [courseIds, setCourseIds] = useState([]);
 
 	/**
-	 * State to control the user's subscribed courses
+	 * state to control the data belonging to the courseIds above
+	 * key-value pairs of courseId-data
+	 * { COMP_202_2019_FALL: {subject, course, faculty, sections} }
 	 */
-	const [courses, setCourses] = useState([]);
+	const [courses, setCourses] = useState({});
+
+	/**
+	 * state duplicate of props
+	 */
+	const [stateSubscribedSections, setStateSubscribedSections] = useState([]);
 
 	// on component mount, request the user's subscribed courses
 	useEffect(() => {
@@ -69,22 +77,48 @@ function CourseSubscriptions({
 	}, []);
 
 	useEffect(() => {
-		// create a set of courseIds to maintain uniqueness and calculate difference
-		// between the previous and new courses
+		// create a set of courseIds to detect which new courses must be queried
+		// if course data already exists for the specific section, skip quering
+		// the course again
 		const courseIdsSet = new Set(courseIds);
-		const diff = subscribedSections.filter(
+		const subscribedCourses = subscribedSections.map(sectionId =>
+			// extract the courseId from the sectionId (e.g. sectionId: "COMP_202_2019_FALL_001")
+			// (e.g. courseId: "COMP_202_2019_FALL")
+			sectionId.slice(0, sectionId.lastIndexOf("_"))
+		);
+
+		// find the courseIds that are not in the set (newly added)
+		const diff = subscribedCourses.filter(
 			courseId => !courseIdsSet.has(courseId)
 		);
-		setCourseIds(courseIds => [...courseIds, ...diff]);
 
 		// only request the data in the difference of the two array (the new subscriptions)
 		const newSubscriptions = diff.map(courseId => {
 			const [faculty, course, year, semester] = courseId.split("_");
 			return requestCourse({ faculty, course, year, semester });
 		});
-		Promise.all(newSubscriptions).then(res =>
-			setCourses(courses => [...courses, ...res])
-		);
+
+		Promise.all(newSubscriptions)
+			.then(res => {
+				// since newSubscriptions is a mapping of diff, the indices match
+				const newCourses = diff.reduce(
+					(acc, cur, index) => {
+						// map the courseKey to the courseDetails fetched
+						acc[cur] = res[index];
+						return acc;
+					},
+					{ ...courses }
+				);
+				// update the data for the courses
+				setCourses(newCourses);
+
+				// update the list of courseIds
+				setCourseIds(courseIds => [...courseIds, ...diff]);
+
+				// update the list of state managed subscribedSections
+				setStateSubscribedSections(subscribedSections);
+			})
+			.catch(() => {});
 	}, [subscribedSections]);
 
 	/**
@@ -92,14 +126,10 @@ function CourseSubscriptions({
 	 * @param {Number} index the location of both the course and course identifier
 	 */
 	const handleUnsubscribe = index => {
-		const [faculty, course, year, semester, section] = courseIds[index].split(
-			"_"
-		);
-
-		// update state to reflect removal of subscription
-		setCourseIds(courseIds => courseIds.filter((_, idx) => index !== idx));
-		setCourses(courses => courses.filter((_, idx) => index !== idx));
-
+		// extract information from the targeted sectionId
+		const [faculty, course, year, semester, section] = subscribedSections[
+			index
+		].split("_");
 		requestSectionUnsubscribe({ faculty, course, year, semester, section });
 	};
 
@@ -120,7 +150,7 @@ function CourseSubscriptions({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{courses.map((course, index) => {
+						{stateSubscribedSections.map((sectionId, index) => {
 							/**
 							 * course identifiers
 							 * @type {[string, string, string, string, string]}
@@ -131,7 +161,11 @@ function CourseSubscriptions({
 								year,
 								semester,
 								sectionNumber
-							] = courseIds[index].split("_");
+							] = sectionId.split("_");
+
+							// generate the courseId from the sectionId to lookup the courses object
+							const courseId = [faculty, courseCode, year, semester].join("_");
+							const course = courses[courseId];
 
 							const sectionIndex = getSectionIndex(course, sectionNumber);
 							// should not happen, integrity check
@@ -141,7 +175,7 @@ function CourseSubscriptions({
 							const section = course.sections[sectionIndex];
 
 							return (
-								<TableRow key={courseIds[index]}>
+								<TableRow key={sectionId}>
 									<TableCell>{`${faculty}${courseCode}`}</TableCell>
 									<TableCell>{`${semester}-${year}`}</TableCell>
 									<TableCell>{section.section}</TableCell>
@@ -168,21 +202,29 @@ function CourseSubscriptions({
 
 	const SmallViewPort = () => (
 		<React.Fragment>
-			{courses.map((course, index) => {
+			{stateSubscribedSections.map((sectionId, index) => {
 				/**
 				 * course identifiers
 				 * @type {[string, string, string, string, string]}
 				 */
-				const [faculty, courseCode, year, semester, sectionNumber] = courseIds[
-					index
-				].split("_");
+				const [
+					faculty,
+					courseCode,
+					year,
+					semester,
+					sectionNumber
+				] = sectionId.split("_");
+
+				// generate the courseId from the sectionId to lookup the courses object
+				const courseKey = [faculty, courseCode, year, semester].join("_");
+				const course = courses[courseKey];
 
 				const sectionIndex = getSectionIndex(course, sectionNumber);
 				if (sectionIndex < 0) return <React.Fragment key={courseIds[index]} />;
 
 				const section = course.sections[sectionIndex];
 				return (
-					<div key={courseIds[index]}>
+					<div key={sectionId}>
 						<Card className={classes.card} elevation={0}>
 							<CardHeader
 								title={`${faculty}${courseCode}`}

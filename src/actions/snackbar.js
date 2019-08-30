@@ -6,3 +6,11 @@ export function setSnackbar(message) {
 		payload: message
 	};
 }
+
+export const SET_SNACKBAR_ERROR = "SET_SNACKBAR_ERROR";
+export function setSnackbarError(message) {
+	return {
+		type: SET_SNACKBAR_ERROR,
+		payload: message
+	};
+}

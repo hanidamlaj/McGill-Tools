@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
-function Login({ login, removeLoaderKey, match, setSnackbar, history }) {
+function Login({ login, removeLoaderKey, match, setSnackbarError, history }) {
 	const provider = match.params.provider;
 	const loginWithProvider = provider => {
 		if (provider === "google")
@@ -33,7 +33,7 @@ function Login({ login, removeLoaderKey, match, setSnackbar, history }) {
 			.catch(function(error) {
 				if (error.code === "auth/account-exists-with-different-credential") {
 					history.push("/");
-					setSnackbar(
+					setSnackbarError(
 						"This email address is already in use with another sign-in method."
 					);
 				}

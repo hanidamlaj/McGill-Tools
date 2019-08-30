@@ -1,5 +1,5 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
-import { setSnackbar } from "./snackbar";
+import { setSnackbarError } from "./snackbar";
 
 // loading key for async action
 const REQUEST_COURSE = "REQUEST_COURSE";
@@ -29,7 +29,7 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
 			return json;
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 			return err;
 		})
 		.finally(() => {
@@ -56,7 +56,7 @@ export const requestCourseSuggestions = searchKey => (dispatch, getState) => {
 			return json;
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 			return err;
 		})
 		.finally(() => {
@@ -98,10 +98,10 @@ export const requestSectionSubscribe = ({
 		.then(res => res.json())
 		.then(json => {
 			if (json.error) throw new Error(json.message);
-			dispatch(setSubscribedSections(json.notificationCourses));
+			dispatch(setSubscribedSections(json.subscribedSections));
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => {
 			dispatch(removeLoaderKey(REQUEST_SUBSCRIBE));
@@ -133,10 +133,10 @@ export const requestSectionUnsubscribe = ({
 		.then(res => res.json())
 		.then(json => {
 			if (json.error) throw new Error(json.message);
-			dispatch(setSubscribedSections(json.notificationCourses));
+			dispatch(setSubscribedSections(json.subscribedSections));
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => {
 			dispatch(removeLoaderKey(REQUEST_UNSUBSCRIBE));
@@ -157,7 +157,7 @@ export const requestSubscribedSections = (dispatch, getState) => {
 			dispatch(setSubscribedSections(json));
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => dispatch(removeLoaderKey(REQUEST_SUBSCRIBE)));
 };

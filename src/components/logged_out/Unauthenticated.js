@@ -107,7 +107,7 @@ function Unauthenticated({
 	isLoading,
 	login,
 	removeLoaderKey,
-	setSnackbar
+	setSnackbarError
 }) {
 	const classes = useStyles();
 
@@ -179,7 +179,7 @@ function Unauthenticated({
 				})
 				.catch(err => {
 					if (err.code === "auth/account-exists-with-different-credential") {
-						setSnackbar(
+						setSnackbarError(
 							"This email address is already in use with another sign-in method."
 						);
 					}

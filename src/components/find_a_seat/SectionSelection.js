@@ -64,9 +64,10 @@ function SectionSelection({
 
 	const BigViewport = () => (
 		<React.Fragment>
-			<Typography gutterBottom variant="h4">{`${courseData.subject}${
-				courseData.course
-			}`}</Typography>
+			<Typography
+				gutterBottom
+				variant="h4"
+			>{`${courseData.subject}${courseData.course}`}</Typography>
 			<Typography variant="body2" gutterBottom>
 				Select your section below
 			</Typography>
@@ -115,9 +116,7 @@ function SectionSelection({
 
 	const SmallViewport = () => (
 		<React.Fragment>
-			<Typography variant="h4">{`${courseData.subject}-${
-				courseData.course
-			}`}</Typography>
+			<Typography variant="h4">{`${courseData.subject}-${courseData.course}`}</Typography>
 			<Typography variant="body2" gutterBottom>
 				Select your section below
 			</Typography>

@@ -15,10 +15,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
-import CodeIcon from "@material-ui/icons/Code";
+// import CodeIcon from "@material-ui/icons/Code";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationIcon from "@material-ui/icons/NotificationsActive";
-import PeopleIcon from "@material-ui/icons/People";
+// import PeopleIcon from "@material-ui/icons/People";
 import SettingsIcon from "@material-ui/icons/Settings";
 import SignOutIcon from "@material-ui/icons/ExitToApp";
 

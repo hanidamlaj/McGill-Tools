@@ -8,10 +8,10 @@ import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-import CodeIcon from "@material-ui/icons/Code";
+// import CodeIcon from "@material-ui/icons/Code";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import NotificationIcon from "@material-ui/icons/NotificationsActive";
-import PeopleIcon from "@material-ui/icons/People";
+// import PeopleIcon from "@material-ui/icons/People";
 import SettingsIcon from "@material-ui/icons/Settings";
 
 const useStyles = makeStyles(theme => ({

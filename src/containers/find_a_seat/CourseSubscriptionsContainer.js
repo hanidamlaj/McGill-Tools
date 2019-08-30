@@ -7,7 +7,7 @@ import {
 } from "../../actions/courses";
 
 const mapStateToProps = state => ({
-	subscribedSections: state.auth.user.notificationCourses || []
+	subscribedSections: state.auth.user.subscribedSections || []
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import App from "../components/App";
-import { setSnackbar } from "../actions/snackbar";
+import { setSnackbar, setSnackbarError } from "../actions/snackbar";
 
 const mapStateToProps = state => ({
 	token: state.auth.token,
@@ -11,6 +11,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
 	setSnackbar(message) {
 		dispatch(setSnackbar(message));
+	},
+	setSnackbarError(message) {
+		dispatch(setSnackbarError(message));
 	}
 });
 export default connect(

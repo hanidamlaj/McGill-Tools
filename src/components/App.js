@@ -28,7 +28,13 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-function App({ token, loaders, snackbar, setSnackbar }) {
+function App({
+	token,
+	loaders,
+	snackbar: { success, error },
+	setSnackbar,
+	setSnackbarError
+}) {
 	/**
 	 * boolean flag to indicate if viewport matches small/medium device
 	 * same as theme.breakpoints.down("md")
@@ -39,6 +45,7 @@ function App({ token, loaders, snackbar, setSnackbar }) {
 	const classes = useStyles();
 	const handleClose = () => {
 		setSnackbar("");
+		setSnackbarError("");
 	};
 
 	return (
@@ -57,12 +64,12 @@ function App({ token, loaders, snackbar, setSnackbar }) {
 						<LinearProgress color="primary" />
 					</div>
 				)}
-				{snackbar && (
+				{(!!success || !!error) && (
 					<Snackbar
 						autoHideDuration={5000}
 						anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 						onClose={handleClose}
-						open={!!snackbar}
+						open={!!success || !!error}
 					>
 						<SnackbarContent
 							classes={{
@@ -82,17 +89,18 @@ function App({ token, loaders, snackbar, setSnackbar }) {
 								<Typography
 									variant="body2"
 									style={{
-										color: red[500],
+										color: error ? red[500] : "#28a745",
 										fontWeight: 500,
 										textAlign: "center"
 									}}
 								>
-									{snackbar}
+									{success || error}
 								</Typography>
 							}
 						></SnackbarContent>
 					</Snackbar>
 				)}
+				{/* presence of token can be taken as user is authenticated */}
 				{token ? (
 					<HomeContainer />
 				) : (

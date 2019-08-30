@@ -43,11 +43,13 @@ function Home() {
 	const classes = useStyles();
 	const isSmallDevice = React.useContext(IsSmallContext);
 
-	// componentDidUnmout() -- sign out from firebase user
+	// componentDidUnmount() -- sign out from firebase user
 	// TODO: implement this in the action rather than here
 	useEffect(() => {
 		return () => {
+			// sign user out and clear local storage
 			firebase.auth().signOut();
+			localStorage.clear();
 		};
 	}, []);
 
