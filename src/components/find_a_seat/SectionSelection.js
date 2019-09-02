@@ -42,11 +42,14 @@ function SectionSelection({
 	subscribedSections
 }) {
 	const classes = useStyles();
+	// get device width from context to for responsive design
 	const isSmallDevice = React.useContext(IsSmallContext);
+
+	// extract course data from courseId
 	const [faculty, course, year, semester] = courseId;
 	const strCourseId = courseId.join("_");
 
-	// filter out and obtain subscriptions that only contain currently selected course
+	// filter out and obtain subscriptions that only contains currently selected course
 	subscribedSections = subscribedSections.reduce((acc, cur) => {
 		if (cur.startsWith(strCourseId)) acc.push(cur);
 		return acc;
@@ -132,17 +135,18 @@ function SectionSelection({
 								<Typography>Time: {section.time}</Typography>
 							</CardContent>
 							<CardActions>
-								<Button
-									color="primary"
-									onClick={() => handleSubscribe(section.section)}
-									disabled={
-										!!subscribedSections.find(courseId =>
-											courseId.endsWith(section.section)
-										)
-									}
-								>
-									Subscribe
-								</Button>
+								{subscribedSections.includes(
+									`${strCourseId}_${section.section}`
+								) ? (
+									<Button disabled>Subscribed</Button>
+								) : (
+									<Button
+										color="primary"
+										onClick={() => handleSubscribe(section.section)}
+									>
+										Subscribe
+									</Button>
+								)}
 							</CardActions>
 						</Card>
 					</div>

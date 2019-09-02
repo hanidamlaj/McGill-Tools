@@ -103,6 +103,15 @@ function FindASeat({ updateUserProfile, user }) {
 					<Grid container>
 						<Grid item xs={12}>
 							<TextField
+								disabled
+								fullWidth
+								label="Email"
+								margin="normal"
+								value={userDetails.email}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<TextField
 								fullWidth
 								label="Display name"
 								margin="normal"

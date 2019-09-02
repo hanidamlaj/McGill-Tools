@@ -100,6 +100,15 @@ function Settings({
 							<Grid item xs={12}>
 								<TextField
 									className={classes.textField}
+									disabled
+									label="Email"
+									margin="normal"
+									value={userDetails.email}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									className={classes.textField}
 									label="Display name"
 									margin="normal"
 									onChange={handleChange("displayName")}
