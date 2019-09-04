@@ -1,5 +1,5 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
-import { setSnackbar } from "./snackbar";
+import { setSnackbarError } from "./snackbar";
 
 /**
  * action type and creator for user object retrieved from server
@@ -30,7 +30,7 @@ const REQUEST_LOGIN = "REQUEST_LOGIN";
 export function login(idToken) {
 	return dispatch => {
 		dispatch(addLoaderKey(REQUEST_LOGIN));
-		fetch("http://localhost:8080/login", {
+		fetch("https://mcgilltools.com/login", {
 			body: JSON.stringify({ idToken }),
 			headers: {
 				"Content-Type": "application/json"
@@ -43,7 +43,7 @@ export function login(idToken) {
 				dispatch(setLogin(json));
 			})
 			.catch(err => {
-				dispatch(setSnackbar(err.message));
+				dispatch(setSnackbarError(err.message));
 				return err;
 			})
 			.finally(() => {
@@ -61,7 +61,7 @@ const REQUEST_USER = "REQUEST_USER";
 export const getUser = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_USER));
-	fetch("http://localhost:8080/user/profile", {
+	fetch("https://mcgilltools.com/user/profile", {
 		headers: {
 			"x-access-token": token
 		}
@@ -72,7 +72,7 @@ export const getUser = (dispatch, getState) => {
 			dispatch(setUser(json));
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => dispatch(removeLoaderKey(REQUEST_USER)));
 };
@@ -81,7 +81,7 @@ const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
 export const updateUserProfile = user => (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
-	fetch("http://localhost:8080/user/profile", {
+	return fetch("https://mcgilltools.com/user/profile", {
 		body: JSON.stringify(user),
 		headers: {
 			"Content-Type": "application/json",
@@ -93,9 +93,13 @@ export const updateUserProfile = user => (dispatch, getState) => {
 		.then(json => {
 			if (json.error) throw new Error(json.message);
 			dispatch(setUser(json));
+			return json;
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
+			return err;
 		})
-		.finally(() => dispatch(removeLoaderKey(UPDATE_USER_PROFILE)));
+		.finally(() => {
+			dispatch(removeLoaderKey(UPDATE_USER_PROFILE));
+		});
 };

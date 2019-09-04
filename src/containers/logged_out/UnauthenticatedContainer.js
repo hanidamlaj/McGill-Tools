@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import Unauthenticated from "../../components/logged_out/Unauthenticated";
 import { login } from "../../actions/auth";
 import { addLoaderKey, removeLoaderKey } from "../../actions/loaders";
+import { setSnackbarError } from "../../actions/snackbar";
 
 const mapStateToProps = state => ({
 	isLoading: state.loaders.length > 0
@@ -16,6 +17,9 @@ const mapDispatchToProps = dispatch => ({
 	},
 	removeLoaderKey(key) {
 		dispatch(removeLoaderKey(key));
+	},
+	setSnackbarError(message) {
+		dispatch(setSnackbarError(message));
 	}
 });
 

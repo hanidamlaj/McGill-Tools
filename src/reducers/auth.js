@@ -47,7 +47,7 @@ function auth(state = initialState, action) {
 		case SET_SECTION_SUBSCRIPTIONS:
 			return {
 				...state,
-				user: { ...state.user, notificationCourses: action.payload }
+				user: { ...state.user, subscribedSections: action.payload }
 			};
 		case SET_LOGIN:
 			return {

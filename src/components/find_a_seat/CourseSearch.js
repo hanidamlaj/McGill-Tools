@@ -18,6 +18,7 @@ import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles(theme => ({
 	root: {
+		width: "100%",
 		marginTop: theme.spacing(4)
 	},
 	formGroupLabel: { alignSelf: "flex-start" },
@@ -40,14 +41,17 @@ const useStyles = makeStyles(theme => ({
 		}
 	},
 	autoCompleteContainer: {
-		flex: "1 1 100%",
+		width: "100%",
 		position: "relative",
 		top: -30,
 		zIndex: 1000
 	},
 	suggestions: {
 		position: "absolute",
-		width: "100%"
+		width: "100%",
+		maxHeight: 175,
+		overflowY: "scroll",
+		marginBottom: theme.spacing(2)
 	},
 	formControl: {
 		display: "block",
@@ -104,10 +108,12 @@ function CourseSearch({
 	 */
 	const handleSearchChange = e => {
 		const input = e.target.value;
+		const filteredInput = e.target.value.replace(/\s/g, "");
+
 		// only send request if string contains 5 characters
 		// faculty + first number of course code (e.g. COMP2)
-		if (input.length > 4) {
-			requestCourseSuggestions(input).then(res => {
+		if (filteredInput.length > 4) {
+			requestCourseSuggestions(filteredInput).then(res => {
 				if (res instanceof Error) console.error(res);
 				else {
 					setSuggestions(res);
@@ -172,6 +178,7 @@ function CourseSearch({
 				</Paper>
 				<FormHelperText>e.g. COMP273, MATH240</FormHelperText>
 			</FormControl>
+
 			{showSuggestions && (
 				<div className={classes.autoCompleteContainer}>
 					<Paper className={classes.suggestions} elevation={4}>
@@ -197,21 +204,19 @@ function CourseSearch({
 											year,
 											semester: _semester
 										}).then(course => {
-											if (!course.error) {
-												setSelectedCourse({
-													courseData: course,
-													courseId
-												});
-												handleNext();
-											}
-											console.log(course);
+											if (course instanceof Error) return;
+
+											// pass data to the next step (subscribing to a specific section)
+											setSelectedCourse({
+												courseData: course,
+												courseId
+											});
+											handleNext();
 										});
 									}}
 								>
 									<ListItemText
-										primary={`${suggestion.courseCode} - ${
-											suggestion.courseName
-										}`}
+										primary={`${suggestion.courseCode} - ${suggestion.courseName}`}
 									/>
 								</ListItem>
 							))}

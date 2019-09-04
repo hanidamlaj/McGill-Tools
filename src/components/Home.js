@@ -16,7 +16,6 @@ import SettingsContainer from "../containers/SettingsContainer";
 const useStyles = makeStyles(theme => ({
 	root: {
 		display: "flex",
-		justifyContent: "flex-end",
 		minHeight: "100vh",
 		"& div": {
 			boxSizing: "border-box"
@@ -25,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 	content: {
 		// adjustments due to varying height in material appbar
 		[theme.breakpoints.up("lg")]: {
-			width: "calc(100vw - 250px)",
+			flexGrow: 1,
 			padding: theme.spacing(6, 8)
 		},
 
@@ -44,11 +43,13 @@ function Home() {
 	const classes = useStyles();
 	const isSmallDevice = React.useContext(IsSmallContext);
 
-	// componentDidUnmout() -- sign out from firebase user
+	// componentDidUnmount() -- sign out from firebase user
 	// TODO: implement this in the action rather than here
 	useEffect(() => {
 		return () => {
+			// sign user out and clear local storage
 			firebase.auth().signOut();
+			localStorage.clear();
 		};
 	}, []);
 

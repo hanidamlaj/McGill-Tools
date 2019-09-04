@@ -1,5 +1,5 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
-import { setSnackbar } from "./snackbar";
+import { setSnackbarError } from "./snackbar";
 
 // loading key for async action
 const REQUEST_COURSE = "REQUEST_COURSE";
@@ -18,7 +18,7 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
 	const query = [faculty, course, year, semester].join("/");
 
 	dispatch(addLoaderKey(REQUEST_COURSE));
-	return fetch(`http://localhost:8080/courses/${query}`, {
+	return fetch(`https://mcgilltools.com/courses/${query}`, {
 		headers: {
 			"x-access-token": token
 		}
@@ -29,7 +29,7 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
 			return json;
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 			return err;
 		})
 		.finally(() => {
@@ -45,7 +45,7 @@ const REQUEST_COURSE_SUGGESTIONS = "REQUEST_COURSE_SUGGESTIONS";
 export const requestCourseSuggestions = searchKey => (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_COURSE_SUGGESTIONS));
-	return fetch(`http://localhost:8080/courses/autocomplete/${searchKey}`, {
+	return fetch(`https://mcgilltools.com/courses/autocomplete/${searchKey}`, {
 		headers: {
 			"x-access-token": token
 		}
@@ -56,7 +56,7 @@ export const requestCourseSuggestions = searchKey => (dispatch, getState) => {
 			return json;
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 			return err;
 		})
 		.finally(() => {
@@ -89,7 +89,7 @@ export const requestSectionSubscribe = ({
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	fetch(`http://localhost:8080/notify/subscribe/${query}`, {
+	fetch(`https://mcgilltools.com/notify/subscribe/${query}`, {
 		headers: {
 			"x-access-token": token
 		},
@@ -98,10 +98,10 @@ export const requestSectionSubscribe = ({
 		.then(res => res.json())
 		.then(json => {
 			if (json.error) throw new Error(json.message);
-			dispatch(setSubscribedSections(json.notificationCourses));
+			dispatch(setSubscribedSections(json.subscribedSections));
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => {
 			dispatch(removeLoaderKey(REQUEST_SUBSCRIBE));
@@ -124,7 +124,7 @@ export const requestSectionUnsubscribe = ({
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_UNSUBSCRIBE));
-	fetch(`http://localhost:8080/notify/unsubscribe/${query}`, {
+	fetch(`https://mcgilltools.com/notify/unsubscribe/${query}`, {
 		headers: {
 			"x-access-token": token
 		},
@@ -133,10 +133,10 @@ export const requestSectionUnsubscribe = ({
 		.then(res => res.json())
 		.then(json => {
 			if (json.error) throw new Error(json.message);
-			dispatch(setSubscribedSections(json.notificationCourses));
+			dispatch(setSubscribedSections(json.subscribedSections));
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => {
 			dispatch(removeLoaderKey(REQUEST_UNSUBSCRIBE));
@@ -146,7 +146,7 @@ export const requestSectionUnsubscribe = ({
 export const requestSubscribedSections = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	fetch("http://localhost:8080/user/profile/subscribedSections", {
+	fetch("https://mcgilltools.com/user/profile/subscribedSections", {
 		headers: {
 			"x-access-token": token
 		}
@@ -157,7 +157,7 @@ export const requestSubscribedSections = (dispatch, getState) => {
 			dispatch(setSubscribedSections(json));
 		})
 		.catch(err => {
-			dispatch(setSnackbar(err.message));
+			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => dispatch(removeLoaderKey(REQUEST_SUBSCRIBE)));
 };
