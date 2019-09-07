@@ -5,7 +5,9 @@ import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
+import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
+import Link from "@material-ui/core/Link";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -97,6 +99,12 @@ const useStyles = makeStyles(theme => ({
 	signIn: {
 		[theme.breakpoints.down("md")]: {
 			display: "none"
+		}
+	},
+	footer: {
+		padding: theme.spacing(2, 2),
+		"& > p": {
+			margin: theme.spacing(0, 1)
 		}
 	}
 }));
@@ -312,6 +320,19 @@ function Unauthenticated({
 					handleClick={handleGetStarted}
 					isSmallDevice={isSmallDevice}
 				/>
+				<Divider variant="fullWidth"></Divider>
+				<Grid container className={classes.footer}>
+					<Grid item xs={12}>
+						<Typography align="center" variant="body2">
+							<Link
+								href="https://mail.google.com/mail/?view=cm&fs=1&to=mcgilltools@gmail.com"
+								target="_blank"
+							>
+								© 2019 McGill Tools
+							</Link>
+						</Typography>
+					</Grid>
+				</Grid>
 			</React.Fragment>
 		)
 	);

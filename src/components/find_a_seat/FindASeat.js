@@ -13,22 +13,13 @@ import TextField from "@material-ui/core/TextField";
 // import Link from "@material-ui/core/Link";
 // import Snackbar from "@material-ui/core/Snackbar";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 // import CloseIcon from "@material-ui/icons/Close";
 
 import CourseSubscriptionsContainer from "../../containers/find_a_seat/CourseSubscriptionsContainer";
 import SubscribeToCourse from "./SubscribeToCourse";
 import { IsSmallContext } from "../../shared";
 
-const useStyles = makeStyles(theme => ({
-	close: {
-		color: "white",
-		padding: theme.spacing(0.5)
-	}
-}));
-
 function FindASeat({ updateUserProfile, user }) {
-	const classes = useStyles();
 	const isSmall = useContext(IsSmallContext);
 
 	// state to control dialog
