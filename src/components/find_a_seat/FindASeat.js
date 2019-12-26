@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
-// import { Link as RouterLink } from "react-router-dom/";
+import React, { useState, useEffect } from "react";
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -9,19 +8,14 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-// import IconButton from "@material-ui/core/IconButton";
-// import Link from "@material-ui/core/Link";
-// import Snackbar from "@material-ui/core/Snackbar";
-import Typography from "@material-ui/core/Typography";
-// import CloseIcon from "@material-ui/icons/Close";
 
 import CourseSubscriptionsContainer from "../../containers/find_a_seat/CourseSubscriptionsContainer";
 import SubscribeToCourse from "./SubscribeToCourse";
-import { IsSmallContext } from "../../shared";
 
+/**
+ * this component is the parent component for the get-a-seat page
+ */
 function FindASeat({ updateUserProfile, user }) {
-	const isSmall = useContext(IsSmallContext);
-
 	// state to control dialog
 	const [open, setOpen] = useState(!user.phoneNumber);
 
@@ -130,12 +124,6 @@ function FindASeat({ updateUserProfile, user }) {
 					</Button>
 				</DialogActions>
 			</Dialog>
-			<Typography
-				style={{ marginBottom: 32, textAlign: isSmall ? "center" : "left" }}
-				variant={isSmall ? "h5" : "h3"}
-			>
-				FIND A SEAT
-			</Typography>
 			<CourseSubscriptionsContainer />
 			<SubscribeToCourse />
 		</React.Fragment>

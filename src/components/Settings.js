@@ -8,13 +8,12 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { CardHeader } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		border: "2px solid #eeeeee",
-		paddingLeft: theme.spacing(1)
+		border: "2px solid #eeeeee"
 	},
-	sectionHeader: { fontWeight: 500, marginBottom: theme.spacing(2) },
 	textField: {
 		maxWidth: 400,
 		width: "100%"
@@ -92,10 +91,8 @@ function Settings({
 		<Grid container justify="center">
 			<Grid item xs={12}>
 				<Card className={classes.root} elevation={0}>
+					<CardHeader title="Profile Settings"></CardHeader>
 					<CardContent>
-						<Typography className={classes.sectionHeader} variant="h5">
-							Profile settings
-						</Typography>
 						<Grid container>
 							<Grid item xs={12}>
 								<TextField

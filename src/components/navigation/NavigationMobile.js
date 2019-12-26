@@ -24,6 +24,10 @@ import SignOutIcon from "@material-ui/icons/ExitToApp";
 
 const useStyles = makeStyles(theme => ({
 	// navigation bar styles
+	root: {
+		flexGrow: 1,
+		paddingTop: theme.spacing(10)
+	},
 	appbar: {
 		backgroundColor: "white",
 		left: 0,
@@ -116,7 +120,7 @@ function NavigationMobile({ logout }) {
 	const [navbarOpen, setNavbarOpen] = useState(false);
 
 	return (
-		<div>
+		<div className={classes.root}>
 			<AppBar className={classes.appbar} position="fixed">
 				<Toolbar className={classes.toolbar}>
 					<IconButton

@@ -13,7 +13,4 @@ const mapDispatchToProps = dispatch => ({
 	}
 });
 
-export default connect(
-	null,
-	mapDispatchToProps
-)(NavigationMobile);
+export default connect(null, mapDispatchToProps)(NavigationMobile);

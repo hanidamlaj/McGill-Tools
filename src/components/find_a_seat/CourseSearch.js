@@ -109,6 +109,7 @@ function CourseSearch({
 	const handleSearchChange = e => {
 		const input = e.target.value;
 		const filteredInput = e.target.value.replace(/\s/g, "");
+		e.persist();
 
 		// only send request if string contains 5 characters
 		// faculty + first number of course code (e.g. COMP2)
@@ -118,6 +119,7 @@ function CourseSearch({
 				else {
 					setSuggestions(res);
 					setShowSuggestions(res.length > 0 ? true : false);
+					if (res.length > 0) console.log(e.target.scrollIntoView());
 				}
 			});
 		} else {

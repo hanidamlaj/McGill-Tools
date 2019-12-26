@@ -43,6 +43,8 @@ function getSectionIndex(course, section) {
 	return course.sections.findIndex(s => s.section === section);
 }
 
+// this is the component that contains the top card on the get-a-seat page
+// contains the feature that displays the currently subscribed to features
 function CourseSubscriptions({
 	requestCourse,
 	requestSubscribedSections,

@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import Settings from "../components/Settings";
+import API from "../components/API";
 import { setSnackbar, setSnackbarError } from "./../actions/snackbar";
 import { updateUserProfile, getUser } from "../actions/auth";
 
@@ -23,4 +23,4 @@ const mapDispatchToProps = dispatch => ({
 	}
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(API);
