@@ -1,8 +1,11 @@
 import { connect } from "react-redux";
 
-import API from "../components/API";
-import { setSnackbar, setSnackbarError } from "./../actions/snackbar";
-import { updateUserProfile, getUser } from "../actions/auth";
+import API from "../components/api/API";
+import { setSnackbar } from "./../actions/snackbar";
+import {
+	createAccessTokenReq,
+	fetchAccessTokenReqState
+} from "./../actions/api";
 
 const mapStateToProps = state => ({
 	user: state.auth.user
@@ -12,14 +15,11 @@ const mapDispatchToProps = dispatch => ({
 	setSnackbar(message) {
 		dispatch(setSnackbar(message));
 	},
-	setSnackbarError(message) {
-		dispatch(setSnackbarError(message));
+	createAccessTokenReq(formData) {
+		return dispatch(createAccessTokenReq(formData));
 	},
-	updateUserProfile(user) {
-		return dispatch(updateUserProfile(user));
-	},
-	getUser() {
-		dispatch(getUser);
+	fetchAccessTokenReqState() {
+		return dispatch(fetchAccessTokenReqState);
 	}
 });
 

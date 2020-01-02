@@ -9,7 +9,6 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
-import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -157,7 +156,11 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 			<AppBar className={classes.appbar} position="fixed">
 				<Toolbar>
 					{/* mcgill_tools logo */}
-					<img className={classes.logo} src="/static/images/logo.png"></img>
+					<img
+						alt="logo"
+						className={classes.logo}
+						src="/static/images/logo.png"
+					></img>
 
 					{/* header for the current url/path */}
 					<Typography className={classes.title} variant="h6">

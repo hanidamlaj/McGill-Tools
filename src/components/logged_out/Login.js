@@ -41,7 +41,7 @@ function Login({ login, removeLoaderKey, match, setSnackbarError, history }) {
 			.finally(() => {
 				removeLoaderKey("beginAuth");
 			});
-	}, []);
+	}, [login, removeLoaderKey, match, setSnackbarError, history]);
 
 	return <React.Fragment />;
 }

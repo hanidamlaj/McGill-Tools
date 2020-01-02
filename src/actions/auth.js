@@ -1,6 +1,8 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
+// ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
+
 /**
  * action type and creator for user object retrieved from server
  * @type {string} SET_USER
@@ -16,15 +18,26 @@ export const SET_TOKEN = "SET_TOKEN";
 export const setToken = token => ({ type: SET_TOKEN, payload: token });
 
 /**
- * action type and creator for data retrieved from login
+ * action type and creator for data retrieved from login request
  * @type {string} SET_AUTH
  */
 export const SET_LOGIN = "SET_LOGIN";
 export const setLogin = auth => ({ type: SET_LOGIN, payload: auth });
 
+// ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// –––––––––– LOADER KEYS FOR ASYNC ACTIONS ––––––––––
+
 const REQUEST_LOGIN = "REQUEST_LOGIN";
+const REQUEST_USER = "REQUEST_USER";
+const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
+
+// –––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// ––––––––––––––––––––– ASYNC ACTIONS –––––––––––––––––––––
+
 /**
- * sends ajax request to fetch access token and user data
+ * authenticate user using firebase idToken and retrieve user profile
  * @param {string} idToken the idToken provided by firebase
  */
 export function login(idToken) {
@@ -52,9 +65,8 @@ export function login(idToken) {
 	};
 }
 
-const REQUEST_USER = "REQUEST_USER";
 /**
- * async action to retrieve user profile
+ * retrieve user profile from server
  * @param {Function} dispatch
  * @param {Function} getState
  */
@@ -77,7 +89,10 @@ export const getUser = (dispatch, getState) => {
 		.finally(() => dispatch(removeLoaderKey(REQUEST_USER)));
 };
 
-const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
+/**
+ * update the profile of the user (e.g. Name, subscribedSections, phoneNumber, etc.)
+ * @param {object} user profile of the user
+ */
 export const updateUserProfile = user => (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
@@ -103,3 +118,5 @@ export const updateUserProfile = user => (dispatch, getState) => {
 			dispatch(removeLoaderKey(UPDATE_USER_PROFILE));
 		});
 };
+
+// ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

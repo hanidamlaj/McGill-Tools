@@ -1,13 +1,34 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
-// loading key for async action
-const REQUEST_COURSE = "REQUEST_COURSE";
+// ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
 
 /**
- * async action to retrieve a course
+ * action creator for the subscribed sections of a user
+ */
+export const SET_SECTION_SUBSCRIPTIONS = "SET_SECTION_SUBSCRIPTIONS";
+const setSubscribedSections = subscribedSections => ({
+	type: SET_SECTION_SUBSCRIPTIONS,
+	payload: subscribedSections
+});
+
+// –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// ––––––––––––––––––––– LOADER KEYS FOR ASYNC ACTIONS –––––––––––––––––––––
+
+const REQUEST_COURSE = "REQUEST_COURSE";
+const REQUEST_COURSE_SUGGESTIONS = "REQUEST_COURSE_SUGGESTIONS";
+const REQUEST_SUBSCRIBE = "REQUEST_SUBSCRIBE";
+const REQUEST_UNSUBSCRIBE = "REQUEST_UNSUBSCRIBE";
+
+// –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// ––––––––––––––––––––– ASYNC ACTIONS –––––––––––––––––––––
+
+/**
+ * retrieve course information
  * @param {{faculty: string, course: string, year: string, semester: string}} param
- * @returns {Promise<Object>}
+ * @returns {Promise<object>}
  */
 export const requestCourse = ({ faculty, course, year, semester }) => (
 	dispatch,
@@ -37,9 +58,8 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
 		});
 };
 
-const REQUEST_COURSE_SUGGESTIONS = "REQUEST_COURSE_SUGGESTIONS";
 /**
- * async action to retrieve suggestions for a given search key
+ * retrieve course name suggestions for user input (i.e. autocomplete feature)
  * @param {string} searchKey the search key
  */
 export const requestCourseSuggestions = searchKey => (dispatch, getState) => {
@@ -65,17 +85,7 @@ export const requestCourseSuggestions = searchKey => (dispatch, getState) => {
 };
 
 /**
- * action creator for the courses a user is subscribed to
- */
-export const SET_SECTION_SUBSCRIPTIONS = "SET_SECTION_SUBSCRIPTIONS";
-const setSubscribedSections = subscribedSections => ({
-	type: SET_SECTION_SUBSCRIPTIONS,
-	payload: subscribedSections
-});
-
-const REQUEST_SUBSCRIBE = "REQUEST_SUBSCRIBE";
-/**
- * async action to subscribe to notifications for a given section
+ * subscribe user to notifications for a course & section
  * @param {{faculty: string, course: string, year: string, semester: string, section: string}} param
  */
 export const requestSectionSubscribe = ({
@@ -108,9 +118,8 @@ export const requestSectionSubscribe = ({
 		});
 };
 
-const REQUEST_UNSUBSCRIBE = "REQUEST_UNSUBSCRIBE";
 /**
- * async action to subscribe to notifications for a given section
+ * unsubscribe user to notifications for a course & section
  * @param {{faculty: string, course: string, year: string, semester: string, section: string}} param
  */
 export const requestSectionUnsubscribe = ({
@@ -143,6 +152,11 @@ export const requestSectionUnsubscribe = ({
 		});
 };
 
+/**
+ * retrieve sections subscribed to by user
+ * @param {Function} dispatch
+ * @param {Function} getState
+ */
 export const requestSubscribedSections = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
@@ -161,3 +175,5 @@ export const requestSubscribedSections = (dispatch, getState) => {
 		})
 		.finally(() => dispatch(removeLoaderKey(REQUEST_SUBSCRIBE)));
 };
+
+// ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

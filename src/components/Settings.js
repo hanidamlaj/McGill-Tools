@@ -7,7 +7,6 @@ import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import { CardHeader } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -40,7 +39,7 @@ function Settings({
 
 	useEffect(() => {
 		getUser();
-	}, []);
+	}, [getUser]);
 
 	// extracts the extension and numbers from a possibly autofilled phone number
 	function stripPhoneNumber(phoneNumber) {
