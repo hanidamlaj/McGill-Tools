@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -23,30 +22,31 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
+// this is the component that contains the bottom card on the get-a-seat page
+// parent component of both the search and section selection features
 function SubscribeToCourse() {
 	const classes = useStyles();
+
+	// state that controls which step the user is currently on (i.e. 0 for course search, 1 for section selection)
 	const [activeStep, setActiveStep] = useState(0);
+
+	// state to control which course has been selected
 	const [selectedCourse, setSelectedCourse] = useState(null);
 
 	const steps = ["Search for a course", "Subscribe"];
-	/**
-	 * handles moving forward one step
-	 */
+
+	// handles advancing to the next step
 	const handleNext = () => {
 		setActiveStep(curStep => curStep + 1);
 	};
 
-	/**
-	 * handles going back one step
-	 */
+	// handles going back to the previous step
 	const handleBack = () => {
 		setSelectedCourse(null);
 		setActiveStep(curStep => curStep - 1);
 	};
 
-	/**
-	 * contains the react element to render for a given step
-	 */
+	// the react element to render for a given step
 	const stepContent = [
 		<CourseSearchContainer
 			handleNext={handleNext}
