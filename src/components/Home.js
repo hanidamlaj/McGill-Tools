@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,8 +16,6 @@ import Typography from "@material-ui/core/Typography";
 
 import { IsSmallContext } from "../shared";
 
-// import * as firebase from "firebase/app";
-// import "firebase/auth";
 import { Container } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -42,19 +40,18 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-function Home() {
+function Home({ logout }) {
 	const classes = useStyles();
 	const isSmallDevice = React.useContext(IsSmallContext);
 
 	// componentDidUnmount() -- sign out from firebase user
 	// TODO: implement this in the action rather than here
-	// useEffect(() => {
-	// 	return () => {
-	// 		// sign user out and clear local storage
-	// 		firebase.auth().signOut();
-	// 		localStorage.clear();
-	// 	};
-	// }, []);
+	useEffect(() => {
+		return () => {
+			// sign user out and clear local storage
+			logout();
+		};
+	}, []);
 
 	return (
 		<div className={classes.rootWrapper}>

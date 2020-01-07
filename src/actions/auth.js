@@ -1,6 +1,9 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
+import * as firebase from "firebase/app";
+import "firebase/auth";
+
 // ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
 
 /**
@@ -24,6 +27,17 @@ export const setToken = token => ({ type: SET_TOKEN, payload: token });
 export const SET_LOGIN = "SET_LOGIN";
 export const setLogin = auth => ({ type: SET_LOGIN, payload: auth });
 
+/**
+ * action type and creator to sign out the current user
+ * @type {string} SET_LOGOUT
+ */
+export const SET_LOGOUT = "SET_LOGOUT";
+export const setLogout = () => {
+	firebase.auth().signOut();
+	localStorage.clear();
+	return { type: SET_LOGOUT, payload: null };
+};
+
 // ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 // –––––––––– LOADER KEYS FOR ASYNC ACTIONS ––––––––––
@@ -43,7 +57,7 @@ const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
 export function login(idToken) {
 	return dispatch => {
 		dispatch(addLoaderKey(REQUEST_LOGIN));
-		fetch("https://mcgilltools.com/login", {
+		return fetch("https://mcgilltools.com/login", {
 			body: JSON.stringify({ idToken }),
 			headers: {
 				"Content-Type": "application/json"
