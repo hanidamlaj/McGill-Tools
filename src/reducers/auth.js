@@ -1,4 +1,4 @@
-import { SET_TOKEN, SET_USER, SET_LOGIN } from "../actions/auth";
+import { SET_TOKEN, SET_USER, SET_LOGIN, SET_LOGOUT } from "../actions/auth";
 import { SET_SECTION_SUBSCRIPTIONS } from "../actions/courses";
 
 /**
@@ -54,6 +54,10 @@ function auth(state = initialState, action) {
 				...state,
 				token: action.payload.token,
 				user: { ...action.payload.user }
+			};
+		case SET_LOGOUT:
+			return {
+				...initialState
 			};
 		default:
 			return state;

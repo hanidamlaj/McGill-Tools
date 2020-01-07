@@ -25,7 +25,9 @@ function Login({ login, removeLoaderKey, match, setSnackbarError, history }) {
 				// check to see if redirection operation was called
 				if (result.user) {
 					const idToken = await firebase.auth().currentUser.getIdToken(true);
-					login(idToken);
+					login(idToken).then(res => {
+						if (res instanceof Error) history.push("/");
+					});
 				} else {
 					loginWithProvider(provider);
 				}
@@ -41,7 +43,7 @@ function Login({ login, removeLoaderKey, match, setSnackbarError, history }) {
 			.finally(() => {
 				removeLoaderKey("beginAuth");
 			});
-	}, [login, removeLoaderKey, match, setSnackbarError, history]);
+	}, []);
 
 	return <React.Fragment />;
 }
