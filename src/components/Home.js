@@ -76,7 +76,7 @@ function Home({ logout }) {
 							<Route exact path="/settings" component={SettingsContainer} />
 
 							{/* route for api page */}
-							<Route exact path="/api" component={APIContainer} />
+							<Route exact path="/capi" component={APIContainer} />
 
 							{/* root route displays find_a_seat */}
 							<Route exact path="/get-a-seat" component={FindASeatContainer} />
@@ -94,7 +94,7 @@ function Home({ logout }) {
 				<Grid item xs={12} className={classes.footerText}>
 					<Typography align="center" variant="body2">
 						<Link
-							href="https://mail.google.com/mail/?view=cm&fs=1&to=mcgilltools@gmail.com"
+							href="https://mail.google.com/mail/?view=cm&fs=1&to=hanidamlaj@gmail.com"
 							target="_blank"
 						>
 							© 2019 McGill Tools
