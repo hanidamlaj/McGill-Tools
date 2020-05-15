@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
 import API from "../components/api/API";
-import { setSnackbar } from "./../actions/snackbar";
+import { setSnackbar, setSnackbarError } from "./../actions/snackbar";
 import {
 	createAccessTokenReq,
 	fetchAccessTokenReqState
@@ -14,6 +14,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
 	setSnackbar(message) {
 		dispatch(setSnackbar(message));
+	},
+	setSnackbarError(message) {
+		dispatch(setSnackbarError(message));
 	},
 	createAccessTokenReq(formData) {
 		return dispatch(createAccessTokenReq(formData));

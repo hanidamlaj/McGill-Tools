@@ -133,7 +133,7 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 		// },
 		{
 			buttonName: "api",
-			linkTo: "/api"
+			linkTo: "/capi"
 		}
 	];
 

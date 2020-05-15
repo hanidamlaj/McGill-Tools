@@ -44,7 +44,7 @@ export function createAccessTokenReq(formData) {
 		const token = getState().auth.token;
 
 		dispatch(addLoaderKey(CREATE_ACCESS_TOKEN_REQUEST));
-		return fetch("https://mcgilltools.com/api/request-status", {
+		return fetch("https://mcgilltools.com/api/request-access", {
 			body: JSON.stringify(formData),
 			headers: {
 				"x-access-token": token,

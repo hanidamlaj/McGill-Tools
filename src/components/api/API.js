@@ -56,6 +56,7 @@ function API({
 	createAccessTokenReq,
 	fetchAccessTokenReqState,
 	setSnackbar,
+	setSnackbarError,
 	user
 }) {
 	const classes = useStyles();
@@ -64,9 +65,16 @@ function API({
 	const [apiReqState, setAPIReqState] = useState({
 		name: "",
 		purpose: "",
-		status: null
+		status: ""
 	});
 
+	// boolean flag to determine if form has already been submitted and thus should disable user input
+	const isDisabled = Boolean(apiReqState.status);
+
+	/**
+	 * maps enum status {approved, rejected and pending} to constructive message
+	 * TODO: should implement message server side
+	 */
 	const statusMap = {
 		approved: {
 			className: classes.alertSuccess,
@@ -109,17 +117,20 @@ function API({
 	// onclick handler for the cancel button
 	const handleCancel = () => {
 		setAPIReqState(prevState => ({
-			...prevState,
 			name: "",
-			purpose: ""
+			purpose: "",
+			status: ""
 		}));
 	};
 
 	// onclick handler for the submit button
 	const handleSubmit = () => {
-		createAccessTokenReq().then(res => {
+		createAccessTokenReq(apiReqState).then(res => {
 			if (!(res instanceof Error)) {
 				setAPIReqState(res);
+				setSnackbar("Request has been sent for review!");
+			} else {
+				setSnackbarError(res.message);
 			}
 		});
 	};
@@ -143,7 +154,7 @@ function API({
 				<Grid container>
 					{/* alert for the status of the user's access token request/application */}
 					<Grid item xs={12}>
-						{!!apiReqState.status && (
+						{isDisabled && (
 							<Paper
 								className={classNames(
 									classes.alert,
@@ -200,7 +211,7 @@ function API({
 					<Grid item xs={12}>
 						<TextField
 							className={classes.textField}
-							disabled={!!apiReqState.status}
+							disabled={isDisabled}
 							label="Name"
 							margin="normal"
 							onChange={handleChange("name")}
@@ -213,7 +224,7 @@ function API({
 					<Grid item xs={12}>
 						<TextField
 							className={classes.textField}
-							disabled={!!apiReqState.status}
+							disabled={isDisabled}
 							label="Purpose"
 							margin="normal"
 							multiline
@@ -230,7 +241,7 @@ function API({
 				<Grid container justify="flex-end">
 					<Button
 						className={classes.button}
-						disabled={!!apiReqState.status}
+						disabled={isDisabled}
 						onClick={handleCancel}
 					>
 						cancel
@@ -238,7 +249,7 @@ function API({
 					<Button
 						className={classes.button}
 						color="primary"
-						disabled={!!apiReqState.status}
+						disabled={isDisabled}
 						onClick={handleSubmit}
 						style={{
 							padding: "0px 32px"

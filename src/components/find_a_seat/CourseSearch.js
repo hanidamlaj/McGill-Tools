@@ -74,7 +74,7 @@ function CourseSearch({
 	 * State to control semester input from user
 	 * @type {[string, Function]}
 	 */
-	const [semester, setSemester] = useState("FALL-2019");
+	const [semester, setSemester] = useState("SUMMER-2020");
 
 	/**
 	 * State to control course search input from user
@@ -157,6 +157,12 @@ function CourseSearch({
 						control={<Radio color="primary" />}
 						label="Winter 2020"
 						value="WINTER-2020"
+					/>
+					<FormControlLabel
+						className={classes.formGroupLabel}
+						control={<Radio color="primary" />}
+						label="Summer 2020"
+						value="SUMMER-2020"
 					/>
 				</RadioGroup>
 			</FormControl>

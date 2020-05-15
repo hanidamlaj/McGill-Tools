@@ -56,12 +56,6 @@ function CourseSubscriptions({
 	const isSmall = useContext(IsSmallContext);
 
 	/**
-	 * state to control the user's subscribed courseIds
-	 * (e.g. courseId: "COMP_202_2019_FALL")
-	 */
-	const [courseIds, setCourseIds] = useState([]);
-
-	/**
 	 * state to control the data belonging to the courseIds above
 	 * key-value pairs of courseId-data
 	 * { COMP_202_2019_FALL: {subject, course, faculty, sections} }
@@ -79,43 +73,31 @@ function CourseSubscriptions({
 	}, []);
 
 	useEffect(() => {
-		// create a set of courseIds to detect which new courses must be queried
-		// if course data already exists for the specific section, skip quering
-		// the course again
-		const courseIdsSet = new Set(courseIds);
+		// extract the courseId from the sectionId (e.g. sectionId: "COMP_202_2019_FALL_001")
+		// (e.g. courseId: "COMP_202_2019_FALL")
 		const subscribedCourses = subscribedSections.map(sectionId =>
-			// extract the courseId from the sectionId (e.g. sectionId: "COMP_202_2019_FALL_001")
-			// (e.g. courseId: "COMP_202_2019_FALL")
 			sectionId.slice(0, sectionId.lastIndexOf("_"))
 		);
 
-		// find the courseIds that are not in the set (newly added)
-		const diff = subscribedCourses.filter(
-			courseId => !courseIdsSet.has(courseId)
-		);
-
-		// only request the data in the difference of the two array (the new subscriptions)
-		const newSubscriptions = diff.map(courseId => {
+		// map each section to a promise that will resolve to course data
+		const newCoursesPromises = subscribedCourses.map(courseId => {
 			const [faculty, course, year, semester] = courseId.split("_");
 			return requestCourse({ faculty, course, year, semester });
 		});
 
-		Promise.all(newSubscriptions)
+		/**
+		 * when all promises have been resolved, update state accordingly
+		 */
+		Promise.all(newCoursesPromises)
 			.then(res => {
-				// since newSubscriptions is a mapping of diff, the indices match
-				const newCourses = diff.reduce(
-					(acc, cur, index) => {
-						// map the courseKey to the courseDetails fetched
-						acc[cur] = res[index];
-						return acc;
-					},
-					{ ...courses }
-				);
+				const newCourses = subscribedCourses.reduce((acc, courseId, index) => {
+					// map the courseKey to the courseDetails fetched
+					acc[courseId] = res[index];
+					return acc;
+				}, {});
+
 				// update the data for the courses
 				setCourses(newCourses);
-
-				// update the list of courseIds
-				setCourseIds(courseIds => [...courseIds, ...diff]);
 
 				// update the list of state managed subscribedSections
 				setStateSubscribedSections(subscribedSections);
@@ -171,8 +153,7 @@ function CourseSubscriptions({
 
 							const sectionIndex = getSectionIndex(course, sectionNumber);
 							// should not happen, integrity check
-							if (sectionIndex < 0)
-								return <React.Fragment key={courseIds[index]} />;
+							if (sectionIndex < 0) return null;
 
 							const section = course.sections[sectionIndex];
 
@@ -222,7 +203,7 @@ function CourseSubscriptions({
 				const course = courses[courseKey];
 
 				const sectionIndex = getSectionIndex(course, sectionNumber);
-				if (sectionIndex < 0) return <React.Fragment key={courseIds[index]} />;
+				if (sectionIndex < 0) return null;
 
 				const section = course.sections[sectionIndex];
 				return (

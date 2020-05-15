@@ -42,11 +42,13 @@ function SectionSelection({
 	subscribedSections
 }) {
 	const classes = useStyles();
-	// get device width from context to for responsive design
+
+	// get bool flag of small width-device for responsive design
 	const isSmallDevice = React.useContext(IsSmallContext);
 
-	// extract course data from courseId
+	// extract course identification data from courseId
 	const [faculty, course, year, semester] = courseId;
+	// stringify course id (e.g. COMP_250_2020_FALL)
 	const strCourseId = courseId.join("_");
 
 	// filter out and obtain subscriptions that only contains currently selected course
