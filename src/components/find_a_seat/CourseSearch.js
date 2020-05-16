@@ -16,6 +16,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 
 import SearchIcon from "@material-ui/icons/Search";
 
+import firebase from "./../../firebase";
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		width: "100%",

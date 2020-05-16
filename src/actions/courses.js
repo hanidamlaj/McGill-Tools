@@ -1,15 +1,17 @@
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
+import firebase from "./../firebase";
+
 // ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
 
 /**
  * action creator for the subscribed sections of a user
  */
 export const SET_SECTION_SUBSCRIPTIONS = "SET_SECTION_SUBSCRIPTIONS";
-const setSubscribedSections = subscribedSections => ({
+const setSubscribedSections = (subscribedSections) => ({
 	type: SET_SECTION_SUBSCRIPTIONS,
-	payload: subscribedSections
+	payload: subscribedSections,
 });
 
 // –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
@@ -41,15 +43,21 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
 	dispatch(addLoaderKey(REQUEST_COURSE));
 	return fetch(`https://mcgilltools.com/courses/${query}`, {
 		headers: {
-			"x-access-token": token
-		}
+			"x-access-token": token,
+		},
 	})
-		.then(res => res.json())
-		.then(json => {
+		.then((res) => res.json())
+		.then((json) => {
 			if (json.error) throw new Error(json.message);
+
+			// log request
+			firebase
+				.analytics()
+				.logEvent("course_search", { faculty, course, year, semester });
+
 			return json;
 		})
-		.catch(err => {
+		.catch((err) => {
 			dispatch(setSnackbarError(err.message));
 			return err;
 		})
@@ -62,20 +70,20 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
  * retrieve course name suggestions for user input (i.e. autocomplete feature)
  * @param {string} searchKey the search key
  */
-export const requestCourseSuggestions = searchKey => (dispatch, getState) => {
+export const requestCourseSuggestions = (searchKey) => (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_COURSE_SUGGESTIONS));
 	return fetch(`https://mcgilltools.com/courses/autocomplete/${searchKey}`, {
 		headers: {
-			"x-access-token": token
-		}
+			"x-access-token": token,
+		},
 	})
-		.then(res => res.json())
-		.then(json => {
+		.then((res) => res.json())
+		.then((json) => {
 			if (json.error) throw new Error(json.message);
 			return json;
 		})
-		.catch(err => {
+		.catch((err) => {
 			dispatch(setSnackbarError(err.message));
 			return err;
 		})
@@ -93,7 +101,7 @@ export const requestSectionSubscribe = ({
 	course,
 	year,
 	semester,
-	section
+	section,
 }) => (dispatch, getState) => {
 	const token = getState().auth.token;
 	const query = [faculty, course, year, semester, section].join("/");
@@ -101,16 +109,26 @@ export const requestSectionSubscribe = ({
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
 	fetch(`https://mcgilltools.com/notify/subscribe/${query}`, {
 		headers: {
-			"x-access-token": token
+			"x-access-token": token,
 		},
-		method: "POST"
+		method: "POST",
 	})
-		.then(res => res.json())
-		.then(json => {
+		.then((res) => res.json())
+		.then((json) => {
 			if (json.error) throw new Error(json.message);
+
+			// log request
+			firebase.analytics().logEvent("section_subscribe", {
+				faculty,
+				course,
+				year,
+				semester,
+				section,
+			});
+
 			dispatch(setSubscribedSections(json.subscribedSections));
 		})
-		.catch(err => {
+		.catch((err) => {
 			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => {
@@ -127,7 +145,7 @@ export const requestSectionUnsubscribe = ({
 	course,
 	year,
 	semester,
-	section
+	section,
 }) => (dispatch, getState) => {
 	const token = getState().auth.token;
 	const query = [faculty, course, year, semester, section].join("/");
@@ -135,16 +153,26 @@ export const requestSectionUnsubscribe = ({
 	dispatch(addLoaderKey(REQUEST_UNSUBSCRIBE));
 	fetch(`https://mcgilltools.com/notify/unsubscribe/${query}`, {
 		headers: {
-			"x-access-token": token
+			"x-access-token": token,
 		},
-		method: "POST"
+		method: "POST",
 	})
-		.then(res => res.json())
-		.then(json => {
+		.then((res) => res.json())
+		.then((json) => {
 			if (json.error) throw new Error(json.message);
+
+			// log request
+			firebase.analytics().logEvent("section_unsubscribe", {
+				faculty,
+				course,
+				year,
+				semester,
+				section,
+			});
+
 			dispatch(setSubscribedSections(json.subscribedSections));
 		})
-		.catch(err => {
+		.catch((err) => {
 			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => {
@@ -162,15 +190,15 @@ export const requestSubscribedSections = (dispatch, getState) => {
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
 	fetch("https://mcgilltools.com/user/profile/subscribedSections", {
 		headers: {
-			"x-access-token": token
-		}
+			"x-access-token": token,
+		},
 	})
-		.then(res => res.json())
-		.then(json => {
+		.then((res) => res.json())
+		.then((json) => {
 			if (json.error) throw new Error(json.message);
 			dispatch(setSubscribedSections(json));
 		})
-		.catch(err => {
+		.catch((err) => {
 			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => dispatch(removeLoaderKey(REQUEST_SUBSCRIBE)));

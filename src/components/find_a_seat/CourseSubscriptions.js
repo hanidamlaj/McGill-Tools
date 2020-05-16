@@ -16,21 +16,21 @@ import Typography from "@material-ui/core/Typography";
 
 import { IsSmallContext } from "../../shared";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
 		justifyContent: "center",
-		padding: theme.spacing(0, 4)
+		padding: theme.spacing(0, 4),
 	},
 	table: {
 		minWidth: 500,
-		width: "100%"
+		width: "100%",
 	},
 	card: {
 		border: "2px solid #eeeeee",
 		margin: `32px auto`,
-		minWidth: 280
-	}
+		minWidth: 280,
+	},
 }));
 
 /**
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
  */
 function getSectionIndex(course, section) {
 	if (!course.sections) return -1;
-	return course.sections.findIndex(s => s.section === section);
+	return course.sections.findIndex((s) => s.section === section);
 }
 
 // this is the component that contains the top card on the get-a-seat page
@@ -49,7 +49,7 @@ function CourseSubscriptions({
 	requestCourse,
 	requestSubscribedSections,
 	subscribedSections,
-	requestSectionUnsubscribe
+	requestSectionUnsubscribe,
 }) {
 	const classes = useStyles();
 
@@ -65,7 +65,9 @@ function CourseSubscriptions({
 	/**
 	 * state duplicate of props
 	 */
-	const [stateSubscribedSections, setStateSubscribedSections] = useState([]);
+	const [stateSubscribedSections, setStateSubscribedSections] = useState(
+		subscribedSections
+	);
 
 	// on component mount, request the user's subscribed courses
 	useEffect(() => {
@@ -75,12 +77,12 @@ function CourseSubscriptions({
 	useEffect(() => {
 		// extract the courseId from the sectionId (e.g. sectionId: "COMP_202_2019_FALL_001")
 		// (e.g. courseId: "COMP_202_2019_FALL")
-		const subscribedCourses = subscribedSections.map(sectionId =>
+		const subscribedCourses = subscribedSections.map((sectionId) =>
 			sectionId.slice(0, sectionId.lastIndexOf("_"))
 		);
 
 		// map each section to a promise that will resolve to course data
-		const newCoursesPromises = subscribedCourses.map(courseId => {
+		const newCoursesPromises = subscribedCourses.map((courseId) => {
 			const [faculty, course, year, semester] = courseId.split("_");
 			return requestCourse({ faculty, course, year, semester });
 		});
@@ -89,7 +91,7 @@ function CourseSubscriptions({
 		 * when all promises have been resolved, update state accordingly
 		 */
 		Promise.all(newCoursesPromises)
-			.then(res => {
+			.then((res) => {
 				const newCourses = subscribedCourses.reduce((acc, courseId, index) => {
 					// map the courseKey to the courseDetails fetched
 					acc[courseId] = res[index];
@@ -109,7 +111,7 @@ function CourseSubscriptions({
 	 * Handles unsubscribing the user
 	 * @param {Number} index the location of both the course and course identifier
 	 */
-	const handleUnsubscribe = index => {
+	const handleUnsubscribe = (index) => {
 		// extract information from the targeted sectionId
 		const [faculty, course, year, semester, section] = subscribedSections[
 			index
@@ -144,7 +146,7 @@ function CourseSubscriptions({
 								courseCode,
 								year,
 								semester,
-								sectionNumber
+								sectionNumber,
 							] = sectionId.split("_");
 
 							// generate the courseId from the sectionId to lookup the courses object
@@ -195,7 +197,7 @@ function CourseSubscriptions({
 					courseCode,
 					year,
 					semester,
-					sectionNumber
+					sectionNumber,
 				] = sectionId.split("_");
 
 				// generate the courseId from the sectionId to lookup the courses object
@@ -263,7 +265,7 @@ CourseSubscriptions.propTypes = {
 	requestCourse: PropTypes.func.isRequired,
 	requestSubscribedSections: PropTypes.func.isRequired,
 	subscribedSections: PropTypes.array.isRequired,
-	requestSectionUnsubscribe: PropTypes.func.isRequired
+	requestSectionUnsubscribe: PropTypes.func.isRequired,
 };
 
 export default CourseSubscriptions;

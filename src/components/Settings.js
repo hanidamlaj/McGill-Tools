@@ -9,17 +9,19 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { CardHeader } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+import firebase from "./../firebase";
+
+const useStyles = makeStyles((theme) => ({
 	root: {
-		border: "2px solid #eeeeee"
+		border: "2px solid #eeeeee",
 	},
 	textField: {
 		maxWidth: 400,
-		width: "100%"
+		width: "100%",
 	},
 	button: {
-		margin: theme.spacing(1)
-	}
+		margin: theme.spacing(1),
+	},
 }));
 
 function Settings({
@@ -27,14 +29,14 @@ function Settings({
 	setSnackbar,
 	setSnackbarError,
 	user,
-	updateUserProfile
+	updateUserProfile,
 }) {
 	const classes = useStyles();
 
 	// state that controls form data containing user information
 	const [userDetails, setUserDetails] = useState({
 		...user,
-		phoneNumber: user.phoneNumber || "+1"
+		phoneNumber: user.phoneNumber || "+1",
 	});
 
 	useEffect(() => {
@@ -48,7 +50,7 @@ function Settings({
 
 		const filteredPhoneNumber = phoneNumber
 			.split("")
-			.filter(c => !ignoredCharacters.has(c))
+			.filter((c) => !ignoredCharacters.has(c))
 			.join("");
 
 		return filteredPhoneNumber;
@@ -62,7 +64,7 @@ function Settings({
 	}
 
 	// callback to handle changes to input
-	const handleChange = name => event => {
+	const handleChange = (name) => (event) => {
 		setUserDetails({ ...userDetails, [name]: event.target.value });
 	};
 
@@ -78,8 +80,8 @@ function Settings({
 			updateUserProfile({
 				...user,
 				...userDetails,
-				phoneNumber: stripPhoneNumber(userDetails.phoneNumber)
-			}).then(res => {
+				phoneNumber: stripPhoneNumber(userDetails.phoneNumber),
+			}).then((res) => {
 				if (!(res instanceof Error))
 					setSnackbar("User profile has been updated.");
 			});
