@@ -8,6 +8,7 @@ import NavigationDesktopContainer from "../containers/NavigationDesktopContainer
 import NavigationMobileContainer from "../containers/NavigationMobileContainer";
 import SettingsContainer from "../containers/SettingsContainer";
 import APIContainer from "../containers/APIContainer";
+import Donate from "./Donate";
 
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
@@ -18,26 +19,26 @@ import { IsSmallContext } from "../shared";
 
 import { Container } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	rootWrapper: {
 		display: "flex",
 		flexDirection: "column",
-		minHeight: "100vh"
+		minHeight: "100vh",
 	},
 	root: {
 		flexGrow: 1,
 		flexDirection: "row",
-		display: "flex"
+		display: "flex",
 	},
 	content: {
 		flexGrow: 1,
 		"& > div": {
-			marginBottom: theme.spacing(4)
-		}
+			marginBottom: theme.spacing(4),
+		},
 	},
 	footerText: {
-		padding: theme.spacing(2, 2)
-	}
+		padding: theme.spacing(2, 2),
+	},
 }));
 
 function Home({ logout }) {
@@ -59,6 +60,7 @@ function Home({ logout }) {
 				{isSmallDevice ? (
 					<NavigationMobileContainer />
 				) : (
+					// this allows the navigation component to read the path and display in nav bar
 					<Route path="/:path?" component={NavigationDesktopContainer}></Route>
 				)}
 
@@ -81,6 +83,8 @@ function Home({ logout }) {
 							{/* root route displays find_a_seat */}
 							<Route exact path="/get-a-seat" component={FindASeatContainer} />
 
+							<Route exact path="/donate" component={Donate} />
+
 							{/* default route (no routes matched, redirect to home) */}
 							<Route path="/" render={() => <Redirect to="/get-a-seat" />} />
 						</Switch>
@@ -97,7 +101,7 @@ function Home({ logout }) {
 							href="https://mail.google.com/mail/?view=cm&fs=1&to=hanidamlaj@gmail.com"
 							target="_blank"
 						>
-							© 2019 McGill Tools
+							© 2020 McGill Tools | Hani Damlaj
 						</Link>
 					</Typography>
 				</Grid>

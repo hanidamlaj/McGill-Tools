@@ -18,14 +18,14 @@ import Typography from "@material-ui/core/Typography";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import SettingsIcon from "@material-ui/icons/Settings";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
 		// offset due to navigation bar
-		paddingTop: theme.spacing(12)
+		paddingTop: theme.spacing(12),
 	},
 	appbar: {
-		backgroundColor: "#333"
+		backgroundColor: "#333",
 	},
 	logo: {
 		height: 64,
@@ -34,27 +34,27 @@ const useStyles = makeStyles(theme => ({
 		"user-select": "none",
 		"-moz-user-drag": "none",
 		"-webkit-user-drag": "none",
-		"user-drag": "none"
+		"user-drag": "none",
 	},
 	title: {
 		flexGrow: 1,
-		textTransform: "uppercase"
+		textTransform: "uppercase",
 	},
 	menuButton: {
-		marginRight: theme.spacing(2)
+		marginRight: theme.spacing(2),
 	},
 	linksWrapper: {
-		marginRight: theme.spacing(2)
+		marginRight: theme.spacing(2),
 	},
 	link: {
 		margin: theme.spacing(0, 1),
 		"& span": {
-			fontWeight: 700
-		}
+			fontWeight: 700,
+		},
 	},
 	linkIcon: {
-		marginRight: theme.spacing(1)
-	}
+		marginRight: theme.spacing(1),
+	},
 }));
 
 /**
@@ -97,7 +97,7 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 	}, [user]);
 
 	// callback to open the user menu
-	const handleMenu = event => {
+	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
 
@@ -125,16 +125,13 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 	const links = [
 		{
 			buttonName: "Get A Seat",
-			linkTo: "/"
+			linkTo: "/",
 		},
-		// {
-		// 	buttonName: "Join Us",
-		// 	linkTo: "/join"
-		// },
 		{
 			buttonName: "api",
-			linkTo: "/capi"
-		}
+			linkTo: "/capi",
+		},
+		{ buttonName: "donate", linkTo: "/donate" },
 	];
 
 	// extract user parameters for tooltip message
@@ -170,7 +167,7 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 					{/* contains the avatar, links, and menu items */}
 					<div>
 						<span className={classes.linksWrapper}>
-							{links.map(link => (
+							{links.map((link) => (
 								<ButtonLink classes={classes} {...link} key={link.linkTo} />
 							))}
 						</span>
@@ -189,12 +186,12 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 								anchorEl={anchorEl}
 								anchorOrigin={{
 									vertical: "bottom",
-									horizontal: "right"
+									horizontal: "right",
 								}}
 								keepMounted
 								transformOrigin={{
 									vertical: "top",
-									horizontal: "right"
+									horizontal: "right",
 								}}
 								open={open}
 								onClose={handleClose}
@@ -218,7 +215,7 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 
 NavigationDesktop.propTypes = {
 	logout: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
 };
 
 export default NavigationDesktop;

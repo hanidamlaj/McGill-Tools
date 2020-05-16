@@ -37,17 +37,17 @@ const firebaseConfig = {
 	projectId: "mcgill-tools",
 	storageBucket: "mcgill-tools.appspot.com",
 	messagingSenderId: "698871000166",
-	appId: "1:698871000166:web:8d0b16ed5da49987"
+	appId: "1:698871000166:web:8d0b16ed5da49987",
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	// navigation bar styles
 	appbar: {
 		backgroundColor: "white",
 		left: 0,
-		right: 0
+		right: 0,
 	},
 	toolbar: {
 		position: "relative",
@@ -56,30 +56,30 @@ const useStyles = makeStyles(theme => ({
 
 		[theme.breakpoints.up("lg")]: {
 			padding: theme.spacing(0, 8),
-			justifyContent: "end"
+			justifyContent: "end",
 		},
 
 		[theme.breakpoints.down("md")]: {
 			padding: theme.spacing(0, 2),
-			justifyContent: "center"
-		}
+			justifyContent: "center",
+		},
 	},
 	menuIcon: {
 		[theme.breakpoints.up("lg")]: {
-			display: "none"
+			display: "none",
 		},
 
 		[theme.breakpoints.down("md")]: {
 			display: "block",
 			position: "absolute",
-			left: theme.spacing(2)
-		}
+			left: theme.spacing(2),
+		},
 	},
 	logo: {
 		fontSize: 24,
 		fontFamily: "Pacifico, cursive",
 		textTransform: "uppercase",
-		color: "black"
+		color: "black",
 	},
 	links: {
 		[theme.breakpoints.up("lg")]: {
@@ -88,25 +88,25 @@ const useStyles = makeStyles(theme => ({
 			padding: theme.spacing(0, 4),
 			flex: 1,
 			"& > button": {
-				marginRight: 32
-			}
+				marginRight: 32,
+			},
 		},
 
 		[theme.breakpoints.down("md")]: {
-			display: "none"
-		}
+			display: "none",
+		},
 	},
 	signIn: {
 		[theme.breakpoints.down("md")]: {
-			display: "none"
-		}
+			display: "none",
+		},
 	},
 	footer: {
 		padding: theme.spacing(2, 2),
 		"& > p": {
-			margin: theme.spacing(0, 1)
-		}
-	}
+			margin: theme.spacing(0, 1),
+		},
+	},
 }));
 
 function Unauthenticated({
@@ -115,7 +115,7 @@ function Unauthenticated({
 	isLoading,
 	login,
 	removeLoaderKey,
-	setSnackbarError
+	setSnackbarError,
 }) {
 	const classes = useStyles();
 
@@ -179,13 +179,13 @@ function Unauthenticated({
 			firebase
 				.auth()
 				.signInWithPopup(provider)
-				.then(async result => {
+				.then(async (result) => {
 					if (result.user) {
 						const idToken = await result.user.getIdToken(true);
 						login(idToken);
 					}
 				})
-				.catch(err => {
+				.catch((err) => {
 					if (err.code === "auth/account-exists-with-different-credential") {
 						setSnackbarError(
 							"This email address is already in use with another sign-in method."
@@ -215,7 +215,7 @@ function Unauthenticated({
 	const menuButtons = [
 		["find a seat", "find_a_seat", <NotificationIcon />],
 		["developers", "developers", <CodeIcon />],
-		["join us", "join_us", <PeopleIcon />]
+		["join us", "join_us", <PeopleIcon />],
 	];
 
 	return (
@@ -242,7 +242,7 @@ function Unauthenticated({
 							</IconButton>
 							<Typography className={classes.logo}>mcgill tools</Typography>
 							<div className={classes.links}>
-								{menuButtons.map(arr => (
+								{menuButtons.map((arr) => (
 									<Button
 										className={classes.menuButton}
 										key={arr[1]}
@@ -272,7 +272,7 @@ function Unauthenticated({
 					>
 						<div className={classes.list}>
 							<List>
-								{menuButtons.map(item => (
+								{menuButtons.map((item) => (
 									<ListItem
 										button
 										key={item[1]}
@@ -305,7 +305,7 @@ function Unauthenticated({
 									<ListItemText
 										primaryTypographyProps={{
 											color: "primary",
-											variant: "button"
+											variant: "button",
 										}}
 									>
 										Sign In
@@ -328,7 +328,7 @@ function Unauthenticated({
 								href="https://mail.google.com/mail/?view=cm&fs=1&to=mcgilltools@gmail.com"
 								target="_blank"
 							>
-								© 2019 McGill Tools
+								© 2020 McGill Tools | Hani Damlaj
 							</Link>
 						</Typography>
 					</Grid>
@@ -343,7 +343,7 @@ Unauthenticated.propTypes = {
 	history: PropTypes.object.isRequired,
 	isLoading: PropTypes.bool.isRequired,
 	login: PropTypes.func.isRequired,
-	removeLoaderKey: PropTypes.func.isRequired
+	removeLoaderKey: PropTypes.func.isRequired,
 };
 
 export default Unauthenticated;
