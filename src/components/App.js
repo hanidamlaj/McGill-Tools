@@ -19,13 +19,13 @@ import UnauthenticatedContainer from "../containers/logged_out/UnauthenticatedCo
 
 import { theme, IsSmallContext } from "../shared";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	close: {
-		color: "white"
+		color: "white",
 	},
 	snackbarContentRoot: {
-		flexWrap: "nowrap"
-	}
+		flexWrap: "nowrap",
+	},
 }));
 
 function App({
@@ -33,7 +33,7 @@ function App({
 	loaders,
 	snackbar: { success, error },
 	setSnackbar,
-	setSnackbarError
+	setSnackbarError,
 }) {
 	/**
 	 * boolean flag to indicate if viewport matches small/medium device
@@ -58,7 +58,7 @@ function App({
 							top: 0,
 							left: 0,
 							right: 0,
-							zIndex: 1200
+							zIndex: 1200,
 						}}
 					>
 						<LinearProgress color="primary" />
@@ -73,7 +73,7 @@ function App({
 					>
 						<SnackbarContent
 							classes={{
-								root: classes.snackbarContentRoot
+								root: classes.snackbarContentRoot,
 							}}
 							action={[
 								<IconButton
@@ -83,7 +83,7 @@ function App({
 									onClick={handleClose}
 								>
 									<CloseIcon />
-								</IconButton>
+								</IconButton>,
 							]}
 							message={
 								<Typography
@@ -91,7 +91,7 @@ function App({
 									style={{
 										color: error ? red[500] : "#28a745",
 										fontWeight: 500,
-										textAlign: "center"
+										textAlign: "center",
 									}}
 								>
 									{success || error}

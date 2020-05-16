@@ -11,21 +11,21 @@ import "firebase/auth";
  * @type {string} SET_USER
  */
 export const SET_USER = "SET_USER";
-export const setUser = user => ({ type: SET_USER, payload: user });
+export const setUser = (user) => ({ type: SET_USER, payload: user });
 
 /**
  * action type and creator for jwtToken holding user claims
  * @type {string} SET_TOKEN
  */
 export const SET_TOKEN = "SET_TOKEN";
-export const setToken = token => ({ type: SET_TOKEN, payload: token });
+export const setToken = (token) => ({ type: SET_TOKEN, payload: token });
 
 /**
  * action type and creator for data retrieved from login request
  * @type {string} SET_AUTH
  */
 export const SET_LOGIN = "SET_LOGIN";
-export const setLogin = auth => ({ type: SET_LOGIN, payload: auth });
+export const setLogin = (auth) => ({ type: SET_LOGIN, payload: auth });
 
 /**
  * action type and creator to sign out the current user
@@ -55,21 +55,21 @@ const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
  * @param {string} idToken the idToken provided by firebase
  */
 export function login(idToken) {
-	return dispatch => {
+	return (dispatch) => {
 		dispatch(addLoaderKey(REQUEST_LOGIN));
 		return fetch("https://mcgilltools.com/login", {
 			body: JSON.stringify({ idToken }),
 			headers: {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
 			},
-			method: "POST"
+			method: "POST",
 		})
-			.then(res => res.json())
-			.then(json => {
+			.then((res) => res.json())
+			.then((json) => {
 				if (json.error) throw new Error(json.message);
 				dispatch(setLogin(json));
 			})
-			.catch(err => {
+			.catch((err) => {
 				dispatch(setSnackbarError(err.message));
 				return err;
 			})
@@ -89,15 +89,15 @@ export const getUser = (dispatch, getState) => {
 	dispatch(addLoaderKey(REQUEST_USER));
 	fetch("https://mcgilltools.com/user/profile", {
 		headers: {
-			"x-access-token": token
-		}
+			"x-access-token": token,
+		},
 	})
-		.then(res => res.json())
-		.then(json => {
+		.then((res) => res.json())
+		.then((json) => {
 			if (json.error) throw new Error(json.message);
 			dispatch(setUser(json));
 		})
-		.catch(err => {
+		.catch((err) => {
 			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => dispatch(removeLoaderKey(REQUEST_USER)));
@@ -107,24 +107,28 @@ export const getUser = (dispatch, getState) => {
  * update the profile of the user (e.g. Name, subscribedSections, phoneNumber, etc.)
  * @param {object} user profile of the user
  */
-export const updateUserProfile = user => (dispatch, getState) => {
+export const updateUserProfile = (user) => (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
 	return fetch("https://mcgilltools.com/user/profile", {
 		body: JSON.stringify(user),
 		headers: {
 			"Content-Type": "application/json",
-			"x-access-token": token
+			"x-access-token": token,
 		},
-		method: "POST"
+		method: "POST",
 	})
-		.then(res => res.json())
-		.then(json => {
+		.then((res) => res.json())
+		.then((json) => {
 			if (json.error) throw new Error(json.message);
+
+			// log request
+			firebase.analytics().logEvent("update_profile");
+
 			dispatch(setUser(json));
 			return json;
 		})
-		.catch(err => {
+		.catch((err) => {
 			dispatch(setSnackbarError(err.message));
 			return err;
 		})
