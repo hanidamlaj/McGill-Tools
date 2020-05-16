@@ -15,42 +15,41 @@ import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
-// import CodeIcon from "@material-ui/icons/Code";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationIcon from "@material-ui/icons/NotificationsActive";
-// import PeopleIcon from "@material-ui/icons/People";
 import SettingsIcon from "@material-ui/icons/Settings";
 import SignOutIcon from "@material-ui/icons/ExitToApp";
+import PaymentIcon from "@material-ui/icons/Payment";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	// navigation bar styles
 	root: {
 		flexGrow: 1,
-		paddingTop: theme.spacing(10)
+		paddingTop: theme.spacing(10),
 	},
 	appbar: {
 		backgroundColor: "white",
 		left: 0,
-		right: 0
+		right: 0,
 	},
 	toolbar: {
 		position: "relative",
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "center",
-		padding: theme.spacing(0, 2)
+		padding: theme.spacing(0, 2),
 	},
 	menuIcon: {
 		position: "absolute",
 		display: "block",
-		left: theme.spacing(2)
+		left: theme.spacing(2),
 	},
 	logo: {
 		color: "black",
 		fontSize: 24,
 		fontFamily: "Pacifico, cursive",
-		textTransform: "uppercase"
-	}
+		textTransform: "uppercase",
+	},
 }));
 
 /**
@@ -94,23 +93,14 @@ function NavigationMobile({ logout }) {
 		{
 			buttonText: "Find A Seat",
 			icon: <NotificationIcon />,
-			linkTo: "/"
+			linkTo: "/",
 		},
-		// {
-		// 	buttonText: "Develop",
-		// 	icon: <CodeIcon />,
-		// 	linkTo: "/develop"
-		// },
-		// {
-		// 	buttonText: "Join Us",
-		// 	icon: <PeopleIcon />,
-		// 	linkTo: "/join"
-		// },
 		{
 			buttonText: "Settings",
 			icon: <SettingsIcon />,
-			linkTo: "/settings"
-		}
+			linkTo: "/settings",
+		},
+		{ buttonText: "Donate", icon: <PaymentIcon />, linkTo: "/donate" },
 	];
 
 	/**
@@ -140,7 +130,7 @@ function NavigationMobile({ logout }) {
 			>
 				<div className={classes.list}>
 					<List>
-						{links.map(link => (
+						{links.map((link) => (
 							<DrawerLink
 								classes={classes}
 								{...link}
@@ -173,7 +163,7 @@ function NavigationMobile({ logout }) {
 }
 
 NavigationMobile.propTypes = {
-	logout: PropTypes.func.isRequired
+	logout: PropTypes.func.isRequired,
 };
 
 export default NavigationMobile;

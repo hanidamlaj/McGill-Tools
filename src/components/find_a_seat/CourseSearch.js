@@ -16,10 +16,10 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 
 import SearchIcon from "@material-ui/icons/Search";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		width: "100%",
-		marginTop: theme.spacing(4)
+		marginTop: theme.spacing(4),
 	},
 	formGroupLabel: { alignSelf: "flex-start" },
 	paper: {
@@ -27,36 +27,36 @@ const useStyles = makeStyles(theme => ({
 		position: "relative",
 		alignItems: "center",
 		backgroundColor: "#DADADA",
-		padding: theme.spacing(1, 1)
+		padding: theme.spacing(1, 1),
 	},
 	input: {
 		flex: "1 1 100%",
 		paddingLeft: theme.spacing(2),
 		"& > input::placeholder": {
 			color: "#333333",
-			opacity: 1
+			opacity: 1,
 		},
 		"& :invalid": {
-			border: "1px solid red"
-		}
+			border: "1px solid red",
+		},
 	},
 	autoCompleteContainer: {
 		width: "100%",
 		position: "relative",
 		top: -30,
-		zIndex: 1000
+		zIndex: 1000,
 	},
 	suggestions: {
 		position: "absolute",
 		width: "100%",
 		maxHeight: 175,
 		overflowY: "scroll",
-		marginBottom: theme.spacing(2)
+		marginBottom: theme.spacing(2),
 	},
 	formControl: {
 		display: "block",
-		margin: theme.spacing(2, 0)
-	}
+		margin: theme.spacing(2, 0),
+	},
 }));
 
 function CourseSearch({
@@ -64,7 +64,7 @@ function CourseSearch({
 	requestCourse,
 	requestCourseSuggestions,
 	setSelectedCourse,
-	setSnackbar
+	setSnackbar,
 }) {
 	const classes = useStyles();
 
@@ -98,7 +98,7 @@ function CourseSearch({
 	 * Handles the selection of semester
 	 * @param {Event} e
 	 */
-	const handleSemesterChange = e => setSemester(e.target.value);
+	const handleSemesterChange = (e) => setSemester(e.target.value);
 
 	/**
 	 * Handles input changes in the search feature
@@ -106,7 +106,7 @@ function CourseSearch({
 	 * strictly greater than 4 characters.
 	 * @param {Event} e
 	 */
-	const handleSearchChange = e => {
+	const handleSearchChange = (e) => {
 		const input = e.target.value;
 		const filteredInput = e.target.value.replace(/\s/g, "");
 		e.persist();
@@ -114,7 +114,7 @@ function CourseSearch({
 		// only send request if string contains 5 characters
 		// faculty + first number of course code (e.g. COMP2)
 		if (filteredInput.length > 4) {
-			requestCourseSuggestions(filteredInput).then(res => {
+			requestCourseSuggestions(filteredInput).then((res) => {
 				if (res instanceof Error) console.error(res);
 				else {
 					setSuggestions(res);
@@ -149,20 +149,20 @@ function CourseSearch({
 					<FormControlLabel
 						className={classes.formGroupLabel}
 						control={<Radio color="primary" />}
-						label="Fall 2019"
-						value="FALL-2019"
-					/>
-					<FormControlLabel
-						className={classes.formGroupLabel}
-						control={<Radio color="primary" />}
-						label="Winter 2020"
-						value="WINTER-2020"
-					/>
-					<FormControlLabel
-						className={classes.formGroupLabel}
-						control={<Radio color="primary" />}
 						label="Summer 2020"
 						value="SUMMER-2020"
+					/>
+					<FormControlLabel
+						className={classes.formGroupLabel}
+						control={<Radio color="primary" />}
+						label="Fall 2020"
+						value="FALL-2020"
+					/>
+					<FormControlLabel
+						className={classes.formGroupLabel}
+						control={<Radio color="primary" />}
+						label="Winter 2021"
+						value="WINTER-2021"
 					/>
 				</RadioGroup>
 			</FormControl>
@@ -199,7 +199,7 @@ function CourseSearch({
 										// extract course identification data from inputs
 										const [faculty, courseNumber] = [
 											suggestion.courseCode.slice(0, 4),
-											suggestion.courseCode.slice(4)
+											suggestion.courseCode.slice(4),
 										];
 										const [_semester, year] = semester.split("-");
 
@@ -210,14 +210,14 @@ function CourseSearch({
 											faculty,
 											course: courseNumber,
 											year,
-											semester: _semester
-										}).then(course => {
+											semester: _semester,
+										}).then((course) => {
 											if (course instanceof Error) return;
 
 											// pass data to the next step (subscribing to a specific section)
 											setSelectedCourse({
 												courseData: course,
-												courseId
+												courseId,
 											});
 											handleNext();
 										});
@@ -240,7 +240,7 @@ CourseSearch.propTypes = {
 	requestCourse: PropTypes.func.isRequired,
 	requestCourseSuggestions: PropTypes.func.isRequired,
 	setSelectedCourse: PropTypes.func.isRequired,
-	setSnackbar: PropTypes.func.isRequired
+	setSnackbar: PropTypes.func.isRequired,
 };
 
 export default CourseSearch;
