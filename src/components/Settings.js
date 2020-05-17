@@ -41,7 +41,7 @@ function Settings({
 
 	useEffect(() => {
 		getUser();
-	}, [getUser]);
+	}, []);
 
 	// extracts the extension and numbers from a possibly autofilled phone number
 	function stripPhoneNumber(phoneNumber) {

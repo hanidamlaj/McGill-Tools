@@ -56,17 +56,14 @@ function CourseSubscriptions({
 	const isSmall = useContext(IsSmallContext);
 
 	/**
-	 * state to control the data belonging to the courseIds above
-	 * key-value pairs of courseId-data
-	 * { COMP_202_2019_FALL: {subject, course, faculty, sections} }
+	 * state that maps the course_data to the course_info;
+	 * e.g. { COMP_202_2019_FALL: {subject, course, faculty, sections} }
 	 */
 	const [courses, setCourses] = useState({});
 
-	/**
-	 * state duplicate of props
-	 */
+	// state duplicate of subscribedSections props
 	const [stateSubscribedSections, setStateSubscribedSections] = useState(
-		subscribedSections
+		subscribedSections || []
 	);
 
 	// on component mount, request the user's subscribed courses
@@ -74,6 +71,7 @@ function CourseSubscriptions({
 		requestSubscribedSections();
 	}, []);
 
+	// on update of subscribedsections prop, re-request course information
 	useEffect(() => {
 		// extract the courseId from the sectionId (e.g. sectionId: "COMP_202_2019_FALL_001")
 		// (e.g. courseId: "COMP_202_2019_FALL")
@@ -87,9 +85,7 @@ function CourseSubscriptions({
 			return requestCourse({ faculty, course, year, semester });
 		});
 
-		/**
-		 * when all promises have been resolved, update state accordingly
-		 */
+		// when all promises have been resolved, update state accordingly
 		Promise.all(newCoursesPromises)
 			.then((res) => {
 				const newCourses = subscribedCourses.reduce((acc, courseId, index) => {
