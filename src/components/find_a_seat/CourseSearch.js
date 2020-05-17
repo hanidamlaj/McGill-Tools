@@ -73,13 +73,13 @@ function CourseSearch({
 	// initial states of component
 
 	/**
-	 * State to control semester input from user
+	 * State to control semester input of user
 	 * @type {[string, Function]}
 	 */
 	const [semester, setSemester] = useState("SUMMER-2020");
 
 	/**
-	 * State to control course search input from user
+	 * State to control course search input of user
 	 * @type {[string, Function]}
 	 */
 	const [courseSearch, setCourseSearch] = useState("");
@@ -109,12 +109,17 @@ function CourseSearch({
 	 * @param {Event} e
 	 */
 	const handleSearchChange = (e) => {
+		// get search input from event object
 		const input = e.target.value;
+
+		// filter out white space from string
 		const filteredInput = e.target.value.replace(/\s/g, "");
 		e.persist();
 
-		// only send request if string contains 5 characters
-		// faculty + first number of course code (e.g. COMP2)
+		/**
+		 * only send request if string contains 5 characters;
+		 * faculty + first number of course code (e.g. COMP2)
+		 */
 		if (filteredInput.length > 4) {
 			requestCourseSuggestions(filteredInput).then((res) => {
 				if (res instanceof Error) console.error(res);
@@ -125,21 +130,20 @@ function CourseSearch({
 				}
 			});
 		} else {
+			// clear suggestions and prevent suggestions from showing
 			setSuggestions([]);
 			setShowSuggestions(false);
 		}
+
+		// update state for search input value
 		setCourseSearch(input);
 	};
 
-	/**
-	 * handles the focus of the search feature
-	 */
+	// handles the focus of the search feature
 	const onFocus = () =>
 		setShowSuggestions(suggestions.length > 0 ? true : false);
 
-	/**
-	 * handles the blur of the search feature
-	 */
+	// handles the blur of the search feature
 	const onBlur = () => setShowSuggestions(false);
 
 	return (
