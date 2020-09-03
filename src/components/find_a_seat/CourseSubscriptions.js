@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {string} section the number of the target section
  */
 function getSectionIndex(course, section) {
-	if (!course.sections) return -1;
+	if (!course || !course.sections) return -1;
 	return course.sections.findIndex((s) => s.section === section);
 }
 
@@ -109,7 +109,7 @@ function CourseSubscriptions({
 	 */
 	const handleUnsubscribe = (index) => {
 		// extract information from the targeted sectionId
-		const [faculty, course, year, semester, section] = subscribedSections[
+		const [faculty, course, year, semester, section] = stateSubscribedSections[
 			index
 		].split("_");
 		requestSectionUnsubscribe({ faculty, course, year, semester, section });

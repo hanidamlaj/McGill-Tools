@@ -16,7 +16,8 @@ export const initialUser = {
 	photoURL: "/static/images/avatar.png",
 	displayName: "",
 	email: "",
-	phoneNumber: ""
+	phoneNumber: "",
+	subscribedSections: [],
 };
 
 /**
@@ -24,7 +25,7 @@ export const initialUser = {
  */
 const initialState = {
 	token: null,
-	user: initialUser
+	user: initialUser,
 };
 
 /**
@@ -47,17 +48,17 @@ function auth(state = initialState, action) {
 		case SET_SECTION_SUBSCRIPTIONS:
 			return {
 				...state,
-				user: { ...state.user, subscribedSections: action.payload }
+				user: { ...state.user, subscribedSections: action.payload },
 			};
 		case SET_LOGIN:
 			return {
 				...state,
 				token: action.payload.token,
-				user: { ...action.payload.user }
+				user: { ...action.payload.user },
 			};
 		case SET_LOGOUT:
 			return {
-				...initialState
+				...initialState,
 			};
 		default:
 			return state;
