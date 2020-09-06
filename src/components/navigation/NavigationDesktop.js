@@ -1,7 +1,9 @@
+// @flow
+
+import type { User } from "../../reducers/types.js";
+
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
-
-import PropTypes from "prop-types";
 
 import AppBar from "@material-ui/core/AppBar";
 import Avatar from "@material-ui/core/Avatar";
@@ -58,16 +60,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * @typedef {Object} Link
- * @property {Object} icon a react element of the icon for button
- * @property {string} linkTo the URL to send user to
- * @property {string} name the name of the link/button
- */
-
-/**
  * component that renders a button for a given link
  */
-function ButtonLink({ classes, linkTo, buttonName }) {
+type ButtonLinkProps = {
+	classes: { [string]: string },
+	linkTo: string,
+	buttonName: string,
+};
+function ButtonLink({ classes, linkTo, buttonName }: ButtonLinkProps) {
 	return (
 		<Link
 			className={classes.link}
@@ -80,11 +80,23 @@ function ButtonLink({ classes, linkTo, buttonName }) {
 	);
 }
 
-function NavigationDesktop({ logout, user, match, history, ...props }) {
+type NavigationDesktopProps = {
+	logout: () => void,
+	user: User,
+	match: Object,
+	history: Object,
+};
+function NavigationDesktop({
+	logout,
+	user,
+	match,
+	history,
+	...props
+}: NavigationDesktopProps) {
 	const classes = useStyles();
 
 	// component state for authenticated user
-	const [authenticatedUser, setAuthenticatedUser] = useState(user);
+	const [authenticatedUser, setAuthenticatedUser] = useState<User>(user);
 
 	// component state for the anchor element
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -97,7 +109,7 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 	}, [user]);
 
 	// callback to open the user menu
-	const handleMenu = (event) => {
+	const handleMenu = (event: Event) => {
 		setAnchorEl(event.currentTarget);
 	};
 
@@ -119,9 +131,6 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 		history.push("/");
 	};
 
-	/**
-	 * @type {Link[]} defined links
-	 */
 	const links = [
 		{
 			buttonName: "Get A Seat",
@@ -212,10 +221,5 @@ function NavigationDesktop({ logout, user, match, history, ...props }) {
 		</div>
 	);
 }
-
-NavigationDesktop.propTypes = {
-	logout: PropTypes.func.isRequired,
-	user: PropTypes.object.isRequired,
-};
 
 export default NavigationDesktop;

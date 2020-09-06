@@ -1,5 +1,6 @@
+// @flow
+
 import React from "react";
-import PropTypes from "prop-types";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -8,20 +9,20 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import {
 	ContinueWithGoogle,
-	ContinueWithFacebook
+	ContinueWithFacebook,
 } from "./ContinueWithButtons";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	paper: {
 		[theme.breakpoints.down("xs")]: {
-			margin: theme.spacing(6, 1)
-		}
+			margin: theme.spacing(6, 1),
+		},
 	},
 	dialogContent: {
 		padding: theme.spacing(4, 4),
 		[theme.breakpoints.down("xs")]: {
-			padding: theme.spacing(4, 0)
-		}
+			padding: theme.spacing(4, 0),
+		},
 	},
 	separator: {
 		position: "relative",
@@ -35,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 			top: "50%",
 			left: 0,
 			right: 0,
-			transform: "translateY(-50%)"
+			transform: "translateY(-50%)",
 		},
 		"& > p": {
 			textAlign: "center",
@@ -44,17 +45,22 @@ const useStyles = makeStyles(theme => ({
 				position: "relative",
 				zIndex: 1,
 				backgroundColor: "white",
-				padding: theme.spacing(0, 4)
-			}
-		}
-	}
+				padding: theme.spacing(0, 4),
+			},
+		},
+	},
 }));
+
+type ContinueWithDialogProps = {
+	handleGoogleAuth: () => void,
+	handleFacebookAuth: () => void,
+};
 
 function ContinueWithDialog({
 	handleGoogleAuth,
 	handleFacebookAuth,
 	...props
-}) {
+}: ContinueWithDialogProps) {
 	const classes = useStyles();
 	return (
 		<Dialog {...props} classes={{ paper: classes.paper }}>
@@ -73,8 +79,4 @@ function ContinueWithDialog({
 	);
 }
 
-ContinueWithDialog.propTypes = {
-	handleFacebookAuth: PropTypes.func.isRequired,
-	handleGoogleAuth: PropTypes.func.isRequired
-};
 export default ContinueWithDialog;

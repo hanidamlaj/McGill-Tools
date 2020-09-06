@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
@@ -256,12 +255,5 @@ function CourseSubscriptions({
 		</Card>
 	);
 }
-
-CourseSubscriptions.propTypes = {
-	requestCourse: PropTypes.func.isRequired,
-	requestSubscribedSections: PropTypes.func.isRequired,
-	subscribedSections: PropTypes.array.isRequired,
-	requestSectionUnsubscribe: PropTypes.func.isRequired,
-};
 
 export default CourseSubscriptions;

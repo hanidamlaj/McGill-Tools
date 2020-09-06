@@ -1,45 +1,46 @@
+// @flow
+
+import type { ThunkAction } from "./types.js";
+
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
-const FETCH_ACCESS_TOKEN_REQUEST = "FETCH_ACCESS_TOKEN_REQUEST";
-const CREATE_ACCESS_TOKEN_REQUEST = "CREATE_ACCESS_TOKEN_REQUEST";
+const FETCH_ACCESS_TOKEN_REQUEST: string = "FETCH_ACCESS_TOKEN_REQUEST";
+const CREATE_ACCESS_TOKEN_REQUEST: string = "CREATE_ACCESS_TOKEN_REQUEST";
 
 /**
  * retrieve the state of the application for api access token
- * @param {Function} dispatch
- * @param {Function} getState
  */
-export function fetchAccessTokenReqState(dispatch, getState) {
+export const fetchAccessTokenReqState: ThunkAction = (dispatch, getState) => {
 	// request parameters
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(FETCH_ACCESS_TOKEN_REQUEST));
 
 	return fetch("https://mcgilltools.com/api/request-status", {
 		headers: {
-			"x-access-token": token
-		}
+			"x-access-token": token ?? "",
+		},
 	})
-		.then(res => res.json())
-		.then(res => {
+		.then((res) => res.json())
+		.then((res) => {
 			if (res.error) throw new Error(res.error);
 			return res;
 		})
-		.catch(err => {
+		.catch((err) => {
 			setSnackbarError(err.message || err.toString());
 			return err;
 		})
 		.finally(() => {
 			dispatch(removeLoaderKey(FETCH_ACCESS_TOKEN_REQUEST));
 		});
-}
+};
 
 /**
- * create application for api access token
- * @param {Function} dispatch
- * @param {Function} getState
+ * Create application for api access token.
+ * TODO: type annotation for formData
  */
-export function createAccessTokenReq(formData) {
-	return function(dispatch, getState) {
+export function createAccessTokenReq(formData: any): ThunkAction {
+	return function (dispatch, getState) {
 		// request parameters
 		const token = getState().auth.token;
 
@@ -47,17 +48,17 @@ export function createAccessTokenReq(formData) {
 		return fetch("https://mcgilltools.com/api/request-access", {
 			body: JSON.stringify(formData),
 			headers: {
-				"x-access-token": token,
-				"Content-Type": "application/json"
+				"x-access-token": token ?? "",
+				"Content-Type": "application/json",
 			},
-			method: "POST"
+			method: "POST",
 		})
-			.then(res => res.json())
-			.then(res => {
+			.then((res) => res.json())
+			.then((res) => {
 				if (res.error) throw new Error(res.error);
 				return res;
 			})
-			.catch(err => {
+			.catch((err) => {
 				setSnackbarError(err.message || err.toString());
 				return err;
 			})

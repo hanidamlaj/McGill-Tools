@@ -1,5 +1,8 @@
+// @flow
+
+import type { CourseQuery } from "./../../actions/types";
+
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -15,8 +18,6 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
 import SearchIcon from "@material-ui/icons/Search";
-
-import firebase from "./../../firebase";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -61,44 +62,55 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+type AutocompleteSuggestion = {
+	courseCode: string,
+	courseName: string,
+};
+
+type CourseSearchProps = {
+	handleNext: () => void,
+	requestCourse: (CourseQuery) => Promise<Object>,
+	requestCourseSuggestions: (string) => Promise<Array<AutocompleteSuggestion>>,
+	setSelectedCourse: (any) => void,
+	setSnackbar: (string) => void,
+};
+
 function CourseSearch({
 	handleNext,
 	requestCourse,
 	requestCourseSuggestions,
 	setSelectedCourse,
 	setSnackbar,
-}) {
+}: CourseSearchProps) {
 	const classes = useStyles();
 
 	// initial states of component
 
 	/**
 	 * State to control semester input of user
-	 * @type {[string, Function]}
 	 */
-	const [semester, setSemester] = useState("SUMMER-2020");
+	const [semester, setSemester] = useState<string>("SUMMER-2020");
 
 	/**
 	 * State to control course search input of user
 	 * @type {[string, Function]}
 	 */
-	const [courseSearch, setCourseSearch] = useState("");
+	const [courseSearch, setCourseSearch] = useState<string>("");
 
 	/**
 	 * State that contains autocomplete suggestions for the user
-	 * @type {[ {courseCode: string, courseName: string}[], Function ]}
 	 */
-	const [suggestions, setSuggestions] = useState([]);
+	const [suggestions, setSuggestions] = useState<Array<AutocompleteSuggestion>>(
+		[]
+	);
 
 	/**
 	 * State to control display of autocomplete suggestions to user
-	 * @type {[boolean, Function]}
 	 */
 	const [showSuggestions, setShowSuggestions] = useState(false);
 
 	/**
 	 * Handles the selection of semester
-	 * @param {Event} e
 	 */
 	const handleSemesterChange = (e) => setSemester(e.target.value);
 
@@ -117,7 +129,7 @@ function CourseSearch({
 		e.persist();
 
 		/**
-		 * only send request if string contains 5 characters;
+		 * only send request if string contains at least 5 characters;
 		 * faculty + first number of course code (e.g. COMP2)
 		 */
 		if (filteredInput.length > 4) {
@@ -241,12 +253,5 @@ function CourseSearch({
 		</div>
 	);
 }
-CourseSearch.propTypes = {
-	handleNext: PropTypes.func.isRequired,
-	requestCourse: PropTypes.func.isRequired,
-	requestCourseSuggestions: PropTypes.func.isRequired,
-	setSelectedCourse: PropTypes.func.isRequired,
-	setSnackbar: PropTypes.func.isRequired,
-};
 
 export default CourseSearch;

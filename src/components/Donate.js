@@ -45,7 +45,7 @@ function Donate() {
 									support in the service surpassed all expectations. That said,
 									the success of the application comes with considerable costs.
 									In my pledge to keep the service free, your generosity would
-									go a long way to ease the costs incured. Any contributions
+									go a long way to ease the costs incurred. Any contributions
 									would help me keep this project alive. Thanks!
 								</Typography>
 							</Grid>

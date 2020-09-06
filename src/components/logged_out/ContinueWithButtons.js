@@ -1,10 +1,11 @@
+// @flow
+
 import React from "react";
-import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
 		alignItems: "center",
@@ -16,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 		"& > span": {
 			fontWeight: 500,
 			fontSize: 18,
-			justifyContent: "flex-start"
+			justifyContent: "flex-start",
 		},
 		[theme.breakpoints.only("xs")]: {
 			height: 48,
@@ -25,36 +26,38 @@ const useStyles = makeStyles(theme => ({
 			"& > span": {
 				fontWeight: 500,
 				fontSize: 14,
-				justifyContent: "flex-start"
-			}
-		}
+				justifyContent: "flex-start",
+			},
+		},
 	},
 	providerImage: {
 		height: 24,
 		width: 24,
-		marginRight: theme.spacing(1)
+		marginRight: theme.spacing(1),
 	},
 	google: {
 		"& > span": {
-			color: "black"
-		}
+			color: "black",
+		},
 	},
 	facebook: {
 		backgroundColor: "#3C5A99",
 		"&:hover": {
-			backgroundColor: "rgba(60, 90, 153, 0.50)"
+			backgroundColor: "rgba(60, 90, 153, 0.50)",
 		},
 		"& > span": {
-			color: "white"
-		}
-	}
+			color: "white",
+		},
+	},
 }));
 
+type ContinueWithProviderProps = {
+	handleClick: () => void,
+};
 /**
- * @param {Function} handleClick callback function
  * button to indicate that a user can continue with their Google account
  */
-export function ContinueWithGoogle({ handleClick }) {
+export function ContinueWithGoogle({ handleClick }: ContinueWithProviderProps) {
 	const classes = useStyles();
 
 	return (
@@ -72,15 +75,13 @@ export function ContinueWithGoogle({ handleClick }) {
 	);
 }
 
-ContinueWithGoogle.propTypes = {
-	handleClick: PropTypes.func.isRequired
-};
-
 /**
  * @param {Function} handleClick callback function
  * button to indicate that a user can continue with their Facebook account
  */
-export function ContinueWithFacebook({ handleClick }) {
+export function ContinueWithFacebook({
+	handleClick,
+}: ContinueWithProviderProps) {
 	const classes = useStyles();
 	return (
 		<Button
@@ -96,7 +97,3 @@ export function ContinueWithFacebook({ handleClick }) {
 		</Button>
 	);
 }
-
-ContinueWithFacebook.propTypes = {
-	handleClick: PropTypes.func.isRequired
-};

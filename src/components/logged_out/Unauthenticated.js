@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+// @flow
+
+/* eslint-disable no-unused-expressions */
+
+import * as React from "react";
 
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
@@ -96,6 +99,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+type UnauthenticatedProps = {
+	addLoaderKey: (string) => void,
+	history: Object,
+	isLoading: boolean,
+	login: (string) => Promise<void>,
+	removeLoaderKey: (string) => void,
+	setSnackbarError: (string) => void,
+};
+
 function Unauthenticated({
 	addLoaderKey,
 	history,
@@ -103,7 +115,7 @@ function Unauthenticated({
 	login,
 	removeLoaderKey,
 	setSnackbarError,
-}) {
+}: UnauthenticatedProps) {
 	const classes = useStyles();
 
 	const isSmallDevice = React.useContext(IsSmallContext);
@@ -112,27 +124,29 @@ function Unauthenticated({
 	 * state of the navigation bar for mobile
 	 * @type {[boolean], Function}
 	 */
-	const [navbarOpen, setNavbarOpen] = useState(false);
+	const [navbarOpen, setNavbarOpen] = React.useState(false);
 
 	/**
 	 * the id of the dom element to scroll to
 	 * due to the limitations of scrolling when mobile drawer is open
 	 */
-	const [scrollIntoView, setScrollIntoView] = useState("");
+	const [scrollIntoView, setScrollIntoView] = React.useState("");
 
-	useEffect(() => {
+	React.useEffect(() => {
 		if (scrollIntoView) {
 			document
 				.getElementById(scrollIntoView)
-				.scrollIntoView({ behavior: "smooth", block: "center" });
+				?.scrollIntoView({ behavior: "smooth", block: "center" });
 		}
 	}, [scrollIntoView]);
 
 	/**
 	 * controls the state of the modal that allows user to continue with preferred provider
-	 * @type {[boolean, Function]}
 	 */
-	const [continueWithProvider, setContinueWithProvider] = useState(false);
+	const [
+		continueWithProvider,
+		setContinueWithProvider,
+	] = React.useState<boolean>(false);
 
 	// handles clicks to get users started
 	function handleGetStarted() {
@@ -197,9 +211,8 @@ function Unauthenticated({
 
 	/**
 	 * array of tuples containing [buttonName, targetSectionId, icon]
-	 * @type {[string, string, Object]}
 	 */
-	const menuButtons = [
+	const menuButtons: Array<[string, string, React.MixedElement]> = [
 		["find a seat", "find_a_seat", <NotificationIcon />],
 		["developers", "developers", <CodeIcon />],
 		["join us", "join_us", <PeopleIcon />],
@@ -324,13 +337,5 @@ function Unauthenticated({
 		)
 	);
 }
-
-Unauthenticated.propTypes = {
-	addLoaderKey: PropTypes.func.isRequired,
-	history: PropTypes.object.isRequired,
-	isLoading: PropTypes.bool.isRequired,
-	login: PropTypes.func.isRequired,
-	removeLoaderKey: PropTypes.func.isRequired,
-};
 
 export default Unauthenticated;

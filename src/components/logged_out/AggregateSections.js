@@ -1,5 +1,6 @@
+// @flow
+
 import React from "react";
-import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
@@ -7,10 +8,10 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	hidden: {
 		height: 1,
-		visibility: "hidden"
+		visibility: "hidden",
 	},
 	section: {
 		display: "flex",
@@ -18,30 +19,30 @@ const useStyles = makeStyles(theme => ({
 
 		[theme.breakpoints.up("lg")]: {
 			"&:nth-child(2)": {
-				marginTop: theme.spacing(8)
+				marginTop: theme.spacing(8),
 			},
 			// alternate background colours
 			"&:nth-child(even)": {
-				backgroundColor: "white"
-			}
+				backgroundColor: "white",
+			},
 		},
 
 		[theme.breakpoints.down("md")]: {
 			margin: theme.spacing(4, 0),
 			"&:nth-child(2)": {
-				marginTop: theme.spacing(10)
+				marginTop: theme.spacing(10),
 			},
-			width: "100%"
-		}
+			width: "100%",
+		},
 	},
 	sectionButton: {
 		[theme.breakpoints.up("lg")]: {
-			width: "40%"
+			width: "40%",
 		},
 
 		[theme.breakpoints.down("md")]: {
-			width: "100%"
-		}
+			width: "100%",
+		},
 	},
 	sectionContent: {
 		display: "flex",
@@ -51,15 +52,15 @@ const useStyles = makeStyles(theme => ({
 			textTransform: "uppercase",
 			[theme.breakpoints.down("md")]: {
 				fontSize: 22,
-				textAlign: "center"
-			}
+				textAlign: "center",
+			},
 		},
 
 		[theme.breakpoints.up("lg")]: {
 			flexWrap: "wrap",
 			width: "80%",
 			maxWidth: 1800,
-			padding: theme.spacing(8)
+			padding: theme.spacing(8),
 		},
 
 		[theme.breakpoints.down("md")]: {
@@ -71,18 +72,18 @@ const useStyles = makeStyles(theme => ({
 			backgroundColor: "white",
 			padding: theme.spacing(4),
 			borderRadius: 25,
-			boxShadow: [theme.shadows["8"]]
-		}
+			boxShadow: [theme.shadows["8"]],
+		},
 	},
 	sectionImageContainer: {
 		[theme.breakpoints.down("md")]: {
-			width: "100%"
-		}
+			width: "100%",
+		},
 	},
 	sectionImageOuter: {
 		display: "flex",
 		position: "relative",
-		paddingTop: "71%"
+		paddingTop: "71%",
 	},
 	sectionImage: {
 		boxSizing: "border-box",
@@ -92,13 +93,13 @@ const useStyles = makeStyles(theme => ({
 		top: "0px",
 		width: "100%",
 		height: "100%",
-		padding: theme.spacing(4)
+		padding: theme.spacing(4),
 	},
 	chipContainer: {
 		[theme.breakpoints.down("md")]: {
 			display: "flex",
 			width: "100%",
-			justifyContent: "center"
+			justifyContent: "center",
 		},
 
 		[theme.breakpoints.up("lg")]: {
@@ -106,15 +107,15 @@ const useStyles = makeStyles(theme => ({
 			top: 16,
 			right: 16,
 			"& > div": {
-				width: 200
-			}
-		}
+				width: 200,
+			},
+		},
 	},
 	sectionText: {
 		[theme.breakpoints.up("lg")]: {
 			padding: theme.spacing(8, 0),
 			"& > p": { fontSize: "24px" },
-			color: "black"
+			color: "black",
 		},
 
 		[theme.breakpoints.down("md")]: {
@@ -122,36 +123,32 @@ const useStyles = makeStyles(theme => ({
 			"& > p": {
 				fontSize: 16,
 				color: "rgba(0, 0, 0, 0.6)",
-				textAlign: "center"
+				textAlign: "center",
 			},
-			color: "black"
-		}
-	}
+			color: "black",
+		},
+	},
 }));
 
-/**
- * @typedef {Object} Section a section (e.g. row/card) of the body
- * @property {string} buttonText the button text
- * @property {string} imgSrc the src attribute of img tag
- * @property {string[]} sectionBodyText the paragraphs of the body
- * @property {string} sectionId id attribute for section
- * @property {string} sectionTitle the title of the section
- */
+type Section = {
+	buttonText: string,
+	imgSrc: string,
+	sectionBodyText: Array<string>,
+	sectionId: string,
+	sectionTitle: string,
+	comingSoon?: boolean,
+};
 
-/**
- * array of sections to render to the page
- * @type {Array<Section>} sectionsData
- */
-const sectionsData = [
+const sectionsData: Array<Section> = [
 	{
 		buttonText: "Get Started",
 		imgSrc: "/static/images/notification.svg",
 		sectionBodyText: [
 			"Are you tired of constantly refreshing Minerva to see if a seat has become available?",
-			"If so, sign up to get notified immediately!"
+			"If so, sign up to get notified immediately!",
 		],
 		sectionId: "find_a_seat",
-		sectionTitle: "Find A Seat"
+		sectionTitle: "Find A Seat",
 	},
 	{
 		buttonText: "Get Coding",
@@ -159,37 +156,41 @@ const sectionsData = [
 		imgSrc: "/static/images/developer.svg",
 		sectionBodyText: [
 			"Are you interested in building your own tools for the McGill community?",
-			"Register now and obtain an access token to leverage our existing APIs such as querying course data!"
+			"Register now and obtain an access token to leverage our existing APIs such as querying course data!",
 		],
 		sectionId: "developers",
-		sectionTitle: "Developers"
+		sectionTitle: "Developers",
 	},
 	{
 		buttonText: "Start Innovating",
 		comingSoon: true,
 		imgSrc: "/static/images/community.svg",
 		sectionBodyText: [
-			"If you’re interested in joining our mission to innovate for the community, we would love to hear from you!"
+			"If you’re interested in joining our mission to innovate for the community, we would love to hear from you!",
 		],
 		sectionId: "join_us",
-		sectionTitle: "Join Us"
-	}
+		sectionTitle: "Join Us",
+	},
 ];
+
+type SingleSectionProps = {
+	classes: { [string]: string },
+	section: Section,
+	index: number,
+	isSmallDevice: boolean,
+	handleClick: () => void,
+};
 
 /**
  * React component that returns a single section of the landing page
- * @param {Section} section the section data to render
- * @param {number} index the index of the section/row being mapped
- * @param {boolean} isSmallDevice
- * @param {Function} handleClick callback to attach to the "get started" buttons
  */
 function SingleSection({
 	classes,
 	handleClick,
 	index,
 	isSmallDevice,
-	section
-}) {
+	section,
+}: SingleSectionProps) {
 	// half of the section that contains text
 	const description = (
 		<Grid item lg={6} xs={12}>
@@ -197,7 +198,7 @@ function SingleSection({
 				{section.sectionTitle}
 			</Typography>
 			<div className={classes.sectionText}>
-				{section.sectionBodyText.map(text => (
+				{section.sectionBodyText.map((text) => (
 					<Typography gutterBottom key={text} variant="body1">
 						{text}
 					</Typography>
@@ -249,40 +250,33 @@ function SingleSection({
 	);
 }
 
-SingleSection.propTypes = {
-	classes: PropTypes.object.isRequired,
-	handleClick: PropTypes.func.isRequired,
-	index: PropTypes.number.isRequired,
-	isSmallDevice: PropTypes.bool.isRequired,
-	section: PropTypes.object.isRequired
+type AggregateSectionsProps = {
+	handleClick: () => void,
+	isSmallDevice: boolean,
 };
 
 /**
  * React component that returns the aggregate of all sections
  */
-function AggregateSections(props) {
+function AggregateSections(props: AggregateSectionsProps) {
 	const classes = useStyles();
 
 	// react element for the sections
 	return (
-		<React.Fragment>
+		<>
 			{sectionsData.map((section, index) => (
 				<SingleSection
+					{...props}
 					classes={classes}
 					index={index}
 					key={section.sectionId}
 					section={section}
-					{...props}
 				/>
 			))}
+			{/* for bottom margin purposes */}
 			<div className={classes.hidden}></div>
-		</React.Fragment>
+		</>
 	);
 }
-
-AggregateSections.propTypes = {
-	handleClick: PropTypes.func.isRequired,
-	isSmallDevice: PropTypes.bool.isRequired
-};
 
 export default AggregateSections;
