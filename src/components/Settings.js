@@ -1,3 +1,7 @@
+// @flow
+
+import type { User } from "./../reducers/types.js";
+
 import React, { useState, useEffect } from "react";
 
 import Button from "@material-ui/core/Button";
@@ -8,8 +12,6 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { CardHeader } from "@material-ui/core";
-
-import firebase from "./../firebase";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -24,24 +26,32 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+type Props = {
+	getUser: () => void,
+	user: User,
+	setSnackbar: (string) => void,
+	setSnackbarError: (string) => void,
+	updateUserProfile: (User) => Promise<void>,
+};
+
 function Settings({
 	getUser,
 	setSnackbar,
 	setSnackbarError,
 	user,
 	updateUserProfile,
-}) {
+}: Props) {
 	const classes = useStyles();
 
 	// state that controls form data containing user information
-	const [userDetails, setUserDetails] = useState({
+	const [userDetails, setUserDetails] = useState<User>({
 		...user,
 		phoneNumber: user.phoneNumber || "+1",
 	});
 
 	useEffect(() => {
 		getUser();
-	}, [getUser]);
+	}, []);
 
 	// extracts the extension and numbers from a possibly autofilled phone number
 	function stripPhoneNumber(phoneNumber) {
@@ -64,7 +74,7 @@ function Settings({
 	}
 
 	// callback to handle changes to input
-	const handleChange = (name) => (event) => {
+	const handleChange = (name: string) => (event) => {
 		setUserDetails({ ...userDetails, [name]: event.target.value });
 	};
 

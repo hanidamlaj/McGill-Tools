@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
@@ -39,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {string} section the number of the target section
  */
 function getSectionIndex(course, section) {
-	if (!course.sections) return -1;
+	if (!course || !course.sections) return -1;
 	return course.sections.findIndex((s) => s.section === section);
 }
 
@@ -56,17 +55,14 @@ function CourseSubscriptions({
 	const isSmall = useContext(IsSmallContext);
 
 	/**
-	 * state to control the data belonging to the courseIds above
-	 * key-value pairs of courseId-data
-	 * { COMP_202_2019_FALL: {subject, course, faculty, sections} }
+	 * state that maps the course_data to the course_info;
+	 * e.g. { COMP_202_2019_FALL: {subject, course, faculty, sections} }
 	 */
 	const [courses, setCourses] = useState({});
 
-	/**
-	 * state duplicate of props
-	 */
+	// state duplicate of subscribedSections props
 	const [stateSubscribedSections, setStateSubscribedSections] = useState(
-		subscribedSections
+		subscribedSections || []
 	);
 
 	// on component mount, request the user's subscribed courses
@@ -74,6 +70,7 @@ function CourseSubscriptions({
 		requestSubscribedSections();
 	}, []);
 
+	// on update of subscribedsections prop, re-request course information
 	useEffect(() => {
 		// extract the courseId from the sectionId (e.g. sectionId: "COMP_202_2019_FALL_001")
 		// (e.g. courseId: "COMP_202_2019_FALL")
@@ -87,9 +84,7 @@ function CourseSubscriptions({
 			return requestCourse({ faculty, course, year, semester });
 		});
 
-		/**
-		 * when all promises have been resolved, update state accordingly
-		 */
+		// when all promises have been resolved, update state accordingly
 		Promise.all(newCoursesPromises)
 			.then((res) => {
 				const newCourses = subscribedCourses.reduce((acc, courseId, index) => {
@@ -113,7 +108,7 @@ function CourseSubscriptions({
 	 */
 	const handleUnsubscribe = (index) => {
 		// extract information from the targeted sectionId
-		const [faculty, course, year, semester, section] = subscribedSections[
+		const [faculty, course, year, semester, section] = stateSubscribedSections[
 			index
 		].split("_");
 		requestSectionUnsubscribe({ faculty, course, year, semester, section });
@@ -260,12 +255,5 @@ function CourseSubscriptions({
 		</Card>
 	);
 }
-
-CourseSubscriptions.propTypes = {
-	requestCourse: PropTypes.func.isRequired,
-	requestSubscribedSections: PropTypes.func.isRequired,
-	subscribedSections: PropTypes.array.isRequired,
-	requestSectionUnsubscribe: PropTypes.func.isRequired,
-};
 
 export default CourseSubscriptions;

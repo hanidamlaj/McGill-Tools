@@ -1,3 +1,10 @@
+// @flow
+
+import type {
+	CourseQuery,
+	SetSubscribedSectionsAction,
+	ThunkAction,
+} from "./types.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
@@ -8,9 +15,10 @@ import firebase from "./../firebase";
 /**
  * action creator for the subscribed sections of a user
  */
-export const SET_SECTION_SUBSCRIPTIONS = "SET_SECTION_SUBSCRIPTIONS";
-const setSubscribedSections = (subscribedSections) => ({
-	type: SET_SECTION_SUBSCRIPTIONS,
+const setSubscribedSections = (
+	subscribedSections: Array<string>
+): SetSubscribedSectionsAction => ({
+	type: "SET_SUBSCRIBED_SECTIONS",
 	payload: subscribedSections,
 });
 
@@ -18,24 +26,24 @@ const setSubscribedSections = (subscribedSections) => ({
 
 // ––––––––––––––––––––– LOADER KEYS FOR ASYNC ACTIONS –––––––––––––––––––––
 
-const REQUEST_COURSE = "REQUEST_COURSE";
-const REQUEST_COURSE_SUGGESTIONS = "REQUEST_COURSE_SUGGESTIONS";
-const REQUEST_SUBSCRIBE = "REQUEST_SUBSCRIBE";
-const REQUEST_UNSUBSCRIBE = "REQUEST_UNSUBSCRIBE";
+const REQUEST_COURSE: string = "REQUEST_COURSE";
+const REQUEST_COURSE_SUGGESTIONS: string = "REQUEST_COURSE_SUGGESTIONS";
+const REQUEST_SUBSCRIBE: string = "REQUEST_SUBSCRIBE";
+const REQUEST_UNSUBSCRIBE: string = "REQUEST_UNSUBSCRIBE";
 
 // –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 // ––––––––––––––––––––– ASYNC ACTIONS –––––––––––––––––––––
 
 /**
- * retrieve course information
- * @param {{faculty: string, course: string, year: string, semester: string}} param
- * @returns {Promise<object>}
+ * Retrieve course information.
  */
-export const requestCourse = ({ faculty, course, year, semester }) => (
-	dispatch,
-	getState
-) => {
+export const requestCourse = ({
+	faculty,
+	course,
+	year,
+	semester,
+}: CourseQuery): ThunkAction => (dispatch, getState) => {
 	// request parameters
 	const token = getState().auth.token;
 	const query = [faculty, course, year, semester].join("/");
@@ -43,7 +51,7 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
 	dispatch(addLoaderKey(REQUEST_COURSE));
 	return fetch(`https://mcgilltools.com/courses/${query}`, {
 		headers: {
-			"x-access-token": token,
+			"x-access-token": token ?? "",
 		},
 	})
 		.then((res) => res.json())
@@ -67,15 +75,17 @@ export const requestCourse = ({ faculty, course, year, semester }) => (
 };
 
 /**
- * retrieve course name suggestions for user input (i.e. autocomplete feature)
- * @param {string} searchKey the search key
+ * Retrieve course name suggestions for user input (i.e. autocomplete feature).
  */
-export const requestCourseSuggestions = (searchKey) => (dispatch, getState) => {
+export const requestCourseSuggestions = (searchKey: string): ThunkAction => (
+	dispatch,
+	getState
+) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_COURSE_SUGGESTIONS));
 	return fetch(`https://mcgilltools.com/courses/autocomplete/${searchKey}`, {
 		headers: {
-			"x-access-token": token,
+			"x-access-token": token ?? "",
 		},
 	})
 		.then((res) => res.json())
@@ -93,8 +103,7 @@ export const requestCourseSuggestions = (searchKey) => (dispatch, getState) => {
 };
 
 /**
- * subscribe user to notifications for a course & section
- * @param {{faculty: string, course: string, year: string, semester: string, section: string}} param
+ * Subscribe user to notifications for a course & section.
  */
 export const requestSectionSubscribe = ({
 	faculty,
@@ -102,14 +111,17 @@ export const requestSectionSubscribe = ({
 	year,
 	semester,
 	section,
-}) => (dispatch, getState) => {
+}: {
+	...CourseQuery,
+	section: string,
+}): ThunkAction => (dispatch, getState) => {
 	const token = getState().auth.token;
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
 	fetch(`https://mcgilltools.com/notify/subscribe/${query}`, {
 		headers: {
-			"x-access-token": token,
+			"x-access-token": token ?? "",
 		},
 		method: "POST",
 	})
@@ -137,8 +149,7 @@ export const requestSectionSubscribe = ({
 };
 
 /**
- * unsubscribe user to notifications for a course & section
- * @param {{faculty: string, course: string, year: string, semester: string, section: string}} param
+ * Unsubscribe user to notifications for a course & section.
  */
 export const requestSectionUnsubscribe = ({
 	faculty,
@@ -146,14 +157,17 @@ export const requestSectionUnsubscribe = ({
 	year,
 	semester,
 	section,
-}) => (dispatch, getState) => {
+}: {
+	...CourseQuery,
+	section: string,
+}): ThunkAction => (dispatch, getState) => {
 	const token = getState().auth.token;
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_UNSUBSCRIBE));
 	fetch(`https://mcgilltools.com/notify/unsubscribe/${query}`, {
 		headers: {
-			"x-access-token": token,
+			"x-access-token": token ?? "",
 		},
 		method: "POST",
 	})
@@ -181,16 +195,14 @@ export const requestSectionUnsubscribe = ({
 };
 
 /**
- * retrieve sections subscribed to by user
- * @param {Function} dispatch
- * @param {Function} getState
+ * Retrieve sections subscribed to by user.
  */
-export const requestSubscribedSections = (dispatch, getState) => {
+export const requestSubscribedSections: ThunkAction = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
 	fetch("https://mcgilltools.com/user/profile/subscribedSections", {
 		headers: {
-			"x-access-token": token,
+			"x-access-token": token ?? "",
 		},
 	})
 		.then((res) => res.json())

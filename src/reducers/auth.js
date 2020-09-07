@@ -1,63 +1,57 @@
-import { SET_TOKEN, SET_USER, SET_LOGIN, SET_LOGOUT } from "../actions/auth";
-import { SET_SECTION_SUBSCRIPTIONS } from "../actions/courses";
+// @flow
 
-/**
- * @typedef {Object} User
- * @property {string} photoURL
- * @property {string} displayName
- * @property {string} email
- * @property {string} phoneNumber
- */
+import type { User, AuthReducerState } from "./types.js";
+import type {
+	SetUserAction,
+	SetTokenAction,
+	SetLoginAction,
+	SetLogoutAction,
+	SetSubscribedSectionsAction,
+} from "../actions/types.js";
 
-/**
- * @const {User} initialUser
- */
-export const initialUser = {
+export const initialUser: User = {
 	photoURL: "/static/images/avatar.png",
 	displayName: "",
 	email: "",
-	phoneNumber: ""
+	phoneNumber: "",
+	subscribedSections: [],
 };
 
-/**
- * @const {Object} initialState
- */
-const initialState = {
+const initialState: AuthReducerState = {
 	token: null,
-	user: initialUser
+	user: initialUser,
 };
 
-/**
- * @typedef {Object} Action
- * @property {string} type the type of action
- * @property {string | User} payload the data (payload) contained in the action
- */
+type AuthReducerAction =
+	| SetTokenAction
+	| SetUserAction
+	| SetLoginAction
+	| SetLogoutAction
+	| SetSubscribedSectionsAction;
 
-/**
- * reducer
- * @param {Object} state current state of app
- * @param {Action} action the dispatched action
- */
-function auth(state = initialState, action) {
+function auth(
+	state: AuthReducerState = initialState,
+	action: AuthReducerAction
+): AuthReducerState {
 	switch (action.type) {
-		case SET_TOKEN:
+		case "SET_TOKEN":
 			return { ...state, token: action.payload };
-		case SET_USER:
+		case "SET_USER":
 			return { ...state, user: { ...action.payload } };
-		case SET_SECTION_SUBSCRIPTIONS:
+		case "SET_SUBSCRIBED_SECTIONS":
 			return {
 				...state,
-				user: { ...state.user, subscribedSections: action.payload }
+				user: { ...state.user, subscribedSections: action.payload },
 			};
-		case SET_LOGIN:
+		case "SET_LOGIN":
 			return {
 				...state,
 				token: action.payload.token,
-				user: { ...action.payload.user }
+				user: { ...action.payload.user },
 			};
-		case SET_LOGOUT:
+		case "SET_LOGOUT":
 			return {
-				...initialState
+				...initialState,
 			};
 		default:
 			return state;

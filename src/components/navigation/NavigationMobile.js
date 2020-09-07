@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+// @flow
+
+import * as React from "react";
+
 import { Link as RouterLink } from "react-router-dom";
-import PropTypes from "prop-types";
 
 import AppBar from "@material-ui/core/AppBar";
 import Divider from "@material-ui/core/Divider";
@@ -52,17 +54,24 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-/**
- * @typedef {Object} Link
- * @property {Object} icon a react element of the icon for button
- * @property {string} linkTo the URL to send user to
- * @property {string} name the name of the link/button
- */
+type DrawerLinkProps = {
+	buttonText: string,
+	classes: { [string]: string },
+	handleClick: () => void,
+	icon: React.MixedElement,
+	linkTo: string,
+};
 
 /**
  * renders an individual link inside the drawer
  */
-function DrawerLink({ buttonText, classes, handleClick, icon, linkTo }) {
+function DrawerLink({
+	buttonText,
+	classes,
+	handleClick,
+	icon,
+	linkTo,
+}: DrawerLinkProps) {
 	return (
 		<Link
 			color="inherit"
@@ -80,15 +89,16 @@ function DrawerLink({ buttonText, classes, handleClick, icon, linkTo }) {
 	);
 }
 
+type NavigationMobileProps = {
+	logout: () => void,
+};
 /**
  * component for mobile top nagivation bar
  */
-function NavigationMobile({ logout }) {
+function NavigationMobile({ logout }: NavigationMobileProps) {
 	const classes = useStyles();
 
-	/**
-	 * @type {Link[]} defined links
-	 */
+	// links / menu options to display for navigation.
 	const links = [
 		{
 			buttonText: "Find A Seat",
@@ -105,9 +115,8 @@ function NavigationMobile({ logout }) {
 
 	/**
 	 * state of the navigation bar for mobile
-	 * @type {[boolean, Function]}
 	 */
-	const [navbarOpen, setNavbarOpen] = useState(false);
+	const [navbarOpen, setNavbarOpen] = React.useState<boolean>(false);
 
 	return (
 		<div className={classes.root}>
@@ -161,9 +170,5 @@ function NavigationMobile({ logout }) {
 		</div>
 	);
 }
-
-NavigationMobile.propTypes = {
-	logout: PropTypes.func.isRequired,
-};
 
 export default NavigationMobile;

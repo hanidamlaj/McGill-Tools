@@ -1,12 +1,27 @@
+// @flow
+
 import React, { useEffect } from "react";
-import PropTypes from "prop-types";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
-function Login({ login, removeLoaderKey, match, setSnackbarError, history }) {
+type LoginProps = {
+	login: (string) => Promise<void>,
+	removeLoaderKey: (string) => void,
+	setSnackbarError: (string) => void,
+	history: Object,
+	match: Object,
+};
+
+function Login({
+	login,
+	removeLoaderKey,
+	match,
+	setSnackbarError,
+	history,
+}: LoginProps) {
 	const provider = match.params.provider;
-	const loginWithProvider = provider => {
+	const loginWithProvider = (provider) => {
 		if (provider === "google")
 			firebase
 				.auth()
@@ -21,18 +36,18 @@ function Login({ login, removeLoaderKey, match, setSnackbarError, history }) {
 		firebase
 			.auth()
 			.getRedirectResult()
-			.then(async result => {
+			.then(async (result) => {
 				// check to see if redirection operation was called
 				if (result.user) {
 					const idToken = await firebase.auth().currentUser.getIdToken(true);
-					login(idToken).then(res => {
+					login(idToken).then((res) => {
 						if (res instanceof Error) history.push("/");
 					});
 				} else {
 					loginWithProvider(provider);
 				}
 			})
-			.catch(function(error) {
+			.catch(function (error) {
 				if (error.code === "auth/account-exists-with-different-credential") {
 					history.push("/");
 					setSnackbarError(
@@ -47,11 +62,5 @@ function Login({ login, removeLoaderKey, match, setSnackbarError, history }) {
 
 	return <React.Fragment />;
 }
-
-Login.propTypes = {
-	location: PropTypes.object.isRequired,
-	login: PropTypes.func.isRequired,
-	removeLoaderKey: PropTypes.func.isRequired
-};
 
 export default Login;

@@ -1,3 +1,13 @@
+// @flow
+
+import type {
+	SetUserAction,
+	SetTokenAction,
+	SetLoginAction,
+	SetLogoutAction,
+	ThunkAction,
+} from "./types.js";
+import type { User, AuthReducerState } from "./../reducers/types.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
@@ -6,55 +16,47 @@ import "firebase/auth";
 
 // ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
 
-/**
- * action type and creator for user object retrieved from server
- * @type {string} SET_USER
- */
-export const SET_USER = "SET_USER";
-export const setUser = (user) => ({ type: SET_USER, payload: user });
+// Action creator for user profile.
+export const setUser = (user: User): SetUserAction => ({
+	type: "SET_USER",
+	payload: user,
+});
 
-/**
- * action type and creator for jwtToken holding user claims
- * @type {string} SET_TOKEN
- */
-export const SET_TOKEN = "SET_TOKEN";
-export const setToken = (token) => ({ type: SET_TOKEN, payload: token });
+// Action creator for jwtToken holding user claims.
+export const setToken = (token: string): SetTokenAction => ({
+	type: "SET_TOKEN",
+	payload: token,
+});
 
-/**
- * action type and creator for data retrieved from login request
- * @type {string} SET_AUTH
- */
-export const SET_LOGIN = "SET_LOGIN";
-export const setLogin = (auth) => ({ type: SET_LOGIN, payload: auth });
+// Action creator for data retrieved from login request. (TODO: should be described better)
+export const setLogin = (auth: AuthReducerState): SetLoginAction => ({
+	type: "SET_LOGIN",
+	payload: auth,
+});
 
-/**
- * action type and creator to sign out the current user
- * @type {string} SET_LOGOUT
- */
-export const SET_LOGOUT = "SET_LOGOUT";
-export const setLogout = () => {
+// Action creator to sign the current user out.
+export const setLogout = (): SetLogoutAction => {
 	firebase.auth().signOut();
 	localStorage.clear();
-	return { type: SET_LOGOUT, payload: null };
+	return { type: "SET_LOGOUT", payload: null };
 };
 
 // ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
 // –––––––––– LOADER KEYS FOR ASYNC ACTIONS ––––––––––
 
-const REQUEST_LOGIN = "REQUEST_LOGIN";
-const REQUEST_USER = "REQUEST_USER";
-const UPDATE_USER_PROFILE = "UPDATE_USER_PROFILE";
+const REQUEST_LOGIN: string = "REQUEST_LOGIN";
+const REQUEST_USER: string = "REQUEST_USER";
+const UPDATE_USER_PROFILE: string = "UPDATE_USER_PROFILE";
 
 // –––––––––––––––––––––––––––––––––––––––––––––––––––
 
 // ––––––––––––––––––––– ASYNC ACTIONS –––––––––––––––––––––
 
 /**
- * authenticate user using firebase idToken and retrieve user profile
- * @param {string} idToken the idToken provided by firebase
+ * Authenticate user using firebase idToken and retrieve user profile.
  */
-export function login(idToken) {
+export function login(idToken: string): ThunkAction {
 	return (dispatch) => {
 		dispatch(addLoaderKey(REQUEST_LOGIN));
 		return fetch("https://mcgilltools.com/login", {
@@ -80,16 +82,14 @@ export function login(idToken) {
 }
 
 /**
- * retrieve user profile from server
- * @param {Function} dispatch
- * @param {Function} getState
+ * Retrieve the profile of the currently authenticated user.
  */
-export const getUser = (dispatch, getState) => {
+export const getUser: ThunkAction = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_USER));
 	fetch("https://mcgilltools.com/user/profile", {
 		headers: {
-			"x-access-token": token,
+			"x-access-token": token ?? "",
 		},
 	})
 		.then((res) => res.json())
@@ -104,17 +104,19 @@ export const getUser = (dispatch, getState) => {
 };
 
 /**
- * update the profile of the user (e.g. Name, subscribedSections, phoneNumber, etc.)
- * @param {object} user profile of the user
+ * Update the profile of the user (e.g. name, subscribedSections, phoneNumber, etc.).
  */
-export const updateUserProfile = (user) => (dispatch, getState) => {
+export const updateUserProfile = (user: User): ThunkAction => (
+	dispatch,
+	getState
+) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
 	return fetch("https://mcgilltools.com/user/profile", {
 		body: JSON.stringify(user),
 		headers: {
 			"Content-Type": "application/json",
-			"x-access-token": token,
+			"x-access-token": token ?? "",
 		},
 		method: "POST",
 	})

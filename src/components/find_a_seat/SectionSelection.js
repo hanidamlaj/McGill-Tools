@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
@@ -16,20 +15,20 @@ import Typography from "@material-ui/core/Typography";
 
 import { IsSmallContext } from "../../shared";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
-		justifyContent: "center"
+		justifyContent: "center",
 	},
 	table: {
 		width: "80%",
-		minWidth: 500
+		minWidth: 500,
 	},
 	card: {
 		border: "2px solid #eeeeee",
 		margin: `32px auto`,
-		minWidth: 280
-	}
+		minWidth: 280,
+	},
 }));
 
 /**
@@ -39,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 function SectionSelection({
 	course: { courseData, courseId },
 	requestSectionSubscribe,
-	subscribedSections
+	subscribedSections,
 }) {
 	const classes = useStyles();
 
@@ -57,13 +56,13 @@ function SectionSelection({
 		return acc;
 	}, []);
 
-	const handleSubscribe = section => {
+	const handleSubscribe = (section) => {
 		requestSectionSubscribe({
 			faculty,
 			course,
 			year,
 			semester,
-			section
+			section,
 		});
 	};
 
@@ -89,7 +88,7 @@ function SectionSelection({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{courseData.sections.map(section => (
+						{courseData.sections.map((section) => (
 							<TableRow key={section.section}>
 								<TableCell>{section.section}</TableCell>
 								<TableCell>{section.instructor}</TableCell>
@@ -125,7 +124,7 @@ function SectionSelection({
 			<Typography variant="body2" gutterBottom>
 				Select your section below
 			</Typography>
-			{courseData.sections.map(section => {
+			{courseData.sections.map((section) => {
 				return (
 					<div key={section.section}>
 						<Card className={classes.card} elevation={0}>
@@ -160,8 +159,4 @@ function SectionSelection({
 	return isSmallDevice ? <SmallViewport /> : <BigViewport />;
 }
 
-SectionSelection.propTypes = {
-	course: PropTypes.object.isRequired,
-	handleBack: PropTypes.func.isRequired
-};
 export default SectionSelection;

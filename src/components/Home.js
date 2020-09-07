@@ -1,3 +1,5 @@
+// @flow
+
 import React, { useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 
@@ -12,12 +14,11 @@ import Donate from "./Donate";
 
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
+import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 
 import { IsSmallContext } from "../shared";
-
-import { Container } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
 	rootWrapper: {
@@ -41,12 +42,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function Home({ logout }) {
+type Props = {
+	logout: () => void,
+};
+
+function Home({ logout }: Props) {
 	const classes = useStyles();
 	const isSmallDevice = React.useContext(IsSmallContext);
 
 	// componentDidUnmount() -- sign out from firebase user
-	// TODO: implement this in the action rather than here
 	useEffect(() => {
 		return () => {
 			// sign user out and clear local storage

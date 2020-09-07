@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
@@ -28,21 +29,29 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+type Props = {
+	token: string,
+	loaders: Array<string>,
+	snackbar: { success: string, error: string },
+	setSnackbar: (string) => void,
+	setSnackbarError: (string) => void,
+};
+
 function App({
 	token,
 	loaders,
 	snackbar: { success, error },
 	setSnackbar,
 	setSnackbarError,
-}) {
+}: Props) {
 	/**
-	 * boolean flag to indicate if viewport matches small/medium device
-	 * same as theme.breakpoints.down("md")
-	 * @type {boolean}
+	 * Boolean flag to indicate if viewport matches small/medium device.
+	 * Equivalent to theme.breakpoints.down("md").
 	 */
-	const isSmallDevice = useMediaQuery("(max-width:1279.95px)");
+	const isSmallDevice: boolean = useMediaQuery("(max-width:1279.95px)");
 
 	const classes = useStyles();
+
 	const handleClose = () => {
 		setSnackbar("");
 		setSnackbarError("");
@@ -100,7 +109,7 @@ function App({
 						></SnackbarContent>
 					</Snackbar>
 				)}
-				{/* presence of token can be taken as user is authenticated */}
+				{/* Presence of token can be taken as user is authenticated. Can be improved later. */}
 				{token ? (
 					<HomeContainer />
 				) : (
