@@ -40,10 +40,14 @@ const useStyles = makeStyles((theme) => ({
  * finds the index of the target section in a course object
  */
 function getSectionIndex(course: Course, section: string) {
-	const targetCourse = course?.sections?.findIndex(
-		(s) => s.section === section
-	);
-	return targetCourse ?? -1;
+	// optional chaining not supported by flow
+	// const targetCourse = course?.sections?.findIndex(
+	// 	(s) => s.section === section
+	// );
+
+	if (course && course.sections)
+		return course.sections.findIndex((s) => s.section === section);
+	else return -1;
 }
 
 type Props = {

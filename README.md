@@ -1,4 +1,4 @@
-# mtools_client
+# Repo for McGill Tools
 
-Single-page React application for https://mcgilltools.com/.
-Continuously trying to improve the clarity and efficiency of the code in my free time.
+- This repo contains the frontend and backend code for https://mcgilltools.com/ in `client/` and `server/` dirs respectively.
+- Currently supports the 3,600+ users signed up.
