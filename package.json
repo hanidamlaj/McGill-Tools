@@ -8,6 +8,10 @@
 		"build": "npm build --prefix server && npm run build --prefix client && mv client/build server/build/",
 		"start": "npm start --prefix server"
 	},
+	"cacheDirectories": [
+		"client/node_modules",
+		"server/node_modules"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/hanidamlaj/mtools_client.git"
