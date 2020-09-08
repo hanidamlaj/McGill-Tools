@@ -6,7 +6,8 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"postinstall": "npm install --prefix server && npm install --prefix client",
 		"build": "npm build --prefix server && npm run build --prefix client && mv client/build server/build/",
-		"start": "npm start --prefix server"
+		"start": "npm start --prefix server",
+		"update": "npm update --prefix server && npm update --prefix client"
 	},
 	"cacheDirectories": [
 		"client/node_modules",
