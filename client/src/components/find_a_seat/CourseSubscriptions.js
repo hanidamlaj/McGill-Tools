@@ -1,3 +1,7 @@
+// @flow
+
+import type { CourseQuery, Course } from "./../../actions/types";
+
 import React, { useContext, useEffect, useState } from "react";
 
 import Button from "@material-ui/core/Button";
@@ -34,22 +38,33 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * finds the index of the target section in a course object
- * @param {{subject: string, course: string, sections: object[]}} course
- * @param {string} section the number of the target section
  */
-function getSectionIndex(course, section) {
-	if (!course || !course.sections) return -1;
-	return course.sections.findIndex((s) => s.section === section);
+function getSectionIndex(course: Course, section: string) {
+	// optional chaining not supported by flow
+	// const targetCourse = course?.sections?.findIndex(
+	// 	(s) => s.section === section
+	// );
+
+	if (course && course.sections)
+		return course.sections.findIndex((s) => s.section === section);
+	else return -1;
 }
 
-// this is the component that contains the top card on the get-a-seat page
-// contains the feature that displays the currently subscribed to features
+type Props = {
+	requestCourse: (CourseQuery) => Promise<Course>,
+	requestSubscribedSections: () => Promise<Array<string>>,
+	subscribedSections: Array<string>,
+	requestSectionUnsubscribe: ({ ...CourseQuery, section: string }) => void,
+};
+
+// This is the component that contains the top card on the get-a-seat page
+// contains the feature that displays the currently subscribed to features.
 function CourseSubscriptions({
 	requestCourse,
 	requestSubscribedSections,
 	subscribedSections,
 	requestSectionUnsubscribe,
-}) {
+}: Props) {
 	const classes = useStyles();
 
 	const isSmall = useContext(IsSmallContext);
@@ -58,12 +73,7 @@ function CourseSubscriptions({
 	 * state that maps the course_data to the course_info;
 	 * e.g. { COMP_202_2019_FALL: {subject, course, faculty, sections} }
 	 */
-	const [courses, setCourses] = useState({});
-
-	// state duplicate of subscribedSections props
-	const [stateSubscribedSections, setStateSubscribedSections] = useState(
-		subscribedSections || []
-	);
+	const [courses, setCourses] = useState<{ [string]: Course }>({});
 
 	// on component mount, request the user's subscribed courses
 	useEffect(() => {
@@ -95,25 +105,22 @@ function CourseSubscriptions({
 
 				// update the data for the courses
 				setCourses(newCourses);
-
-				// update the list of state managed subscribedSections
-				setStateSubscribedSections(subscribedSections);
 			})
 			.catch(() => {});
 	}, [subscribedSections]);
 
 	/**
-	 * Handles unsubscribing the user
-	 * @param {Number} index the location of both the course and course identifier
+	 * This callback function handles unsubscribing the user from a given section.
 	 */
 	const handleUnsubscribe = (index) => {
 		// extract information from the targeted sectionId
-		const [faculty, course, year, semester, section] = stateSubscribedSections[
+		const [faculty, course, year, semester, section] = subscribedSections[
 			index
 		].split("_");
 		requestSectionUnsubscribe({ faculty, course, year, semester, section });
 	};
 
+	// TODO: move these into their own component.
 	const BigViewport = () => (
 		<React.Fragment>
 			<div className={classes.root}>
@@ -131,7 +138,7 @@ function CourseSubscriptions({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{stateSubscribedSections.map((sectionId, index) => {
+						{subscribedSections.map((sectionId, index) => {
 							/**
 							 * course identifiers
 							 * @type {[string, string, string, string, string]}
@@ -182,11 +189,8 @@ function CourseSubscriptions({
 
 	const SmallViewPort = () => (
 		<React.Fragment>
-			{stateSubscribedSections.map((sectionId, index) => {
-				/**
-				 * course identifiers
-				 * @type {[string, string, string, string, string]}
-				 */
+			{subscribedSections.map((sectionId, index) => {
+				// extract course identifiers from id
 				const [
 					faculty,
 					courseCode,

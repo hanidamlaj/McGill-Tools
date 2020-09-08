@@ -34,6 +34,25 @@ type Props = {
 	updateUserProfile: (User) => Promise<void>,
 };
 
+// Extracts the extension and numbers from a possibly autofilled phone number.
+function stripPhoneNumber(phoneNumber: string) {
+	// set of ignored characters that may be present during browser autofill
+	const ignoredCharacters = new Set(["(", " ", ")", "-"]);
+
+	const filteredPhoneNumber = phoneNumber
+		.split("")
+		.filter((c) => !ignoredCharacters.has(c))
+		.join("");
+
+	return filteredPhoneNumber;
+}
+
+// Checks if a phone number is valid by our definition. i.e.: +1 followed by 10 digits.
+function isPhoneNumberValid(phoneNumber: string) {
+	const regex = /^\+1\d{10}$/;
+	return regex.test(stripPhoneNumber(phoneNumber));
+}
+
 function Settings({
 	getUser,
 	setSnackbar,
@@ -43,47 +62,29 @@ function Settings({
 }: Props) {
 	const classes = useStyles();
 
-	// state that controls form data containing user information
+	// State that controls form data containing user information.
 	const [userDetails, setUserDetails] = useState<User>({
 		...user,
 		phoneNumber: user.phoneNumber || "+1",
 	});
 
+	// Fetch user data on mount.
 	useEffect(() => {
 		getUser();
 	}, []);
 
-	// extracts the extension and numbers from a possibly autofilled phone number
-	function stripPhoneNumber(phoneNumber) {
-		// set of ignored characters that may be present during browser autofill
-		const ignoredCharacters = new Set(["(", " ", ")", "-"]);
-
-		const filteredPhoneNumber = phoneNumber
-			.split("")
-			.filter((c) => !ignoredCharacters.has(c))
-			.join("");
-
-		return filteredPhoneNumber;
-	}
-
-	// checks if a phone number is valid after stripping away
-	// ignored characters
-	function isPhoneNumberValid(phoneNumber) {
-		const regex = /^\+1\d{10}$/;
-		return regex.test(stripPhoneNumber(phoneNumber));
-	}
-
-	// callback to handle changes to input
+	// Callback to handle changes to input.
 	const handleChange = (name: string) => (event) => {
 		setUserDetails({ ...userDetails, [name]: event.target.value });
 	};
 
-	// resets form to its initial value when user presses cancel
+	// Callback function to reset the form to its initial/default value when user presses cancel.
 	const onCancel = () => setUserDetails({ ...user });
 
-	// function to be called when user submits form
+	// Callback function to be invoked when user submits the form.
 	const onSave = () => {
-		// phone numbers must be valid in order to send data to the server
+		// Phone numbers must be valid in order to send data to the server.
+		// This is also validated on the server.
 		if (!isPhoneNumberValid(userDetails.phoneNumber)) {
 			setSnackbarError("Incorrect phone number format.");
 		} else {

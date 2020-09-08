@@ -12,7 +12,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { makeStyles } from "@material-ui/core/styles";
 
 import CloseIcon from "@material-ui/icons/Close";
-import ThemeProvider from "@material-ui/styles/ThemeProvider";
+import { ThemeProvider } from "@material-ui/core/styles/";
 
 import HomeContainer from "../containers/HomeContainer";
 import LoginContainer from "../containers/logged_out/LoginContainer";
@@ -109,7 +109,7 @@ function App({
 						></SnackbarContent>
 					</Snackbar>
 				)}
-				{/* Presence of token can be taken as user is authenticated. Can be improved later. */}
+				{/* Presence of token can be taken as user is authenticated. TODO: can be improved. */}
 				{token ? (
 					<HomeContainer />
 				) : (

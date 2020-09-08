@@ -130,13 +130,17 @@ function Unauthenticated({
 	 * the id of the dom element to scroll to
 	 * due to the limitations of scrolling when mobile drawer is open
 	 */
-	const [scrollIntoView, setScrollIntoView] = React.useState("");
+	const [scrollIntoView, setScrollIntoView] = React.useState<string>("");
 
 	React.useEffect(() => {
 		if (scrollIntoView) {
-			document
-				.getElementById(scrollIntoView)
-				?.scrollIntoView({ behavior: "smooth", block: "center" });
+			// optional chaining not supported by flow
+			// document
+			// 	.getElementById(scrollIntoView)
+			// 	?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+			const el = document.getElementById(scrollIntoView);
+			if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
 		}
 	}, [scrollIntoView]);
 

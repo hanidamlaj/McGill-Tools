@@ -5,7 +5,7 @@ import { setSnackbar } from "../../actions/snackbar";
 
 const mapStateToProps = null;
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
 	requestCourse(courseQuery) {
 		return dispatch(requestCourse(courseQuery));
 	},
@@ -14,10 +14,7 @@ const mapDispatchToProps = dispatch => ({
 	},
 	setSnackbar(message) {
 		dispatch(setSnackbar(message));
-	}
+	},
 });
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(CourseSearch);
+export default connect(mapStateToProps, mapDispatchToProps)(CourseSearch);
