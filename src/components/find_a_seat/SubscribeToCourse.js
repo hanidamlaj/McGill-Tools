@@ -1,3 +1,5 @@
+// @flow
+
 import React, { useState } from "react";
 
 import Card from "@material-ui/core/Card";
@@ -11,19 +13,19 @@ import Stepper from "@material-ui/core/Stepper";
 import CourseSearchContainer from "../../containers/find_a_seat/CourseSearchContainer";
 import SectionSelectionContainer from "../../containers/find_a_seat/SectionSelectionContainer";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
-		overflow: "visible"
+		overflow: "visible",
 	},
 	stepper: {
 		width: "100%",
 		maxWidth: 1000,
-		minWidth: 300
-	}
+		minWidth: 300,
+	},
 }));
 
-// this is the component that contains the bottom card on the get-a-seat page
-// parent component of both the search and section selection features
+// This is the component that contains the bottom card on the get-a-seat page
+// parent component of both the search and section selection features.
 function SubscribeToCourse() {
 	const classes = useStyles();
 
@@ -37,13 +39,13 @@ function SubscribeToCourse() {
 
 	// handles advancing to the next step
 	const handleNext = () => {
-		setActiveStep(curStep => curStep + 1);
+		setActiveStep((curStep) => curStep + 1);
 	};
 
 	// handles going back to the previous step
 	const handleBack = () => {
 		setSelectedCourse(null);
-		setActiveStep(curStep => curStep - 1);
+		setActiveStep((curStep) => curStep - 1);
 	};
 
 	// the react element to render for a given step
@@ -55,7 +57,7 @@ function SubscribeToCourse() {
 		<SectionSelectionContainer
 			course={selectedCourse}
 			handleBack={handleBack}
-		/>
+		/>,
 	];
 
 	return (
@@ -64,7 +66,7 @@ function SubscribeToCourse() {
 			<CardContent>
 				<div style={{ display: "flex", justifyContent: "center" }}>
 					<Stepper activeStep={activeStep} className={classes.stepper}>
-						{steps.map(label => {
+						{steps.map((label) => {
 							return (
 								<Step key={label}>
 									<StepLabel>{label}</StepLabel>

@@ -1,6 +1,6 @@
 // @flow
 
-import type { CourseQuery } from "./../../actions/types";
+import type { CourseQuery, Course } from "./../../actions/types";
 
 import React, { useState } from "react";
 
@@ -69,7 +69,7 @@ type AutocompleteSuggestion = {
 
 type CourseSearchProps = {
 	handleNext: () => void,
-	requestCourse: (CourseQuery) => Promise<Object>,
+	requestCourse: (CourseQuery) => Promise<Course>,
 	requestCourseSuggestions: (string) => Promise<Array<AutocompleteSuggestion>>,
 	setSelectedCourse: (any) => void,
 	setSnackbar: (string) => void,
@@ -118,14 +118,13 @@ function CourseSearch({
 	 * Handles input changes in the search feature
 	 * Queries the backend for course suggestions for any input
 	 * strictly greater than 4 characters.
-	 * @param {Event} e
 	 */
 	const handleSearchChange = (e) => {
 		// get search input from event object
 		const input = e.target.value;
 
 		// filter out white space from string
-		const filteredInput = e.target.value.replace(/\s/g, "");
+		const filteredInput = input.replace(/\s/g, "");
 		e.persist();
 
 		/**
@@ -138,7 +137,7 @@ function CourseSearch({
 				else {
 					setSuggestions(res);
 					setShowSuggestions(res.length > 0 ? true : false);
-					if (res.length > 0) console.log(e.target.scrollIntoView());
+					if (res.length > 0) e.target.scrollIntoView();
 				}
 			});
 		} else {
@@ -214,27 +213,30 @@ function CourseSearch({
 									button
 									key={suggestion.courseCode}
 									onMouseDown={() => {
-										// extract course identification data from inputs
+										// Extract course identification data from inputs.
+										// e.g. suggestions.courseCode = "COMP_202".
 										const [faculty, courseNumber] = [
 											suggestion.courseCode.slice(0, 4),
 											suggestion.courseCode.slice(4),
 										];
-										const [_semester, year] = semester.split("-");
 
-										// data to identify a given course (e.g. COMP_250_2019_FALL)
-										const courseId = [faculty, courseNumber, year, _semester];
+										// e.g. semester = "SUMMER-2020"
+										const [term, year] = semester.split("-");
+
+										// Combine to form data to identify a given course (e.g. COMP_250_2019_FALL)
+										const courseId = [faculty, courseNumber, year, term];
 
 										requestCourse({
 											faculty,
 											course: courseNumber,
 											year,
-											semester: _semester,
-										}).then((course) => {
-											if (course instanceof Error) return;
+											semester: term,
+										}).then((res) => {
+											if (res instanceof Error) return;
 
 											// pass data to the next step (subscribing to a specific section)
 											setSelectedCourse({
-												courseData: course,
+												courseData: res,
 												courseId,
 											});
 											handleNext();
