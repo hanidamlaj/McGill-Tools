@@ -50,7 +50,7 @@ function Home({ logout }: Props) {
 	const classes = useStyles();
 	const isSmallDevice = React.useContext(IsSmallContext);
 
-	// componentDidUnmount() -- sign out from firebase user
+	// equivalent to componentDidUnmount() lifecycle function -- sign user out from firebase
 	useEffect(() => {
 		return () => {
 			// sign user out and clear local storage
@@ -64,29 +64,30 @@ function Home({ logout }: Props) {
 				{isSmallDevice ? (
 					<NavigationMobileContainer />
 				) : (
-					// this allows the navigation component to read the path and display in nav bar
+					// This allows the navigation component to read the path and display in nav bar.
 					<Route path="/:path?" component={NavigationDesktopContainer}></Route>
 				)}
 
 				<Container fixed>
 					<div className={classes.content}>
 						<Switch>
-							{/* handle redirect after user has been authenticated */}
+							{/* Handle redirect after user has been authenticated. */}
 							<Route
 								exact
 								path="/auth/:provider"
 								render={() => <Redirect to="/" />}
 							/>
 
-							{/* route for settings page */}
+							{/* Route for settings page. */}
 							<Route exact path="/settings" component={SettingsContainer} />
 
-							{/* route for api page */}
+							{/* Route for api page. */}
 							<Route exact path="/capi" component={APIContainer} />
 
-							{/* root route displays find_a_seat */}
+							{/* Route for subscribing to courses. */}
 							<Route exact path="/get-a-seat" component={FindASeatContainer} />
 
+							{/* Route for donations */}
 							<Route exact path="/donate" component={Donate} />
 
 							{/* default route (no routes matched, redirect to home) */}
