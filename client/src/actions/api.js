@@ -1,6 +1,7 @@
 // @flow
 
 import type { ThunkAction } from "./types.js";
+import { BASE_URL } from "./types.js";
 
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
@@ -16,7 +17,7 @@ export const fetchAccessTokenReqState: ThunkAction = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(FETCH_ACCESS_TOKEN_REQUEST));
 
-	return fetch("https://mcgilltools.com/api/request-status", {
+	return fetch(`${BASE_URL}api/request-status`, {
 		headers: {
 			"x-access-token": token ?? "",
 		},
@@ -45,7 +46,7 @@ export function createAccessTokenReq(formData: any): ThunkAction {
 		const token = getState().auth.token;
 
 		dispatch(addLoaderKey(CREATE_ACCESS_TOKEN_REQUEST));
-		return fetch("https://mcgilltools.com/api/request-access", {
+		return fetch(`${BASE_URL}api/request-access`, {
 			body: JSON.stringify(formData),
 			headers: {
 				"x-access-token": token ?? "",

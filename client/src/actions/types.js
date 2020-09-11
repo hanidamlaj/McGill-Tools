@@ -114,3 +114,8 @@ export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
 export type Dispatch = (
 	action: Action | ThunkAction | PromiseAction | Array<Action>
 ) => any;
+
+export const BASE_URL =
+	process.env.NODE_ENV === "development"
+		? "http://localhost:8080/"
+		: "https://mcgilltools.com/";

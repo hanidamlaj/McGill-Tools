@@ -5,6 +5,7 @@ import type {
 	SetSubscribedSectionsAction,
 	ThunkAction,
 } from "./types.js";
+import { BASE_URL } from "./types.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
@@ -49,7 +50,7 @@ export const requestCourse = ({
 	const query = [faculty, course, year, semester].join("/");
 
 	dispatch(addLoaderKey(REQUEST_COURSE));
-	return fetch(`https://mcgilltools.com/courses/${query}`, {
+	return fetch(`${BASE_URL}courses/${query}`, {
 		headers: {
 			"x-access-token": token ?? "",
 		},
@@ -83,7 +84,7 @@ export const requestCourseSuggestions = (searchKey: string): ThunkAction => (
 ) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_COURSE_SUGGESTIONS));
-	return fetch(`https://mcgilltools.com/courses/autocomplete/${searchKey}`, {
+	return fetch(`${BASE_URL}courses/autocomplete/${searchKey}`, {
 		headers: {
 			"x-access-token": token ?? "",
 		},
@@ -119,7 +120,7 @@ export const requestSectionSubscribe = ({
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	fetch(`https://mcgilltools.com/notify/subscribe/${query}`, {
+	fetch(`${BASE_URL}notify/subscribe/${query}`, {
 		headers: {
 			"x-access-token": token ?? "",
 		},
@@ -165,7 +166,7 @@ export const requestSectionUnsubscribe = ({
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_UNSUBSCRIBE));
-	fetch(`https://mcgilltools.com/notify/unsubscribe/${query}`, {
+	fetch(`${BASE_URL}notify/unsubscribe/${query}`, {
 		headers: {
 			"x-access-token": token ?? "",
 		},
@@ -200,7 +201,7 @@ export const requestSectionUnsubscribe = ({
 export const requestSubscribedSections: ThunkAction = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	fetch("https://mcgilltools.com/user/profile/subscribedSections", {
+	fetch(`${BASE_URL}user/profile/subscribedSections`, {
 		headers: {
 			"x-access-token": token ?? "",
 		},

@@ -49,8 +49,20 @@ app.post("/login", async (req, res) => {
 		const user = await db.login(uid);
 
 		// Sign and return jwt token -- used for authentication.
+		const token: string = jwt.sign(
+			{ uid, isAdmin: Boolean(user.isAdmin) },
+			privKey
+		);
+
+		// If in dev environment, print token to console for
+		// easy copy-paste access. Better than digging through
+		// browser network logs to find token.
+		if (process.env.NODE_ENV === "development") {
+			console.log("YOUR JWT TOKEN IS:", token);
+		}
+
 		res.json({
-			token: jwt.sign({ uid, isAdmin: Boolean(user.isAdmin) }, privKey),
+			token,
 			user,
 		});
 	} catch (err) {
