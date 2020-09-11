@@ -6,7 +6,7 @@ import { UserInfo } from "./../model/types";
 const router = express.Router();
 
 /**
- * Return user profile.
+ * Route that returns user's profile.
  */
 router.get("/profile", async (req: any, res: any) => {
 	try {
@@ -17,7 +17,9 @@ router.get("/profile", async (req: any, res: any) => {
 	}
 });
 
-// Return the user's subscribed sections.
+/**
+ * Route that returns the user's subscribed sections.
+ */
 router.get("/profile/subscribedSections", async (req: any, res: any) => {
 	try {
 		const user = await db.getUser(req.uid);
@@ -28,7 +30,7 @@ router.get("/profile/subscribedSections", async (req: any, res: any) => {
 });
 
 /**
- * Update user's profile.
+ * Route that update user's profile.
  */
 router.post("/profile", async (req: any, res: any) => {
 	try {

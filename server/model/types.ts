@@ -1,4 +1,7 @@
 import admin from "./firebase";
+import express = require("express");
+
+// All custom Typescript types are declared here.
 
 export interface AutoCompleteData {
 	courseCode: string;
@@ -58,5 +61,10 @@ export interface UserInfo {
 	photoURL: string;
 	subscribedSections?: Array<string>;
 	newUser?: boolean;
+	isAdmin?: boolean;
+}
+
+export interface UserRequest extends express.Request {
+	uid?: string;
 	isAdmin?: boolean;
 }

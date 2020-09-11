@@ -8,6 +8,7 @@ import type {
 	ThunkAction,
 } from "./types.js";
 import type { User, AuthReducerState } from "./../reducers/types.js";
+import { BASE_URL } from "./types.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
@@ -59,7 +60,7 @@ const UPDATE_USER_PROFILE: string = "UPDATE_USER_PROFILE";
 export function login(idToken: string): ThunkAction {
 	return (dispatch) => {
 		dispatch(addLoaderKey(REQUEST_LOGIN));
-		return fetch("https://mcgilltools.com/login", {
+		return fetch(`${BASE_URL}login`, {
 			body: JSON.stringify({ idToken }),
 			headers: {
 				"Content-Type": "application/json",
@@ -87,7 +88,7 @@ export function login(idToken: string): ThunkAction {
 export const getUser: ThunkAction = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_USER));
-	fetch("https://mcgilltools.com/user/profile", {
+	fetch(`${BASE_URL}user/profile`, {
 		headers: {
 			"x-access-token": token ?? "",
 		},
@@ -112,7 +113,7 @@ export const updateUserProfile = (user: User): ThunkAction => (
 ) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
-	return fetch("https://mcgilltools.com/user/profile", {
+	return fetch(`${BASE_URL}user/profile`, {
 		body: JSON.stringify(user),
 		headers: {
 			"Content-Type": "application/json",

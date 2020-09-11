@@ -6,7 +6,7 @@ import { CourseQuery, Course } from "../model/types";
 const router = express.Router();
 
 /**
- * Returns a maximum of five autocompleted courses codes based on user input.
+ * Route that returns a maximum of five autocompleted courses codes based on user input.
  */
 router.get("/autocomplete/:str", async (req, res) => {
 	const str: string = req.params.str;
@@ -24,7 +24,7 @@ router.get("/autocomplete/:str", async (req, res) => {
 const semesters = ["fall", "winter", "summer"];
 
 /**
- * Returns the details for a given course.
+ * Route that returns the details for a given course.
  */
 router.get("/:subject/:course/:year/:semester", async (req, res) => {
 	try {
@@ -36,7 +36,7 @@ router.get("/:subject/:course/:year/:semester", async (req, res) => {
 
 		const courseDetails = await db.queryCourse(
 			{ subject, course, year, semester },
-			req.query.forceRefresh !== undefined
+			false
 		);
 
 		res.json(courseDetails);

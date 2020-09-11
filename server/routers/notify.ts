@@ -5,14 +5,14 @@ import db from "./../model/database";
 const router = express.Router();
 
 /**
- * subscribes a user to a given course
+ * Route that subscribes a user to a given course/section.
  */
 router.post(
 	"/subscribe/:subject/:course/:year/:semester/:section",
 	async (req: any, res: any) => {
 		try {
 			const updatedCourses = await db.subscribeUserToSection(req.uid, {
-				...req.params
+				...req.params,
 			});
 			res.json({ subscribedSections: updatedCourses });
 		} catch (err) {
@@ -22,14 +22,14 @@ router.post(
 );
 
 /**
- * unsubscribes a user to a given course
+ * Route that unsubscribes a user from a given course/section.
  */
 router.post(
 	"/unsubscribe/:subject/:course/:year/:semester/:section",
 	async (req: any, res: any) => {
 		try {
 			const updatedCourses = await db.removeNotificationCourse(req.uid, {
-				...req.params
+				...req.params,
 			});
 			res.json({ subscribedSections: updatedCourses });
 		} catch (err) {
