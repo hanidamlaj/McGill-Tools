@@ -1,3 +1,5 @@
+// @flow
+
 import React, { useState, useEffect } from "react";
 
 import Button from "@material-ui/core/Button";
@@ -17,120 +19,142 @@ import FileCopy from "@material-ui/icons/FileCopy";
 
 import classNames from "classnames";
 import SwaggerView from "./SwaggerView";
+import AdminView from "./AdminAPIView";
 
-const useStyles = makeStyles(theme => ({
+import type { User } from "../../reducers/types.js";
+
+const useStyles = makeStyles((theme) => ({
 	root: {
-		border: "2px solid #eeeeee"
+		border: "2px solid #eeeeee",
 	},
 	textField: {
 		maxWidth: 400,
-		width: "100%"
+		width: "100%",
 	},
 	button: {
-		margin: theme.spacing(1)
+		margin: theme.spacing(1),
 	},
 	alert: {
 		padding: theme.spacing(1, 2),
 		border: "1px solid transparent",
-		width: "100%"
+		width: "100%",
 	},
 	// alert css properties taken from bootstrap website
 	alertSuccess: {
 		color: "#155724",
 		backgroundColor: "#d4edda",
-		borderColor: "#c3e6cb"
+		borderColor: "#c3e6cb",
 	},
 	alertDanger: {
 		color: "#721c24",
 		backgroundColor: "#f8d7da",
-		borderColor: "#f5c6cb"
+		borderColor: "#f5c6cb",
 	},
 	alertInfo: {
 		color: "#0c5460",
 		backgroundColor: "#d1ecf1",
-		borderColor: "#bee5eb"
-	}
+		borderColor: "#bee5eb",
+	},
 }));
 
-function API({
+// Enum of application statuses
+export type ApplicationStatus = "approved" | "pending" | "rejected" | "";
+
+export type AccessTokenRequest = {
+	email: string,
+	name: string,
+	purpose: string,
+	status: ApplicationStatus,
+	// Present if status === "approved" (i.e. we have approved the request).
+	accessToken?: string,
+	// Present if status !== "" (i.e. an application has been submitted).
+	// Date represents the date the request was created.
+	date?: Date,
+};
+
+function APIView({
 	createAccessTokenReq,
 	fetchAccessTokenReqState,
 	setSnackbar,
 	setSnackbarError,
-	user
-}) {
+	user,
+}: APIProps) {
 	const classes = useStyles();
 
 	// state to control user input / current state (e.g. rejected, pending, approved, or null) of the api-request
-	const [apiReqState, setAPIReqState] = useState({
+	const [apiReqState, setAPIReqState] = useState<AccessTokenRequest>({
+		email: user.email,
 		name: "",
 		purpose: "",
-		status: ""
+		status: "",
 	});
 
-	// boolean flag to determine if form has already been submitted and thus should disable user input
-	const isDisabled = Boolean(apiReqState.status);
+	// Boolean flag to determine if form has already been submitted by the user
+	// and thus should disable user input/form.
+	const hasAlreadySubmitted = apiReqState.status !== "";
+
+	// On component mount, fetch the status of the api request
+	// onpage load, fetch the status of the api request.
+	useEffect(() => {
+		fetchAccessTokenReqState().then((res) => {
+			setAPIReqState(res);
+		});
+	}, []);
 
 	/**
-	 * maps enum status {approved, rejected and pending} to constructive message
-	 * TODO: should implement message server side
+	 * Maps enum ApplicationStatus {approved, rejected and pending} to feedback message.
 	 */
-	const statusMap = {
+	const statusMap: {
+		[ApplicationStatus]: { className: string, message: string },
+	} = {
 		approved: {
 			className: classes.alertSuccess,
 			message:
 				"Congratulations! Your application for an access token has been approved. Please\
-                find your token and usage information below."
+                find your token and usage information below.",
 		},
 		rejected: {
 			className: classes.alertDanger,
 			message:
 				"Unfortunately your application for an access token has been rejected.\
-                For further discussion, please send me an email at hanidamlaj@gmail.com"
+                For further discussion, please send me an email at hanidamlaj@gmail.com",
 		},
 		pending: {
 			className: classes.alertInfo,
 			message:
 				"Thank you for your application. We are currently\
-                in the process of reviewing your application. We hope to get back to you shortly."
-		}
+                in the process of reviewing your application. We hope to get back to you shortly.",
+		},
 	};
 
-	// onpage load, fetch the status of the api request
-	useEffect(() => {
-		fetchAccessTokenReqState().then(res => {
-			if (!(res instanceof Error)) {
-				setAPIReqState(res);
-			}
-		});
-	}, []);
-
-	// onchange handler for text field inputs
-	const handleChange = name => e => {
+	// Callback function invoked when user changes on of the text/input fields.
+	const handleChange = (name: string) => (
+		e: SyntheticInputEvent<EventTarget>
+	) => {
 		const value = e.target.value;
-		setAPIReqState(prevState => ({
+		setAPIReqState((prevState) => ({
 			...prevState,
-			[name]: value
+			[name]: value,
 		}));
 	};
 
-	// onclick handler for the cancel button
+	// Callback function invoked when user clicks 'cancel'. We set the text fields
+	// back to the default values.
 	const handleCancel = () => {
-		setAPIReqState(prevState => ({
+		setAPIReqState((prevState) => ({
+			email: user.email,
 			name: "",
 			purpose: "",
-			status: ""
+			status: "",
 		}));
 	};
 
-	// onclick handler for the submit button
+	// Callback function invoked when the user clicks 'submit'.
 	const handleSubmit = () => {
-		createAccessTokenReq(apiReqState).then(res => {
+		createAccessTokenReq(apiReqState).then((res) => {
 			if (!(res instanceof Error)) {
 				setAPIReqState(res);
 				setSnackbar("Request has been sent for review!");
-			} else {
-				setSnackbarError(res.message);
 			}
 		});
 	};
@@ -140,11 +164,16 @@ function API({
 	 */
 	const handleCopy = () => {
 		const accessTokenInputRef = document.getElementById("access_token");
-		accessTokenInputRef.select();
-		document.execCommand("copy");
+		if (accessTokenInputRef) {
+			// We know that this is an input element, so let's
+			// disabled flow typechecker for this one line.
+			// $FlowFixMe
+			accessTokenInputRef.select();
+			document.execCommand("copy");
 
-		// set snackbar message to confirm copy
-		setSnackbar("Copied to clipboard!");
+			// Snackbar message to confirm clipboard copying.
+			setSnackbar("Copied to clipboard!");
+		}
 	};
 
 	return (
@@ -152,9 +181,9 @@ function API({
 			<CardHeader title="API Request Form" subheader="(beta)" />
 			<CardContent>
 				<Grid container>
-					{/* alert for the status of the user's access token request/application */}
 					<Grid item xs={12}>
-						{isDisabled && (
+						{/* Banner for the status of the user's access token request/application */}
+						{hasAlreadySubmitted && (
 							<Paper
 								className={classNames(
 									classes.alert,
@@ -169,7 +198,7 @@ function API({
 						)}
 					</Grid>
 
-					{/* if the access token has been approved, display accessToken and api endpoints */}
+					{/* If the access token has been approved, display accessToken and API endpoints. */}
 					{apiReqState.status === "approved" && (
 						<React.Fragment>
 							<Grid item xs={12}>
@@ -186,17 +215,17 @@ function API({
 													<FileCopy />
 												</IconButton>
 											</InputAdornment>
-										)
+										),
 									}}
 								></TextField>
 							</Grid>
 
-							{/* api endpoints */}
+							{/* API endpoints. */}
 							<SwaggerView />
 						</React.Fragment>
 					)}
 
-					{/* email text field (disabled) */}
+					{/* Disabled email text field with value `user.email`. */}
 					<Grid item xs={12}>
 						<TextField
 							className={classes.textField}
@@ -207,11 +236,11 @@ function API({
 						></TextField>
 					</Grid>
 
-					{/* the name of the user who would like access */}
+					{/* Name of user placing the request. */}
 					<Grid item xs={12}>
 						<TextField
 							className={classes.textField}
-							disabled={isDisabled}
+							disabled={hasAlreadySubmitted}
 							label="Name"
 							margin="normal"
 							onChange={handleChange("name")}
@@ -220,11 +249,11 @@ function API({
 						></TextField>
 					</Grid>
 
-					{/* purpose of the access token */}
+					{/* Reason for the access token. */}
 					<Grid item xs={12}>
 						<TextField
 							className={classes.textField}
-							disabled={isDisabled}
+							disabled={hasAlreadySubmitted}
 							label="Purpose"
 							margin="normal"
 							multiline
@@ -237,11 +266,13 @@ function API({
 					</Grid>
 				</Grid>
 			</CardContent>
+
+			{/* Actions (i.e. save & cancel) */}
 			<CardActions>
 				<Grid container justify="flex-end">
 					<Button
 						className={classes.button}
-						disabled={isDisabled}
+						disabled={hasAlreadySubmitted}
 						onClick={handleCancel}
 					>
 						cancel
@@ -249,10 +280,10 @@ function API({
 					<Button
 						className={classes.button}
 						color="primary"
-						disabled={isDisabled}
+						disabled={hasAlreadySubmitted}
 						onClick={handleSubmit}
 						style={{
-							padding: "0px 32px"
+							padding: "0px 32px",
 						}}
 						variant="outlined"
 					>
@@ -264,6 +295,20 @@ function API({
 	);
 }
 
-// API.propTypes = {};
-
+type APIProps = {
+	user: User,
+	setSnackbar: (string) => void,
+	setSnackbarError: (string) => void,
+	createAccessTokenReq: (AccessTokenRequest) => Promise<AccessTokenRequest>,
+	fetchAccessTokenReqState: () => Promise<AccessTokenRequest>,
+	fetchAccessTokenApplications: () => Promise<Array<AccessTokenRequest>>,
+};
+function API(props: APIProps) {
+	const { user, fetchAccessTokenApplications } = props;
+	return !!user.isAdmin ? (
+		<AdminView fetchAccessTokenApplications={fetchAccessTokenApplications} />
+	) : (
+		<APIView {...props} />
+	);
+}
 export default API;

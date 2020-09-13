@@ -4,11 +4,11 @@ import { login } from "../../actions/auth";
 import { addLoaderKey, removeLoaderKey } from "../../actions/loaders";
 import { setSnackbarError } from "../../actions/snackbar";
 
-const mapStateToProps = state => ({
-	isLoading: state.loaders.length > 0
+const mapStateToProps = (state) => ({
+	isLoading: state.loaders.length > 0,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
 	addLoaderKey(key) {
 		dispatch(addLoaderKey(key));
 	},
@@ -20,10 +20,7 @@ const mapDispatchToProps = dispatch => ({
 	},
 	setSnackbarError(message) {
 		dispatch(setSnackbarError(message));
-	}
+	},
 });
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Unauthenticated);
+export default connect(mapStateToProps, mapDispatchToProps)(Unauthenticated);

@@ -6,6 +6,7 @@ export type User = {
 	email: string,
 	phoneNumber: string,
 	subscribedSections: Array<string>,
+	isAdmin?: boolean,
 };
 
 export type AuthReducerState = {

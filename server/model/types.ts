@@ -3,6 +3,14 @@ import express = require("express");
 
 // All custom Typescript types are declared here.
 
+export interface APIRequestDoc {
+	email: string;
+	status: "approved" | "pending" | "rejected";
+	name: string;
+	purpose: string;
+	date?: admin.firestore.Timestamp | Date;
+}
+
 export interface AutoCompleteData {
 	courseCode: string;
 	courseName: string;

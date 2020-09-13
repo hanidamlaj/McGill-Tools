@@ -2,8 +2,15 @@ import redis = require("redis");
 import rp = require("request-promise");
 
 import admin from "./firebase";
-import { AutoCompleteData, Course, CourseQuery, UserInfo } from "./types";
+import {
+	AutoCompleteData,
+	Course,
+	CourseQuery,
+	UserInfo,
+	APIRequestDoc,
+} from "./types";
 import { courseToString } from "../scripts";
+import { firestore } from "firebase-admin";
 
 // Extract the environment variables that are needed.
 const redis_url = process.env["REDIS_URL"];
@@ -40,7 +47,7 @@ abstract class Database {
 	public static async createAPITokenRequest(
 		uid: string,
 		requestData: { name: string; purpose: string }
-	) {
+	): Promise<APIRequestDoc> {
 		// Get user with associated uid.
 		const user: UserInfo = await this.getUser(uid);
 
@@ -50,13 +57,33 @@ abstract class Database {
 
 		// If document does not exist, create an entry.
 		if (!doc.exists) {
-			const docData = { email: user.email, status: "pending", ...requestData };
+			const docData: APIRequestDoc = {
+				email: user.email,
+				status: "pending",
+				...requestData,
+				date: admin.firestore.Timestamp.now(),
+			};
 			await docRef.set(docData);
 			return docData;
 		}
 
 		// Return application status.
-		return doc.data();
+		return <APIRequestDoc>doc.data();
+	}
+
+	/**
+	 * Method to get all applications for api access
+	 */
+	public static async getAllApiTokenRequests(): Promise<Array<APIRequestDoc>> {
+		// Fetch all documents within apiRequests collection.
+		const snapshot = await this.apiRequests.get();
+
+		return snapshot.docs.map((doc) => {
+			const data = <APIRequestDoc>doc.data();
+
+			data.date = (data.date as firestore.Timestamp).toDate();
+			return data;
+		});
 	}
 
 	/**

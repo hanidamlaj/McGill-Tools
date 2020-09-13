@@ -14,6 +14,7 @@
 /server/build
 /server/.env
 /server/.dev-env
+/dump.rdb
 
 # misc
 .DS_Store

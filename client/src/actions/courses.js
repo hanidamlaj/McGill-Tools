@@ -5,7 +5,7 @@ import type {
 	SetSubscribedSectionsAction,
 	ThunkAction,
 } from "./types.js";
-import { BASE_URL } from "./types.js";
+import Controller from "./Controller.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
@@ -50,15 +50,10 @@ export const requestCourse = ({
 	const query = [faculty, course, year, semester].join("/");
 
 	dispatch(addLoaderKey(REQUEST_COURSE));
-	return fetch(`${BASE_URL}courses/${query}`, {
-		headers: {
-			"x-access-token": token ?? "",
-		},
-	})
-		.then((res) => res.json())
+	return new Controller(`/courses/${query}`, token ?? "")
+		.setMethod("GET")
+		.send()
 		.then((json) => {
-			if (json.error) throw new Error(json.message);
-
 			// log request
 			firebase
 				.analytics()
@@ -66,7 +61,7 @@ export const requestCourse = ({
 
 			return json;
 		})
-		.catch((err) => {
+		.catch((err: Error) => {
 			dispatch(setSnackbarError(err.message));
 			return err;
 		})
@@ -84,17 +79,11 @@ export const requestCourseSuggestions = (searchKey: string): ThunkAction => (
 ) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_COURSE_SUGGESTIONS));
-	return fetch(`${BASE_URL}courses/autocomplete/${searchKey}`, {
-		headers: {
-			"x-access-token": token ?? "",
-		},
-	})
-		.then((res) => res.json())
-		.then((json) => {
-			if (json.error) throw new Error(json.message);
-			return json;
-		})
-		.catch((err) => {
+
+	return new Controller(`/courses/autocomplete/${searchKey}`, token ?? "")
+		.setMethod("GET")
+		.send()
+		.catch((err: Error) => {
 			dispatch(setSnackbarError(err.message));
 			return err;
 		})
@@ -120,16 +109,10 @@ export const requestSectionSubscribe = ({
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	fetch(`${BASE_URL}notify/subscribe/${query}`, {
-		headers: {
-			"x-access-token": token ?? "",
-		},
-		method: "POST",
-	})
-		.then((res) => res.json())
+	return new Controller(`/notify/subscribe/${query}`, token ?? "")
+		.setMethod("POST")
+		.send()
 		.then((json) => {
-			if (json.error) throw new Error(json.message);
-
 			// log request
 			firebase.analytics().logEvent("section_subscribe", {
 				faculty,
@@ -140,9 +123,11 @@ export const requestSectionSubscribe = ({
 			});
 
 			dispatch(setSubscribedSections(json.subscribedSections));
+			return json;
 		})
-		.catch((err) => {
+		.catch((err: Error) => {
 			dispatch(setSnackbarError(err.message));
+			return err;
 		})
 		.finally(() => {
 			dispatch(removeLoaderKey(REQUEST_SUBSCRIBE));
@@ -166,29 +151,16 @@ export const requestSectionUnsubscribe = ({
 	const query = [faculty, course, year, semester, section].join("/");
 
 	dispatch(addLoaderKey(REQUEST_UNSUBSCRIBE));
-	fetch(`${BASE_URL}notify/unsubscribe/${query}`, {
-		headers: {
-			"x-access-token": token ?? "",
-		},
-		method: "POST",
-	})
-		.then((res) => res.json())
+	return new Controller(`/notify/unsubscribe/${query}`, token ?? "")
+		.setMethod("POST")
+		.send()
 		.then((json) => {
-			if (json.error) throw new Error(json.message);
-
-			// log request
-			firebase.analytics().logEvent("section_unsubscribe", {
-				faculty,
-				course,
-				year,
-				semester,
-				section,
-			});
-
 			dispatch(setSubscribedSections(json.subscribedSections));
+			return json;
 		})
-		.catch((err) => {
+		.catch((err: Error) => {
 			dispatch(setSnackbarError(err.message));
+			return err;
 		})
 		.finally(() => {
 			dispatch(removeLoaderKey(REQUEST_UNSUBSCRIBE));
@@ -201,20 +173,21 @@ export const requestSectionUnsubscribe = ({
 export const requestSubscribedSections: ThunkAction = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	fetch(`${BASE_URL}user/profile/subscribedSections`, {
-		headers: {
-			"x-access-token": token ?? "",
-		},
-	})
-		.then((res) => res.json())
+
+	return new Controller("/user/profile/subscribedSections", token ?? "")
+		.setMethod("GET")
+		.send()
 		.then((json) => {
-			if (json.error) throw new Error(json.message);
 			dispatch(setSubscribedSections(json));
+			return json;
 		})
-		.catch((err) => {
+		.catch((err: Error) => {
 			dispatch(setSnackbarError(err.message));
+			return err;
 		})
-		.finally(() => dispatch(removeLoaderKey(REQUEST_SUBSCRIBE)));
+		.finally(() => {
+			dispatch(removeLoaderKey(REQUEST_SUBSCRIBE));
+		});
 };
 
 // ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––

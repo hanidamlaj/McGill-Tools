@@ -15,47 +15,47 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
 	root: {
 		border: "1px solid #61affe",
 		backgroundColor: "#ecf6ff",
 		borderRadius: "4px",
-		margin: theme.spacing(2, 0)
+		margin: theme.spacing(2, 0),
 	},
 	expansionPanelSummary: {
-		padding: theme.spacing(0, 1)
+		padding: theme.spacing(0, 1),
 	},
 	summaryBlockMethod: {
 		backgroundColor: "#1391FF",
-		"&:hover": { backgroundColor: "#1391FF" }
+		"&:hover": { backgroundColor: "#1391FF" },
 	},
 	summaryPath: {
 		color: "#3b4151",
 		fontWeight: 700,
 		fontFamily: "monospace",
 		padding: theme.spacing(1),
-		fontSize: "16px"
+		fontSize: "16px",
 	},
 	summaryDescription: {
 		fontSize: "16px",
-		fontFamily: "sans-serif"
+		fontFamily: "sans-serif",
 	},
 	operationDescription: {
 		padding: theme.spacing(4, 3),
 		"& > p": {
-			fontWeight: "bold"
-		}
+			fontWeight: "bold",
+		},
 	},
 	operationSectionHeader: {
-		padding: theme.spacing(2, 3)
+		padding: theme.spacing(2, 3),
 	},
 	parameterName: {
 		"& > p": {
-			color: "#3b4151"
-		}
+			color: "#3b4151",
+		},
 	},
 	operationTable: {
-		padding: theme.spacing(4, 3)
+		padding: theme.spacing(4, 3),
 	},
 	responseBlock: {
 		width: "100%",
@@ -63,8 +63,8 @@ const useStyles = makeStyles(theme => ({
 		backgroundColor: "#41444e",
 		fontFamily: "monospace",
 		fontWeight: 600,
-		color: "white"
-	}
+		color: "white",
+	},
 }));
 
 // information about the api endpoints (e.g. parameters, responses) that developers can use
@@ -82,32 +82,32 @@ const apiEndpoints = [
 				name: "subject",
 				type: "string",
 				description: "the course subject (e.g. COMP)",
-				in: "path"
+				in: "path",
 			},
 			{
 				name: "course",
 				type: "string",
 				description: "the course number (e.g. 202)",
-				in: "path"
+				in: "path",
 			},
 			{
 				name: "year",
 				type: "string",
 				description: "the year the course is offered (e.g. 2020)",
-				in: "path"
+				in: "path",
 			},
 			{
 				name: "semester",
 				type: "string",
 				description: "the semester the course is offered (e.g. FALL)",
-				in: "path"
+				in: "path",
 			},
 			{
 				name: "accessToken",
 				type: "string",
 				description: "the access token issued to your account",
-				in: "query"
-			}
+				in: "query",
+			},
 		],
 		response: {
 			faculty: "Faculty of Science",
@@ -124,15 +124,15 @@ const apiEndpoints = [
 					section: "001",
 					instructor: "Alberini, Giulia",
 					days: "TR",
-					time: "14:35PM-15:55PM"
-				}
-			]
-		}
-	}
+					time: "14:35PM-15:55PM",
+				},
+			],
+		},
+	},
 ];
 
 export default function SwaggerViewAggregate() {
-	return apiEndpoints.map(ep => (
+	return apiEndpoints.map((ep) => (
 		<Grid key={ep.summaryPath} item xs={12}>
 			<SwaggerView {...ep}></SwaggerView>
 		</Grid>
@@ -149,7 +149,7 @@ function SwaggerView({
 	exampleRequest,
 	operationDescription,
 	parameters,
-	response
+	response,
 }) {
 	const classes = useStyles();
 
@@ -208,7 +208,7 @@ function SwaggerView({
 									</TableRow>
 								</TableHead>
 								<TableBody>
-									{parameters.map(param => (
+									{parameters.map((param) => (
 										<TableRow key={param.name}>
 											<TableCell className={classes.parameterName}>
 												<Typography

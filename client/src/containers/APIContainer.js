@@ -8,6 +8,7 @@ import { setSnackbar, setSnackbarError } from "./../actions/snackbar";
 import {
 	createAccessTokenReq,
 	fetchAccessTokenReqState,
+	fetchAccessTokenApplications,
 } from "./../actions/api";
 
 const mapStateToProps = (state: State) => ({
@@ -26,6 +27,9 @@ const mapDispatchToProps = (dispatch) => ({
 	},
 	fetchAccessTokenReqState() {
 		return dispatch(fetchAccessTokenReqState);
+	},
+	fetchAccessTokenApplications() {
+		return dispatch(fetchAccessTokenApplications);
 	},
 });
 

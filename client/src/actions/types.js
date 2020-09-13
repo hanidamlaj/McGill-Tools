@@ -4,20 +4,20 @@ import type { User, State, AuthReducerState } from "./../reducers/types.js";
 // Actions for auth.js file.
 
 // Action type for user profile.
-export type SetUserAction = { type: "SET_USER", payload: User };
+export type SetUserAction = { +type: "SET_USER", payload: User };
 
 // Action type for jwtToken holding user claims.
-export type SetTokenAction = { type: "SET_TOKEN", payload: string };
+export type SetTokenAction = { +type: "SET_TOKEN", payload: string };
 
 // Action type for data retrieved from login request.
-export type SetLoginAction = { type: "SET_LOGIN", payload: AuthReducerState };
+export type SetLoginAction = { +type: "SET_LOGIN", payload: AuthReducerState };
 
 // Action type to sign the current user out.
-export type SetLogoutAction = { type: "SET_LOGOUT", payload: null };
+export type SetLogoutAction = { +type: "SET_LOGOUT", payload: null };
 
 // Actions for courses.js file.
 export type SetSubscribedSectionsAction = {
-	type: "SET_SUBSCRIBED_SECTIONS",
+	+type: "SET_SUBSCRIBED_SECTIONS",
 	payload: Array<string>,
 };
 
@@ -104,7 +104,7 @@ export type SnackbarAction = {
 	payload: string,
 };
 
-type Action = {
+export type Action = {
 	+type: string,
 };
 
@@ -114,8 +114,3 @@ export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
 export type Dispatch = (
 	action: Action | ThunkAction | PromiseAction | Array<Action>
 ) => any;
-
-export const BASE_URL =
-	process.env.NODE_ENV === "development"
-		? "http://localhost:8080/"
-		: "https://mcgilltools.com/";
