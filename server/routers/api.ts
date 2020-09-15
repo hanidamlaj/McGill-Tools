@@ -107,7 +107,10 @@ router.get("/request-status", async (req: any, res: any) => {
 router.post(
 	"/approveToken/:uid",
 	async (req: UserRequest, res: express.Response) => {
-		const { uid, isAdmin } = req;
+		const { isAdmin, uid: adminUID } = req;
+
+		// This uid is the uid of the user who issued the application
+		const { uid } = req.params;
 
 		// User must have admin privileges to approve a token.
 		if (!isAdmin) {
@@ -120,7 +123,7 @@ router.post(
 		try {
 			// Create an access token by generating a uuid mapping to the user's request.
 			const token: string = uuid();
-			await db.approveTokenRequest(uid, token);
+			await db.approveTokenRequest(uid, token, adminUID);
 			// TODO: return something more meaningful here.
 			res.json({ uid, token });
 		} catch (err) {

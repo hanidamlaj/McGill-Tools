@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({}));
 
 type Props = {
 	fetchAccessTokenApplications: () => Promise<Array<AccessTokenRequest>>,
+	approveAccessTokenApplication: (uid: string) => Promise<void>,
 };
 
 const ACTIONS = ["approve", "reject"];
@@ -48,7 +49,10 @@ function applicationComparator(a: AccessTokenRequest, b: AccessTokenRequest) {
 	return statusPrecedence(a.status) - statusPrecedence(b.status);
 }
 
-export default function AdminAPIView({ fetchAccessTokenApplications }: Props) {
+export default function AdminAPIView({
+	fetchAccessTokenApplications,
+	approveAccessTokenApplication,
+}: Props) {
 	const classes = useStyles();
 
 	const [applications, setApplications] = useState<Array<AccessTokenRequest>>(
@@ -81,6 +85,7 @@ export default function AdminAPIView({ fetchAccessTokenApplications }: Props) {
 						</TableRow>
 					</TableHead>
 					<TableBody>
+						{/* Sort by ascending order of "pending", "rejected" and "approved". */}
 						{applications.sort(applicationComparator).map((application) => (
 							<TableRow key={application.email}>
 								<TableCell>{application.email}</TableCell>
@@ -89,8 +94,17 @@ export default function AdminAPIView({ fetchAccessTokenApplications }: Props) {
 								<TableCell>{application.date}</TableCell>
 								<TableCell>{application.status}</TableCell>
 								<TableCell>
-									<Button>Reject</Button>
-									<Button color="primary">Approve</Button>
+									{/* Rejecting tokens has not been implemented yet. */}
+									<Button disabled>Reject</Button>
+									<Button
+										disabled={application.status === "approved"}
+										color="primary"
+										onClick={() => {
+											approveAccessTokenApplication(application.uid ?? "");
+										}}
+									>
+										Approve
+									</Button>
 								</TableCell>
 							</TableRow>
 						))}

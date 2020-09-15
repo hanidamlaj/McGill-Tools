@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme) => ({
 		[theme.breakpoints.only("xs")]: {
 			height: 48,
 			padding: theme.spacing(0, 3),
-			width: 269,
+			width: 264,
 			"& > span": {
 				fontWeight: 500,
-				fontSize: 14,
+				fontSize: 12,
 				justifyContent: "flex-start",
 			},
 		},

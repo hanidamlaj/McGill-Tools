@@ -6,8 +6,6 @@ const serviceAccount = JSON.parse(
 	Buffer.from(process.env["firebase_sdk"], "base64").toString()
 );
 
-console.log(process.env.NODE_ENV);
-
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
 	databaseURL:

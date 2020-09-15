@@ -19,7 +19,7 @@ import FileCopy from "@material-ui/icons/FileCopy";
 
 import classNames from "classnames";
 import SwaggerView from "./SwaggerView";
-import AdminView from "./AdminAPIView";
+import AdminViewContainer from "../../containers/api/AdminAPIViewContainer";
 
 import type { User } from "../../reducers/types.js";
 
@@ -61,6 +61,8 @@ const useStyles = makeStyles((theme) => ({
 export type ApplicationStatus = "approved" | "pending" | "rejected" | "";
 
 export type AccessTokenRequest = {
+	// uid is inserted by the server before storing it in the DB.
+	uid?: string,
 	email: string,
 	name: string,
 	purpose: string,
@@ -76,7 +78,6 @@ function APIView({
 	createAccessTokenReq,
 	fetchAccessTokenReqState,
 	setSnackbar,
-	setSnackbarError,
 	user,
 }: APIProps) {
 	const classes = useStyles();
@@ -298,17 +299,11 @@ function APIView({
 type APIProps = {
 	user: User,
 	setSnackbar: (string) => void,
-	setSnackbarError: (string) => void,
 	createAccessTokenReq: (AccessTokenRequest) => Promise<AccessTokenRequest>,
 	fetchAccessTokenReqState: () => Promise<AccessTokenRequest>,
-	fetchAccessTokenApplications: () => Promise<Array<AccessTokenRequest>>,
 };
-function API(props: APIProps) {
-	const { user, fetchAccessTokenApplications } = props;
-	return !!user.isAdmin ? (
-		<AdminView fetchAccessTokenApplications={fetchAccessTokenApplications} />
-	) : (
-		<APIView {...props} />
-	);
+
+export default function APIViewEntry(props: APIProps) {
+	const { user } = props;
+	return !!user.isAdmin ? <AdminViewContainer /> : <APIView {...props} />;
 }
-export default API;

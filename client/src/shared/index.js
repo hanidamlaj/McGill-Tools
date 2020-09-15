@@ -12,11 +12,9 @@ export const IsSmallContext = React.createContext(false);
 
 export const theme = createMuiTheme({
 	typography: {
-		fontFamily: ["Quicksand", "sans-serif"]
+		fontFamily: ["Quicksand", "sans-serif"],
 	},
 	palette: {
-		primary: { main: "#E24945" }
-	}
+		primary: { main: "#E24945" },
+	},
 });
-
-console.log(theme);

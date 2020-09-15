@@ -255,12 +255,6 @@ function SwaggerView({
 											</pre>
 										</TableCell>
 									</TableRow>
-									{/* <TableRow>
-										<TableCell>400</TableCell>
-										<TableCell>
-											<Typography>Bad input parameter</Typography>
-										</TableCell>
-									</TableRow> */}
 								</TableBody>
 							</Table>
 						</Grid>

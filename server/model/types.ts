@@ -4,11 +4,14 @@ import express = require("express");
 // All custom Typescript types are declared here.
 
 export interface APIRequestDoc {
+	// This uid references the person who submitted the application.
+	uid: string;
 	email: string;
 	status: "approved" | "pending" | "rejected";
 	name: string;
 	purpose: string;
 	date?: admin.firestore.Timestamp | Date;
+	approvedBy?: string;
 }
 
 export interface AutoCompleteData {

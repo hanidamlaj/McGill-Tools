@@ -14,6 +14,7 @@
 /server/build
 /server/.env
 /server/.dev-env
+/server/.prod-env
 /dump.rdb
 
 # misc

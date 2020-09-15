@@ -21,7 +21,7 @@ export const fetchAccessTokenReqState: ThunkAction = (dispatch, getState) => {
 		.setMethod("GET")
 		.send()
 		.catch((err: Error) => {
-			setSnackbarError(err.message || err.toString());
+			dispatch(setSnackbarError(err.message || err.toString()));
 			return err;
 		})
 		.finally(() => {
@@ -37,7 +37,7 @@ export const fetchApiRequests: ThunkAction = (dispatch, getState) => {
 		.setMethod("GET")
 		.send()
 		.catch((err: Error) => {
-			setSnackbarError(err.message || err.toString());
+			dispatch(setSnackbarError(err.message || err.toString()));
 			return err;
 		})
 		.finally(() => {
@@ -61,7 +61,7 @@ export function createAccessTokenReq(formData: any): ThunkAction {
 			.setBody(formData)
 			.send()
 			.catch((err: Error) => {
-				setSnackbarError(err.message || err.toString());
+				dispatch(setSnackbarError(err.message || err.toString()));
 				return err;
 			})
 			.finally(() => {
@@ -85,10 +85,31 @@ export const fetchAccessTokenApplications: ThunkAction = (
 		.setMethod("GET")
 		.send()
 		.catch((err: Error) => {
-			setSnackbarError(err.message || err.toString());
+			dispatch(setSnackbarError(err.message || err.toString()));
 			return err;
 		})
 		.finally(() => {
 			dispatch(removeLoaderKey("FETCH_ACCESS_TOKEN_APPLICATIONS"));
+		});
+};
+
+/**
+ * Admin can approve applications for access tokens.
+ */
+export const approveAccessTokenApplication = (uid: string): ThunkAction => (
+	dispatch,
+	getState
+) => {
+	const token = getState().auth.token;
+	dispatch(addLoaderKey("APPROVE_ACCESS_TOKEN_APPLICATION"));
+
+	return new Controller(`/api/approveToken/${uid}`, token ?? "")
+		.setMethod("POST")
+		.send()
+		.catch((err: Error) => {
+			dispatch(setSnackbarError(err.message || err.toString()));
+		})
+		.finally(() => {
+			dispatch(removeLoaderKey("APPROVE_ACCESS_TOKEN_APPLICATION"));
 		});
 };

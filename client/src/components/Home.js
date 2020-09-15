@@ -9,7 +9,7 @@ import FindASeatContainer from "../containers/find_a_seat/FindASeatContainer";
 import NavigationDesktopContainer from "../containers/NavigationDesktopContainer";
 import NavigationMobileContainer from "../containers/NavigationMobileContainer";
 import SettingsContainer from "../containers/SettingsContainer";
-import APIContainer from "../containers/APIContainer";
+import APIContainer from "../containers/api/APIContainer";
 import Donate from "./Donate";
 
 import Divider from "@material-ui/core/Divider";
