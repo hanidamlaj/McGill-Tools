@@ -1,14 +1,15 @@
 // @flow
-import type { State } from "./../reducers/types.js";
+import type { State } from "../../reducers/types.js";
 
 import { connect } from "react-redux";
 
-import API from "../components/api/API";
-import { setSnackbar, setSnackbarError } from "./../actions/snackbar";
+import API from "../../components/api/API";
+import { setSnackbar, setSnackbarError } from "../../actions/snackbar";
 import {
 	createAccessTokenReq,
 	fetchAccessTokenReqState,
-} from "./../actions/api";
+	fetchAccessTokenApplications,
+} from "../../actions/api";
 
 const mapStateToProps = (state: State) => ({
 	user: state.auth.user,
@@ -17,9 +18,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch) => ({
 	setSnackbar(message) {
 		dispatch(setSnackbar(message));
-	},
-	setSnackbarError(message) {
-		dispatch(setSnackbarError(message));
 	},
 	createAccessTokenReq(formData) {
 		return dispatch(createAccessTokenReq(formData));

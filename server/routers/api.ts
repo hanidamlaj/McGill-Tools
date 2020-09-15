@@ -104,24 +104,58 @@ router.get("/request-status", async (req: any, res: any) => {
 /**
  * Route for an admin to approve a user's API access token request.
  */
-router.post("/approveToken/:uid", async (req: any, res: any) => {
-	const { uid, isAdmin } = req;
+router.post(
+	"/approveToken/:uid",
+	async (req: UserRequest, res: express.Response) => {
+		const { isAdmin, uid: adminUID } = req;
 
-	// User must have admin privileges to approve a token.
-	if (!isAdmin) {
-		res
-			.status(403)
-			.json({ error: "Forbidden endpoint. User must be an admin." });
-		return;
-	}
+		// This uid is the uid of the user who issued the application
+		const { uid } = req.params;
 
-	try {
-		// Create an access token by generating a uuid mapping to the user's request.
-		await db.approveTokenRequest(uid, uuid());
-		res.status(200).end();
-	} catch (err) {
-		res.json({ error: true, message: err.message || err.toString() });
+		// User must have admin privileges to approve a token.
+		if (!isAdmin) {
+			res
+				.status(403)
+				.json({ error: "Forbidden endpoint. User must be an admin." });
+			return;
+		}
+
+		try {
+			// Create an access token by generating a uuid mapping to the user's request.
+			const token: string = uuid();
+			await db.approveTokenRequest(uid, token, adminUID);
+			// TODO: return something more meaningful here.
+			res.json({ uid, token });
+		} catch (err) {
+			res.json({ error: true, message: err.message || err.toString() });
+		}
 	}
-});
+);
+
+/**
+ * Route for an admin to view all pending API access token requests.
+ */
+router.get(
+	"/getApiRequests",
+	async (req: UserRequest, res: express.Response) => {
+		const { isAdmin } = req;
+
+		// User must have admin privileges to approve a token.
+		if (!isAdmin) {
+			res
+				.status(403)
+				.json({ error: "Forbidden endpoint. User must be an admin." });
+			return;
+		}
+
+		try {
+			// Fetch all access token applications.
+			const applications = await db.getAllApiTokenRequests();
+			res.json(applications);
+		} catch (err) {
+			res.json({ error: true, message: err.message || err.toString() });
+		}
+	}
+);
 
 export default router;

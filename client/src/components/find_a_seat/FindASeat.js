@@ -12,33 +12,34 @@ import TextField from "@material-ui/core/TextField";
 import CourseSubscriptionsContainer from "../../containers/find_a_seat/CourseSubscriptionsContainer";
 import SubscribeToCourse from "./SubscribeToCourse";
 
+// Extracts the additional characters from a possibly autofilled phone number.
+function stripPhoneNumber(phoneNumber) {
+	// set of ignored characters that may be present during browser autofill
+	const ignoredCharacters = new Set(["(", " ", ")", "-"]);
+
+	const filteredPhoneNumber = phoneNumber
+		.split("")
+		.filter((c) => !ignoredCharacters.has(c))
+		.join("");
+
+	return filteredPhoneNumber;
+}
+
+// Test for a valid north american number.
+function isPhoneNumberValid(phoneNumber) {
+	const regex = /^\+1\d{10}$/;
+	return regex.test(stripPhoneNumber(phoneNumber));
+}
+
 /**
- * this component is the parent component for the get-a-seat page
+ * This component renders the user's subscribed sections and the search
+ * feature to look for desired sections.
  */
 function FindASeat({ updateUserProfile, user }) {
 	// state to control dialog
 	const [open, setOpen] = useState(!user.phoneNumber);
 
 	const [isNumberValid, setIsNumberValid] = useState(true);
-
-	// extracts the extension and numbers from a possibly autofilled phone number
-	function stripPhoneNumber(phoneNumber) {
-		// set of ignored characters that may be present during browser autofill
-		const ignoredCharacters = new Set(["(", " ", ")", "-"]);
-
-		const filteredPhoneNumber = phoneNumber
-			.split("")
-			.filter(c => !ignoredCharacters.has(c))
-			.join("");
-
-		return filteredPhoneNumber;
-	}
-
-	// function to test for a valid north american number
-	function isPhoneNumberValid(phoneNumber) {
-		const regex = /^\+1\d{10}$/;
-		return regex.test(stripPhoneNumber(phoneNumber));
-	}
 
 	// subscribe to changes in user profile
 	useEffect(() => {
@@ -50,11 +51,11 @@ function FindASeat({ updateUserProfile, user }) {
 	// react state to control the data of the inputs
 	const [userDetails, setUserDetails] = useState({
 		...user,
-		phoneNumber: user.phoneNumber || "+1"
+		phoneNumber: user.phoneNumber || "+1",
 	});
 
 	// function to handle input changes
-	const handleChange = name => event => {
+	const handleChange = (name) => (event) => {
 		setUserDetails({ ...userDetails, [name]: event.target.value });
 	};
 
@@ -66,8 +67,8 @@ function FindASeat({ updateUserProfile, user }) {
 			updateUserProfile({
 				...user,
 				...userDetails,
-				phoneNumber: stripPhoneNumber(userDetails.phoneNumber)
-			}).then(res => {
+				phoneNumber: stripPhoneNumber(userDetails.phoneNumber),
+			}).then((res) => {
 				if (!(res instanceof Error)) {
 					setOpen(false);
 					setIsNumberValid(true);

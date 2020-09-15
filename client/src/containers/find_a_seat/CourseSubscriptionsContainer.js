@@ -3,14 +3,14 @@ import CourseSubscriptions from "../../components/find_a_seat/CourseSubscription
 import {
 	requestCourse,
 	requestSectionUnsubscribe,
-	requestSubscribedSections
+	requestSubscribedSections,
 } from "../../actions/courses";
 
-const mapStateToProps = state => ({
-	subscribedSections: state.auth.user.subscribedSections || []
+const mapStateToProps = (state) => ({
+	subscribedSections: state.auth.user.subscribedSections || [],
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
 	requestCourse(courseQuery) {
 		return dispatch(requestCourse(courseQuery));
 	},
@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
 	},
 	requestSectionUnsubscribe(courseQuery) {
 		dispatch(requestSectionUnsubscribe(courseQuery));
-	}
+	},
 });
 
 export default connect(

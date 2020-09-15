@@ -1,7 +1,7 @@
 // @flow
 
 import type { ThunkAction } from "./types.js";
-import { BASE_URL } from "./types.js";
+import Controller from "./Controller.js";
 
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
@@ -17,18 +17,27 @@ export const fetchAccessTokenReqState: ThunkAction = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(FETCH_ACCESS_TOKEN_REQUEST));
 
-	return fetch(`${BASE_URL}api/request-status`, {
-		headers: {
-			"x-access-token": token ?? "",
-		},
-	})
-		.then((res) => res.json())
-		.then((res) => {
-			if (res.error) throw new Error(res.error);
-			return res;
+	return new Controller("api/request-status", token ?? "")
+		.setMethod("GET")
+		.send()
+		.catch((err: Error) => {
+			dispatch(setSnackbarError(err.message || err.toString()));
+			return err;
 		})
-		.catch((err) => {
-			setSnackbarError(err.message || err.toString());
+		.finally(() => {
+			dispatch(removeLoaderKey(FETCH_ACCESS_TOKEN_REQUEST));
+		});
+};
+
+export const fetchApiRequests: ThunkAction = (dispatch, getState) => {
+	const token = getState().auth.token;
+	dispatch(addLoaderKey(FETCH_ACCESS_TOKEN_REQUEST));
+
+	return new Controller("api/getApiRequests", token ?? "")
+		.setMethod("GET")
+		.send()
+		.catch((err: Error) => {
+			dispatch(setSnackbarError(err.message || err.toString()));
 			return err;
 		})
 		.finally(() => {
@@ -46,21 +55,13 @@ export function createAccessTokenReq(formData: any): ThunkAction {
 		const token = getState().auth.token;
 
 		dispatch(addLoaderKey(CREATE_ACCESS_TOKEN_REQUEST));
-		return fetch(`${BASE_URL}api/request-access`, {
-			body: JSON.stringify(formData),
-			headers: {
-				"x-access-token": token ?? "",
-				"Content-Type": "application/json",
-			},
-			method: "POST",
-		})
-			.then((res) => res.json())
-			.then((res) => {
-				if (res.error) throw new Error(res.error);
-				return res;
-			})
-			.catch((err) => {
-				setSnackbarError(err.message || err.toString());
+
+		return new Controller("api/request-access", token ?? "")
+			.setMethod("POST")
+			.setBody(formData)
+			.send()
+			.catch((err: Error) => {
+				dispatch(setSnackbarError(err.message || err.toString()));
 				return err;
 			})
 			.finally(() => {
@@ -68,3 +69,47 @@ export function createAccessTokenReq(formData: any): ThunkAction {
 			});
 	};
 }
+
+/**
+ * Admin can fetch users' applications for access tokens.
+ */
+export const fetchAccessTokenApplications: ThunkAction = (
+	dispatch,
+	getState
+) => {
+	const token = getState().auth.token;
+
+	dispatch(addLoaderKey("FETCH_ACCESS_TOKEN_APPLICATIONS"));
+
+	return new Controller("/api/getApiRequests", token ?? "")
+		.setMethod("GET")
+		.send()
+		.catch((err: Error) => {
+			dispatch(setSnackbarError(err.message || err.toString()));
+			return err;
+		})
+		.finally(() => {
+			dispatch(removeLoaderKey("FETCH_ACCESS_TOKEN_APPLICATIONS"));
+		});
+};
+
+/**
+ * Admin can approve applications for access tokens.
+ */
+export const approveAccessTokenApplication = (uid: string): ThunkAction => (
+	dispatch,
+	getState
+) => {
+	const token = getState().auth.token;
+	dispatch(addLoaderKey("APPROVE_ACCESS_TOKEN_APPLICATION"));
+
+	return new Controller(`/api/approveToken/${uid}`, token ?? "")
+		.setMethod("POST")
+		.send()
+		.catch((err: Error) => {
+			dispatch(setSnackbarError(err.message || err.toString()));
+		})
+		.finally(() => {
+			dispatch(removeLoaderKey("APPROVE_ACCESS_TOKEN_APPLICATION"));
+		});
+};

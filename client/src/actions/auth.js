@@ -8,7 +8,7 @@ import type {
 	ThunkAction,
 } from "./types.js";
 import type { User, AuthReducerState } from "./../reducers/types.js";
-import { BASE_URL } from "./types.js";
+import Controller from "./Controller.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
@@ -60,19 +60,16 @@ const UPDATE_USER_PROFILE: string = "UPDATE_USER_PROFILE";
 export function login(idToken: string): ThunkAction {
 	return (dispatch) => {
 		dispatch(addLoaderKey(REQUEST_LOGIN));
-		return fetch(`${BASE_URL}login`, {
-			body: JSON.stringify({ idToken }),
-			headers: {
-				"Content-Type": "application/json",
-			},
-			method: "POST",
-		})
-			.then((res) => res.json())
+
+		return new Controller("/login", "")
+			.setMethod("POST")
+			.setBody(JSON.stringify({ idToken }))
+			.send()
 			.then((json) => {
-				if (json.error) throw new Error(json.message);
 				dispatch(setLogin(json));
+				return json;
 			})
-			.catch((err) => {
+			.catch((err: Error) => {
 				dispatch(setSnackbarError(err.message));
 				return err;
 			})
@@ -88,17 +85,14 @@ export function login(idToken: string): ThunkAction {
 export const getUser: ThunkAction = (dispatch, getState) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(REQUEST_USER));
-	fetch(`${BASE_URL}user/profile`, {
-		headers: {
-			"x-access-token": token ?? "",
-		},
-	})
-		.then((res) => res.json())
+	return new Controller("/user/profile", token ?? "")
+		.setMethod("GET")
+		.send()
 		.then((json) => {
-			if (json.error) throw new Error(json.message);
 			dispatch(setUser(json));
+			return json;
 		})
-		.catch((err) => {
+		.catch((err: Error) => {
 			dispatch(setSnackbarError(err.message));
 		})
 		.finally(() => dispatch(removeLoaderKey(REQUEST_USER)));
@@ -113,25 +107,18 @@ export const updateUserProfile = (user: User): ThunkAction => (
 ) => {
 	const token = getState().auth.token;
 	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
-	return fetch(`${BASE_URL}user/profile`, {
-		body: JSON.stringify(user),
-		headers: {
-			"Content-Type": "application/json",
-			"x-access-token": token ?? "",
-		},
-		method: "POST",
-	})
-		.then((res) => res.json())
+	return new Controller("/user/profile", token ?? "")
+		.setMethod("POST")
+		.setBody(JSON.stringify(user))
+		.send()
 		.then((json) => {
-			if (json.error) throw new Error(json.message);
-
 			// log request
 			firebase.analytics().logEvent("update_profile");
 
 			dispatch(setUser(json));
 			return json;
 		})
-		.catch((err) => {
+		.catch((err: Error) => {
 			dispatch(setSnackbarError(err.message));
 			return err;
 		})
