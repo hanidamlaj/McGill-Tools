@@ -100,7 +100,7 @@ function APIView({
 		fetchAccessTokenReqState().then((res) => {
 			setAPIReqState(res);
 		});
-	}, []);
+	}, [fetchAccessTokenReqState]);
 
 	/**
 	 * Maps enum ApplicationStatus {approved, rejected and pending} to feedback message.

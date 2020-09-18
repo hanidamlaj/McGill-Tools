@@ -1,14 +1,9 @@
 // @flow
 
 import React from "react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import Divider from "@material-ui/core/Divider";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -18,9 +13,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import Typography from "@material-ui/core/Typography";
 
-import Controller from "../../actions/Controller";
 import type { AccessTokenRequest, ApplicationStatus } from "./API";
 
 const useStyles = makeStyles((theme) => ({}));
@@ -29,8 +22,6 @@ type Props = {
 	fetchAccessTokenApplications: () => Promise<Array<AccessTokenRequest>>,
 	approveAccessTokenApplication: (uid: string) => Promise<void>,
 };
-
-const ACTIONS = ["approve", "reject"];
 
 function statusPrecedence(status: ApplicationStatus) {
 	switch (status) {
@@ -67,7 +58,7 @@ export default function AdminAPIView({
 				setApplications(res);
 			}
 		});
-	}, []);
+	}, [fetchAccessTokenApplications]);
 
 	return (
 		<Card>

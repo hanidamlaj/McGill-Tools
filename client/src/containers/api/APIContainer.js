@@ -4,11 +4,10 @@ import type { State } from "../../reducers/types.js";
 import { connect } from "react-redux";
 
 import API from "../../components/api/API";
-import { setSnackbar, setSnackbarError } from "../../actions/snackbar";
+import { setSnackbar } from "../../actions/snackbar";
 import {
 	createAccessTokenReq,
 	fetchAccessTokenReqState,
-	fetchAccessTokenApplications,
 } from "../../actions/api";
 
 const mapStateToProps = (state: State) => ({

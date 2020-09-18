@@ -82,7 +82,9 @@ abstract class Database {
 		return snapshot.docs.map((doc) => {
 			const data = <APIRequestDoc>doc.data();
 
-			data.date = (data.date as firestore.Timestamp).toDate();
+			data.date = data.date
+				? (data.date as firestore.Timestamp).toDate()
+				: null;
 			// Old applications might not have the uid property attached to them
 			// as it's a relatively new addition.
 			data.uid = data.uid ?? doc.id;

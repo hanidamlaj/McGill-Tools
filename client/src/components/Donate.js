@@ -3,6 +3,7 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
+import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -50,20 +51,10 @@ function Donate() {
 								</Typography>
 							</Grid>
 							<Grid item xs={12}>
-								<form
-									className={classes.paypal_form}
-									action="https://www.paypal.com/cgi-bin/webscr"
-									method="post"
-									target="_top"
+								<Link
+									href="https://paypal.me/hanidamlaj?locale.x=en_US"
+									target="_blank"
 								>
-									<input type="hidden" name="cmd" value="_donations" />
-									<input type="hidden" name="business" value="L6E3J373XKBKL" />
-									<input
-										type="hidden"
-										name="item_name"
-										value="Keep the McGill-Tools service running!"
-									/>
-									<input type="hidden" name="currency_code" value="CAD" />
 									<input
 										className={classes.donateButton}
 										type="image"
@@ -73,14 +64,7 @@ function Donate() {
 										title="PayPal - The safer, easier way to pay online!"
 										alt="Donate with PayPal button"
 									/>
-									<img
-										alt=""
-										border="0"
-										src="https://www.paypal.com/en_CA/i/scr/pixel.gif"
-										width="1"
-										height="1"
-									/>
-								</form>
+								</Link>
 							</Grid>
 						</Grid>
 					</CardContent>
