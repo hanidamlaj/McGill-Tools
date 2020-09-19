@@ -75,7 +75,7 @@ const LINKS = [
 	{
 		buttonText: "Schedule Builder",
 		icon: <ScheduleIcon />,
-		linkTo: "/",
+		linkTo: "/schedule-builder",
 	}
 ];
 

@@ -146,7 +146,7 @@ function NavigationDesktop({
 		},
 		{
 			buttonName: "schedule builder",
-			linkTo: "/"
+			linkTo: "/schedule-builder"
 		}
 	];
 

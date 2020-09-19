@@ -19,6 +19,7 @@ import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 
 import { IsSmallContext } from "../shared";
+import ScheduleBuilderContainer from "../containers/schedule_builder/ScheduleBuilderContainer";
 
 const useStyles = makeStyles((theme) => ({
 	rootWrapper: {
@@ -81,6 +82,9 @@ function Home({ logout }: Props) {
 
 							{/* Route for donations */}
 							<Route exact path="/donate" component={Donate} />
+
+							{/* Route for schedule builder. */}
+							<Route exact path="/schedule-builder" component={ScheduleBuilderContainer} />
 
 							{/* default route (no routes matched, redirect to home) */}
 							<Route path="/" render={() => <Redirect to="/get-a-seat" />} />
