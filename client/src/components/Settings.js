@@ -71,7 +71,7 @@ function Settings({
 	// Fetch user data on mount.
 	useEffect(() => {
 		getUser();
-	}, []);
+	}, [getUser]);
 
 	// Callback to handle changes to input.
 	const handleChange = (name: string) => (event) => {

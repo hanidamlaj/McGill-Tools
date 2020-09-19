@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -49,14 +49,6 @@ type Props = {
 function Home({ logout }: Props) {
 	const classes = useStyles();
 	const isSmallDevice = React.useContext(IsSmallContext);
-
-	// equivalent to componentDidUnmount() lifecycle function -- sign user out from firebase
-	useEffect(() => {
-		return () => {
-			// sign user out and clear local storage
-			logout();
-		};
-	}, []);
 
 	return (
 		<div className={classes.rootWrapper}>

@@ -3,79 +3,58 @@
 import React from "react";
 
 import Button from "@material-ui/core/Button";
+import Box from "@material-ui/core/Box";
 import Chip from "@material-ui/core/Chip";
+import Container from "@material-ui/core/Container";
+import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import { IsSmallContext } from "../../shared";
+
+import classnames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
-	hidden: {
-		height: 1,
-		visibility: "hidden",
-	},
+	// STYLES THAT APPLY ONLY FOR
+	// LARGE VIEWPORTS
 	section: {
-		display: "flex",
-		justifyContent: "center",
-
-		[theme.breakpoints.up("lg")]: {
-			"&:nth-child(2)": {
-				marginTop: theme.spacing(8),
-			},
-			// alternate background colours
-			"&:nth-child(even)": {
-				backgroundColor: "white",
-			},
-		},
-
-		[theme.breakpoints.down("md")]: {
-			margin: theme.spacing(4, 0),
-			"&:nth-child(2)": {
-				marginTop: theme.spacing(10),
-			},
-			width: "100%",
+		// alternate background colours
+		"&:nth-child(even)": {
+			backgroundColor: "white",
 		},
 	},
+	sectionContent: {
+		position: "relative",
+		padding: theme.spacing(8),
+	},
+	flexOrderOne: {
+		order: 0,
+	},
+	flexOrderTwo: {
+		order: 1,
+	},
+	chipContainer: {
+		position: "absolute",
+		top: 16,
+		right: 16,
+		"& > div": {
+			width: 200,
+		},
+	},
+
+	// STYLES THAT ONLY APPLY TO
+	// SMALL VIEWPORTS
+	sectionCardRoot: {
+		borderRadius: 25,
+		padding: theme.spacing(4),
+	},
+
+	// SHARE STYLES THAT APPLY TO BOTH
 	sectionButton: {
 		[theme.breakpoints.up("lg")]: {
 			width: "40%",
 		},
 
-		[theme.breakpoints.down("md")]: {
-			width: "100%",
-		},
-	},
-	sectionContent: {
-		display: "flex",
-		position: "relative",
-		// transform section title to uppercase letters
-		"& h3": {
-			textTransform: "uppercase",
-			[theme.breakpoints.down("md")]: {
-				fontSize: 22,
-				textAlign: "center",
-			},
-		},
-
-		[theme.breakpoints.up("lg")]: {
-			flexWrap: "wrap",
-			width: "80%",
-			maxWidth: 1800,
-			padding: theme.spacing(8),
-		},
-
-		[theme.breakpoints.down("md")]: {
-			flexDirection: "column",
-			justifyContent: "center",
-			alignItems: "center",
-			width: "90%",
-			maxWidth: 400,
-			backgroundColor: "white",
-			padding: theme.spacing(4),
-			borderRadius: 25,
-			boxShadow: [theme.shadows["8"]],
-		},
-	},
-	sectionImageContainer: {
 		[theme.breakpoints.down("md")]: {
 			width: "100%",
 		},
@@ -95,38 +74,23 @@ const useStyles = makeStyles((theme) => ({
 		height: "100%",
 		padding: theme.spacing(4),
 	},
-	chipContainer: {
-		[theme.breakpoints.down("md")]: {
-			display: "flex",
-			width: "100%",
-			justifyContent: "center",
-		},
 
-		[theme.breakpoints.up("lg")]: {
-			position: "absolute",
-			top: 16,
-			right: 16,
-			"& > div": {
-				width: 200,
-			},
-		},
-	},
 	sectionText: {
 		[theme.breakpoints.up("lg")]: {
 			padding: theme.spacing(8, 0),
 			"& > p": { fontSize: "24px" },
-			color: "black",
 		},
 
 		[theme.breakpoints.down("md")]: {
 			padding: theme.spacing(2, 0),
 			"& > p": {
 				fontSize: 16,
-				color: "rgba(0, 0, 0, 0.6)",
-				textAlign: "center",
 			},
-			color: "black",
 		},
+	},
+	hidden: {
+		height: 1,
+		visibility: "hidden",
 	},
 }));
 
@@ -177,82 +141,157 @@ type SingleSectionProps = {
 	classes: { [string]: string },
 	section: Section,
 	index: number,
-	isSmallDevice: boolean,
 	handleClick: () => void,
 };
+
+function SingleSectionSmallViewport({
+	classes,
+	handleClick,
+	index,
+	section,
+}: SingleSectionProps) {
+	return (
+		<Container
+			maxWidth="xs"
+			fixed
+			id={section.sectionId}
+			key={section.sectionId}
+		>
+			<Grid container justify="center">
+				<Grid item xs={12}>
+					<Box my={2}>
+						<Card elevation={8} classes={{ root: classes.sectionCardRoot }}>
+							<Grid container direction="column" alignItems="center">
+								{section.comingSoon && (
+									<Chip label="Coming Soon" variant="outlined" />
+								)}
+
+								<div style={{ width: "100%" }}>
+									<div className={classes.sectionImageOuter}>
+										<img
+											alt=""
+											className={classes.sectionImage}
+											src={section.imgSrc}
+										/>
+									</div>
+								</div>
+
+								<Typography variant="h4">
+									{section.sectionTitle.toUpperCase()}
+								</Typography>
+
+								<div className={classes.sectionText}>
+									{section.sectionBodyText.map((text) => (
+										<Typography
+											align="center"
+											color="textSecondary"
+											gutterBottom
+											key={text}
+											variant="body1"
+										>
+											{text}
+										</Typography>
+									))}
+								</div>
+
+								<Button
+									color="primary"
+									onClick={handleClick}
+									variant="outlined"
+								>
+									{section.buttonText}
+								</Button>
+							</Grid>
+						</Card>
+					</Box>
+				</Grid>
+			</Grid>
+		</Container>
+	);
+}
 
 /**
  * React component that returns a single section of the landing page
  */
-function SingleSection({
+function SingleSectionBigViewport({
 	classes,
 	handleClick,
 	index,
-	isSmallDevice,
 	section,
 }: SingleSectionProps) {
-	// half of the section that contains text
-	const description = (
-		<Grid item lg={6} xs={12}>
-			<Typography className={classes.sectionTitle} variant="h3">
-				{section.sectionTitle}
-			</Typography>
-			<div className={classes.sectionText}>
-				{section.sectionBodyText.map((text) => (
-					<Typography gutterBottom key={text} variant="body1">
-						{text}
-					</Typography>
-				))}
-			</div>
-			<Button
-				className={classes.sectionButton}
-				color="primary"
-				onClick={handleClick}
-				variant="outlined"
-			>
-				{section.buttonText}
-			</Button>
-		</Grid>
-	);
-
-	// other half of section that contains the image
-	const image = (
-		<Grid className={classes.sectionImageContainer} item lg={6} xs={12}>
-			<div className={classes.sectionImageOuter}>
-				<img alt="" className={classes.sectionImage} src={section.imgSrc} />
-			</div>
-		</Grid>
-	);
-
 	return (
 		<div
 			className={classes.section}
 			id={section.sectionId}
 			key={section.sectionId}
 		>
-			<div className={classes.sectionContent}>
-				{section.comingSoon && (
-					<div className={classes.chipContainer}>
-						<Chip label="Coming Soon" variant="outlined"></Chip>
-					</div>
-				)}
-				{isSmallDevice || index % 2 !== 0 ? (
-					<React.Fragment>
-						{image} {description}
-					</React.Fragment>
-				) : (
-					<React.Fragment>
-						{description} {image}
-					</React.Fragment>
-				)}
-			</div>
+			<Container fixed maxWidth="lg">
+				<Grid container className={classes.sectionContent}>
+					{section.comingSoon && (
+						<div className={classes.chipContainer}>
+							<Chip label="Coming Soon" variant="outlined" />
+						</div>
+					)}
+
+					{/* Section Description */}
+					<Grid
+						item
+						lg={6}
+						className={classnames({
+							[classes.flexOrderOne]: index % 2 === 0,
+							[classes.flexOrderTwo]: index % 2 !== 0,
+						})}
+					>
+						<Typography variant="h3">
+							{section.sectionTitle.toUpperCase()}
+						</Typography>
+						<div className={classes.sectionText}>
+							{section.sectionBodyText.map((text) => (
+								<Typography
+									gutterBottom
+									key={text}
+									color="textSecondary"
+									variant="body1"
+								>
+									{text}
+								</Typography>
+							))}
+						</div>
+						<Button
+							className={classes.sectionButton}
+							color="primary"
+							onClick={handleClick}
+							variant="outlined"
+						>
+							{section.buttonText}
+						</Button>
+					</Grid>
+
+					{/* Section Image */}
+					<Grid
+						item
+						lg={6}
+						className={classnames({
+							[classes.flexOrderOne]: index % 2 !== 0,
+							[classes.flexOrderTwo]: index % 2 === 0,
+						})}
+					>
+						<div className={classes.sectionImageOuter}>
+							<img
+								alt=""
+								className={classes.sectionImage}
+								src={section.imgSrc}
+							/>
+						</div>
+					</Grid>
+				</Grid>
+			</Container>
 		</div>
 	);
 }
 
 type AggregateSectionsProps = {
 	handleClick: () => void,
-	isSmallDevice: boolean,
 };
 
 /**
@@ -261,20 +300,31 @@ type AggregateSectionsProps = {
 function AggregateSections(props: AggregateSectionsProps) {
 	const classes = useStyles();
 
-	// react element for the sections
+	const isSmallDevice = React.useContext(IsSmallContext);
+
 	return (
 		<>
-			{sectionsData.map((section, index) => (
-				<SingleSection
-					{...props}
-					classes={classes}
-					index={index}
-					key={section.sectionId}
-					section={section}
-				/>
-			))}
+			{sectionsData.map((section, index) =>
+				isSmallDevice ? (
+					<SingleSectionSmallViewport
+						{...props}
+						classes={classes}
+						index={index}
+						key={section.sectionId}
+						section={section}
+					/>
+				) : (
+					<SingleSectionBigViewport
+						{...props}
+						classes={classes}
+						index={index}
+						key={section.sectionId}
+						section={section}
+					/>
+				)
+			)}
 			{/* for bottom margin purposes */}
-			<div className={classes.hidden}></div>
+			<div className={classes.hidden} />
 		</>
 	);
 }

@@ -21,16 +21,6 @@ function Login({
 	history,
 }: LoginProps) {
 	const provider = match.params.provider;
-	const loginWithProvider = (provider) => {
-		if (provider === "google")
-			firebase
-				.auth()
-				.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
-		else if (provider === "facebook")
-			firebase
-				.auth()
-				.signInWithRedirect(new firebase.auth.FacebookAuthProvider());
-	};
 
 	useEffect(() => {
 		firebase
@@ -44,21 +34,28 @@ function Login({
 						if (res instanceof Error) history.push("/");
 					});
 				} else {
-					loginWithProvider(provider);
+					if (provider === "google")
+						firebase
+							.auth()
+							.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+					else if (provider === "facebook")
+						firebase
+							.auth()
+							.signInWithRedirect(new firebase.auth.FacebookAuthProvider());
 				}
 			})
 			.catch(function (error) {
 				if (error.code === "auth/account-exists-with-different-credential") {
-					history.push("/");
 					setSnackbarError(
 						"This email address is already in use with another sign-in method."
 					);
+					history.push("/");
 				}
 			})
 			.finally(() => {
 				removeLoaderKey("beginAuth");
 			});
-	}, []);
+	}, [history, login, removeLoaderKey, setSnackbarError, provider]);
 
 	return <React.Fragment />;
 }

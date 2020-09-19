@@ -5,8 +5,8 @@ import * as React from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 import AppBar from "@material-ui/core/AppBar";
+import Collapse from "@material-ui/core/Collapse";
 import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
 import Link from "@material-ui/core/Link";
 import List from "@material-ui/core/List";
@@ -54,64 +54,30 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-type DrawerLinkProps = {
-	buttonText: string,
-	classes: { [string]: string },
-	handleClick: () => void,
-	icon: React.MixedElement,
-	linkTo: string,
-};
-
-/**
- * renders an individual link inside the drawer
- */
-function DrawerLink({
-	buttonText,
-	classes,
-	handleClick,
-	icon,
-	linkTo,
-}: DrawerLinkProps) {
-	return (
-		<Link
-			color="inherit"
-			className={classes.link}
-			component={RouterLink}
-			to={linkTo}
-		>
-			<ListItem button key={buttonText} onClick={handleClick}>
-				<ListItemIcon>{icon}</ListItemIcon>
-				<ListItemText primaryTypographyProps={{ variant: "button" }}>
-					{buttonText}
-				</ListItemText>
-			</ListItem>
-		</Link>
-	);
-}
+// links / menu options to display for navigation.
+const LINKS = [
+	{
+		buttonText: "Find A Seat",
+		icon: <NotificationIcon />,
+		linkTo: "/",
+	},
+	{
+		buttonText: "Settings",
+		icon: <SettingsIcon />,
+		linkTo: "/settings",
+	},
+	{ buttonText: "Donate", icon: <PaymentIcon />, linkTo: "/donate" },
+];
 
 type NavigationMobileProps = {
 	logout: () => void,
 };
+
 /**
  * component for mobile top nagivation bar
  */
 function NavigationMobile({ logout }: NavigationMobileProps) {
 	const classes = useStyles();
-
-	// links / menu options to display for navigation.
-	const links = [
-		{
-			buttonText: "Find A Seat",
-			icon: <NotificationIcon />,
-			linkTo: "/",
-		},
-		{
-			buttonText: "Settings",
-			icon: <SettingsIcon />,
-			linkTo: "/settings",
-		},
-		{ buttonText: "Donate", icon: <PaymentIcon />, linkTo: "/donate" },
-	];
 
 	/**
 	 * state of the navigation bar for mobile
@@ -130,23 +96,31 @@ function NavigationMobile({ logout }: NavigationMobileProps) {
 					</IconButton>
 					<Typography className={classes.logo}>mcgill tools</Typography>
 				</Toolbar>
-			</AppBar>
-			<Drawer
-				anchor="top"
-				className={classes.drawer}
-				open={navbarOpen}
-				onClose={() => setNavbarOpen(false)}
-			>
-				<div className={classes.list}>
+
+				<Collapse in={navbarOpen}>
+					<Divider />
 					<List>
-						{links.map((link) => (
-							<DrawerLink
-								classes={classes}
-								{...link}
-								key={link.buttonText}
-								handleClick={() => setNavbarOpen(false)}
-							/>
+						{LINKS.map((link) => (
+							<Link key={link.linkTo} component={RouterLink} to={link.linkTo}>
+								<ListItem
+									button
+									onClick={() => {
+										setNavbarOpen(false);
+									}}
+								>
+									<ListItemIcon>{link.icon}</ListItemIcon>
+									<ListItemText
+										primaryTypographyProps={{
+											color: "textPrimary",
+											variant: "button",
+										}}
+									>
+										{link.buttonText}
+									</ListItemText>
+								</ListItem>
+							</Link>
 						))}
+
 						<Divider />
 						<ListItem
 							button
@@ -165,8 +139,8 @@ function NavigationMobile({ logout }: NavigationMobileProps) {
 							</ListItemText>
 						</ListItem>
 					</List>
-				</div>
-			</Drawer>
+				</Collapse>
+			</AppBar>
 		</div>
 	);
 }
