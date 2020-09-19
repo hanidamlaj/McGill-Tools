@@ -140,7 +140,14 @@ function NavigationDesktop({
 			buttonName: "api",
 			linkTo: "/capi",
 		},
-		{ buttonName: "donate", linkTo: "/donate" },
+		{ 
+			buttonName: "donate", 
+			linkTo: "/donate" 
+		},
+		{
+			buttonName: "schedule builder",
+			linkTo: "/"
+		}
 	];
 
 	// extract user parameters for tooltip message

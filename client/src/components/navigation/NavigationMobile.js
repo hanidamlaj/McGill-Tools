@@ -22,6 +22,7 @@ import NotificationIcon from "@material-ui/icons/NotificationsActive";
 import SettingsIcon from "@material-ui/icons/Settings";
 import SignOutIcon from "@material-ui/icons/ExitToApp";
 import PaymentIcon from "@material-ui/icons/Payment";
+import ScheduleIcon from '@material-ui/icons/Schedule';
 
 const useStyles = makeStyles((theme) => ({
 	// navigation bar styles
@@ -66,7 +67,16 @@ const LINKS = [
 		icon: <SettingsIcon />,
 		linkTo: "/settings",
 	},
-	{ buttonText: "Donate", icon: <PaymentIcon />, linkTo: "/donate" },
+	{ 
+		buttonText: "Donate", 
+		icon: <PaymentIcon />, 
+		linkTo: "/donate",
+	},
+	{
+		buttonText: "Schedule Builder",
+		icon: <ScheduleIcon />,
+		linkTo: "/",
+	}
 ];
 
 type NavigationMobileProps = {
