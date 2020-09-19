@@ -4,7 +4,6 @@ import * as React from "react";
 
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
-import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";

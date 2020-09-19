@@ -111,18 +111,21 @@ function APIView({
 		approved: {
 			className: classes.alertSuccess,
 			message:
+				// eslint-disable-next-line no-multi-str
 				"Congratulations! Your application for an access token has been approved. Please\
                 find your token and usage information below.",
 		},
 		rejected: {
 			className: classes.alertDanger,
 			message:
+				// eslint-disable-next-line no-multi-str
 				"Unfortunately your application for an access token has been rejected.\
                 For further discussion, please send me an email at hanidamlaj@gmail.com",
 		},
 		pending: {
 			className: classes.alertInfo,
 			message:
+				// eslint-disable-next-line no-multi-str
 				"Thank you for your application. We are currently\
                 in the process of reviewing your application. We hope to get back to you shortly.",
 		},

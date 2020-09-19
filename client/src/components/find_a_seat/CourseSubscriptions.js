@@ -78,7 +78,7 @@ function CourseSubscriptions({
 	// on component mount, request the user's subscribed courses
 	useEffect(() => {
 		requestSubscribedSections();
-	}, []);
+	}, [requestSubscribedSections]);
 
 	// on update of subscribedsections prop, re-request course information
 	useEffect(() => {
@@ -107,7 +107,7 @@ function CourseSubscriptions({
 				setCourses(newCourses);
 			})
 			.catch(() => {});
-	}, [subscribedSections]);
+	}, [subscribedSections, requestCourse]);
 
 	/**
 	 * This callback function handles unsubscribing the user from a given section.
