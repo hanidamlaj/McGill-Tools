@@ -2,7 +2,7 @@
 
 import type { ThunkAction, Action } from "./types.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders.js";
-import { setSnackbar, setSnackbarError } from "./snackbar.js";
+import { setSnackbarError } from "./snackbar.js";
 
 export const BASE_URL =
 	process.env.NODE_ENV === "development"
@@ -19,6 +19,11 @@ type Request = {
 	method: "GET" | "POST",
 	body: Object,
 };
+
+type ErrorResponse = {|
+	error: true,
+	message: string,
+|};
 
 // Class to interface with server API calls.
 // This reduces the loads of redudancy across all
@@ -52,7 +57,7 @@ export default class Controller {
 	}
 
 	// Send fetch request with provided request params & headers.
-	send<T>() {
+	send<T: { error: false }>(): Promise<T> {
 		return fetch(this._url, {
 			...this._request,
 			headers: { ...this._requestHeader },
@@ -70,7 +75,7 @@ export default class Controller {
 				}
 				return res.json();
 			})
-			.then((res) => {
+			.then((res: T | ErrorResponse) => {
 				if (res.error) throw new Error(res.message);
 				return res;
 			});
@@ -80,6 +85,7 @@ export default class Controller {
 export class ThunkActionController extends Controller {
 	_loaderKey: string = "";
 
+	// eslint-disable-next-line no-useless-constructor
 	constructor(url: string, jwtToken: string) {
 		super(url, jwtToken);
 	}
@@ -89,10 +95,12 @@ export class ThunkActionController extends Controller {
 		return this;
 	}
 
-	toThunkAction<T>(actionCreator: ((any) => Action) | void): ThunkAction {
+	toThunkAction<T: { error: false }>(
+		actionCreator: ((any) => Action) | void
+	): ThunkAction {
 		return (dispatch, getState) => {
 			dispatch(addLoaderKey(this._loaderKey));
-			this.send()
+			this.send<T>()
 				.then((json) => {
 					if (actionCreator != null) {
 						dispatch(actionCreator(json));

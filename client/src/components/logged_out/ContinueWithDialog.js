@@ -62,6 +62,7 @@ function ContinueWithDialog({
 	...props
 }: ContinueWithDialogProps) {
 	const classes = useStyles();
+
 	return (
 		<Dialog {...props} classes={{ paper: classes.paper }}>
 			<DialogContent className={classes.dialogContent}>
