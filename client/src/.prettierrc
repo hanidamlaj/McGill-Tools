@@ -1,0 +1,8 @@
+{
+  "trailingComma": "all",
+  "tabWidth": 8,
+  "semi": true,
+  "singleQuote": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false
+}
