@@ -70,7 +70,9 @@ type AutocompleteSuggestion = {
 type CourseSearchProps = {
 	handleNext: () => void,
 	requestCourse: (CourseQuery) => Promise<Course>,
-	requestCourseSuggestions: (string) => Promise<Array<AutocompleteSuggestion>>,
+	requestCourseSuggestions: (string) => Promise<
+		Array<AutocompleteSuggestion>
+	>,
 	setSelectedCourse: (any) => void,
 	setSnackbar: (string) => void,
 };
@@ -89,7 +91,7 @@ function CourseSearch({
 	/**
 	 * State to control semester input of user
 	 */
-	const [semester, setSemester] = useState<string>("SUMMER-2020");
+	const [semester, setSemester] = useState<string>("WINTER-2021");
 
 	/**
 	 * State to control course search input of user
@@ -100,9 +102,9 @@ function CourseSearch({
 	/**
 	 * State that contains autocomplete suggestions for the user
 	 */
-	const [suggestions, setSuggestions] = useState<Array<AutocompleteSuggestion>>(
-		[]
-	);
+	const [suggestions, setSuggestions] = useState<
+		Array<AutocompleteSuggestion>
+	>([]);
 
 	/**
 	 * State to control display of autocomplete suggestions to user
@@ -166,20 +168,20 @@ function CourseSearch({
 					<FormControlLabel
 						className={classes.formGroupLabel}
 						control={<Radio color="primary" />}
-						label="Summer 2020"
-						value="SUMMER-2020"
-					/>
-					<FormControlLabel
-						className={classes.formGroupLabel}
-						control={<Radio color="primary" />}
-						label="Fall 2020"
-						value="FALL-2020"
-					/>
-					<FormControlLabel
-						className={classes.formGroupLabel}
-						control={<Radio color="primary" />}
 						label="Winter 2021"
 						value="WINTER-2021"
+					/>
+					<FormControlLabel
+						className={classes.formGroupLabel}
+						control={<Radio color="primary" />}
+						label="Summer 2021"
+						value="SUMMER-2021"
+					/>
+					<FormControlLabel
+						className={classes.formGroupLabel}
+						control={<Radio color="primary" />}
+						label="Fall 2021"
+						value="FALL-2021"
 					/>
 				</RadioGroup>
 			</FormControl>
@@ -221,10 +223,17 @@ function CourseSearch({
 										];
 
 										// e.g. semester = "SUMMER-2020"
-										const [term, year] = semester.split("-");
+										const [term, year] = semester.split(
+											"-"
+										);
 
 										// Combine to form data to identify a given course (e.g. COMP_250_2019_FALL)
-										const courseId = [faculty, courseNumber, year, term];
+										const courseId = [
+											faculty,
+											courseNumber,
+											year,
+											term,
+										];
 
 										requestCourse({
 											faculty,
