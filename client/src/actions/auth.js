@@ -12,8 +12,7 @@ import Controller from "./Controller.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
-import * as firebase from "firebase/app";
-import "firebase/auth";
+import firebase from "firebase/app";
 
 // ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
 
@@ -101,30 +100,29 @@ export const getUser: ThunkAction = (dispatch, getState) => {
 /**
  * Update the profile of the user (e.g. name, subscribedSections, phoneNumber, etc.).
  */
-export const updateUserProfile = (user: User): ThunkAction => (
-	dispatch,
-	getState
-) => {
-	const token = getState().auth.token;
-	dispatch(addLoaderKey(UPDATE_USER_PROFILE));
-	return new Controller("/user/profile", token ?? "")
-		.setMethod("POST")
-		.setBody(JSON.stringify(user))
-		.send()
-		.then((json) => {
-			// log request
-			firebase.analytics().logEvent("update_profile");
+export const updateUserProfile =
+	(user: User): ThunkAction =>
+	(dispatch, getState) => {
+		const token = getState().auth.token;
+		dispatch(addLoaderKey(UPDATE_USER_PROFILE));
+		return new Controller("/user/profile", token ?? "")
+			.setMethod("POST")
+			.setBody(JSON.stringify(user))
+			.send()
+			.then((json) => {
+				// log request
+				firebase.analytics().logEvent("update_profile");
 
-			dispatch(setUser(json));
-			return json;
-		})
-		.catch((err: Error) => {
-			dispatch(setSnackbarError(err.message));
-			return err;
-		})
-		.finally(() => {
-			dispatch(removeLoaderKey(UPDATE_USER_PROFILE));
-		});
-};
+				dispatch(setUser(json));
+				return json;
+			})
+			.catch((err: Error) => {
+				dispatch(setSnackbarError(err.message));
+				return err;
+			})
+			.finally(() => {
+				dispatch(removeLoaderKey(UPDATE_USER_PROFILE));
+			});
+	};
 
 // ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
