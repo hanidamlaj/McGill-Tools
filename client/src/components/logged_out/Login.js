@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 
 import firebase from "firebase/app";
+import "firebase/auth";
 
 type LoginProps = {
 	login: (string) => Promise<void>,
