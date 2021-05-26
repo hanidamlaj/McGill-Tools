@@ -2,8 +2,7 @@
 
 import React, { useEffect } from "react";
 
-import * as firebase from "firebase/app";
-import "firebase/auth";
+import firebase from "firebase/app";
 
 type LoginProps = {
 	login: (string) => Promise<void>,
@@ -29,7 +28,9 @@ function Login({
 			.then(async (result) => {
 				// check to see if redirection operation was called
 				if (result.user) {
-					const idToken = await firebase.auth().currentUser.getIdToken(true);
+					const idToken = await firebase
+						.auth()
+						.currentUser.getIdToken(true);
 					login(idToken).then((res) => {
 						if (res instanceof Error) history.push("/");
 					});
@@ -37,15 +38,22 @@ function Login({
 					if (provider === "google")
 						firebase
 							.auth()
-							.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+							.signInWithRedirect(
+								new firebase.auth.GoogleAuthProvider()
+							);
 					else if (provider === "facebook")
 						firebase
 							.auth()
-							.signInWithRedirect(new firebase.auth.FacebookAuthProvider());
+							.signInWithRedirect(
+								new firebase.auth.FacebookAuthProvider()
+							);
 				}
 			})
 			.catch(function (error) {
-				if (error.code === "auth/account-exists-with-different-credential") {
+				if (
+					error.code ===
+					"auth/account-exists-with-different-credential"
+				) {
 					setSnackbarError(
 						"This email address is already in use with another sign-in method."
 					);
