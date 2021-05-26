@@ -13,6 +13,7 @@ import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
 import firebase from "firebase/app";
+import "firebase/auth";
 
 // ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
 
