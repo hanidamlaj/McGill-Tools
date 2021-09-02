@@ -30,8 +30,7 @@ const privKey: string = Buffer.from(
 	process.env["priv_key"],
 	"base64"
 ).toString();
-// const stripeHookKey: string = process.env["stripe_hook_key"];
-const stripeHookKey: string = "whsec_W8X4niz4Q9g1jayzFzgYiGKedtdbom5q";
+const stripeHookKey: string = process.env["stripe_hook_key"];
 const DOMAIN = "https://mcgilltools.com";
 
 // middleware functions
