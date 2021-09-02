@@ -56,14 +56,17 @@ app.post(
 				console.log(event);
 				const session = event.data.object;
 
-				await db.paymentSuccess(session.client_reference_id);
-				await db.createPayment(session.client_reference_id);
+				if (session.client_reference_id) {
+					await db.paymentSuccess(session.client_reference_id);
+					db.createPayment(session.client_reference_id);
+				}
 			}
 		} catch (err) {
+			console.log("error", err);
 			return res.status(400).send(`Webhook Error: ${err.message}`);
 		}
 
-		res.status(200);
+		res.status(200).end();
 	}
 );
 
