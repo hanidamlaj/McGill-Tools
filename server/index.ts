@@ -9,10 +9,7 @@ import cors = require("cors");
 import path = require("path");
 require("dotenv").config();
 
-// const stripe = require("stripe")(process.env["stripe_key"]);
-const stripe = require("stripe")(
-	"sk_test_51JV8jBFgIV7ohsLwxQFVGzteAaLbtpiFcFPXgrW1vXlGr8sDvozSmK7uvTTPd71Wj8soGPOYyACrYLOeXInsVs1c00WlIinfFO"
-);
+const stripe = require("stripe")(process.env["stripe_key"]);
 
 // router imports
 import notify from "./routers/notify";
