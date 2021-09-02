@@ -22,6 +22,7 @@ import NotificationIcon from "@material-ui/icons/NotificationsActive";
 import SettingsIcon from "@material-ui/icons/Settings";
 import SignOutIcon from "@material-ui/icons/ExitToApp";
 import PaymentIcon from "@material-ui/icons/Payment";
+import CheckoutContainer from "../../containers/CheckoutContainer";
 
 const useStyles = makeStyles((theme) => ({
 	// navigation bar styles
@@ -84,8 +85,14 @@ function NavigationMobile({ logout }: NavigationMobileProps) {
 	 */
 	const [navbarOpen, setNavbarOpen] = React.useState<boolean>(false);
 
+	const [openPayment, setOpenPayment] = React.useState<boolean>(false);
+
 	return (
 		<div className={classes.root}>
+			<CheckoutContainer
+				openPayment={openPayment}
+				onClose={() => setOpenPayment(false)}
+			/>
 			<AppBar className={classes.appbar} position="fixed">
 				<Toolbar className={classes.toolbar}>
 					<IconButton
@@ -94,14 +101,33 @@ function NavigationMobile({ logout }: NavigationMobileProps) {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography className={classes.logo}>mcgill tools</Typography>
+					<Typography className={classes.logo}>
+						mcgill tools
+					</Typography>
 				</Toolbar>
 
 				<Collapse in={navbarOpen}>
 					<Divider />
 					<List>
+						<ListItem button onClick={() => setOpenPayment(true)}>
+							<ListItemIcon>
+								<PaymentIcon />
+							</ListItemIcon>
+							<ListItemText
+								primaryTypographyProps={{
+									color: "textPrimary",
+									variant: "button",
+								}}
+							>
+								Add Funds
+							</ListItemText>
+						</ListItem>
 						{LINKS.map((link) => (
-							<Link key={link.linkTo} component={RouterLink} to={link.linkTo}>
+							<Link
+								key={link.linkTo}
+								component={RouterLink}
+								to={link.linkTo}
+							>
 								<ListItem
 									button
 									onClick={() => {
@@ -133,7 +159,10 @@ function NavigationMobile({ logout }: NavigationMobileProps) {
 								<SignOutIcon />
 							</ListItemIcon>
 							<ListItemText
-								primaryTypographyProps={{ color: "primary", variant: "button" }}
+								primaryTypographyProps={{
+									color: "primary",
+									variant: "button",
+								}}
 							>
 								Sign Out
 							</ListItemText>
