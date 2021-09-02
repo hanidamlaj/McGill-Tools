@@ -37,10 +37,40 @@ const DOMAIN = "https://mcgilltools.com";
 app.use(cors());
 app.use(logRequests);
 app.use(cookieParser());
-app.use(express.json());
+
+app.post(
+	"/webhook",
+	express.raw({ type: "application/json" }),
+	async (req, res) => {
+		const payload = req.body;
+		const sig = req.headers["stripe-signature"];
+
+		try {
+			const event = stripe.webhooks.constructEvent(
+				payload,
+				sig,
+				stripeHookKey
+			);
+
+			if (event.type === "checkout.session.completed") {
+				console.log(event);
+				const session = event.data.object;
+
+				await db.paymentSuccess(session.client_reference_id);
+				await db.createPayment(session.client_reference_id);
+			}
+		} catch (err) {
+			return res.status(400).send(`Webhook Error: ${err.message}`);
+		}
+
+		res.status(200);
+	}
+);
 
 // serve static files
 app.use("/static", express.static(path.join(__dirname, "/build/static")));
+
+app.use(express.json());
 
 app.post("/login", async (req, res) => {
 	const idToken: string = req.body.idToken;
@@ -103,35 +133,6 @@ app.post(
 				message: err.message || err.toString(),
 			});
 		}
-	}
-);
-
-app.post(
-	"/webhook",
-	express.raw({ type: "application/json" }),
-	async (req, res) => {
-		const payload = req.body;
-		const sig = req.headers["stripe-signature"];
-
-		try {
-			const event = stripe.webhooks.constructEvent(
-				payload,
-				sig,
-				stripeHookKey
-			);
-
-			if (event.type === "checkout.session.completed") {
-				console.log(event);
-				const session = event.data.object;
-
-				await db.paymentSuccess(session.client_reference_id);
-				await db.createPayment(session.client_reference_id);
-			}
-		} catch (err) {
-			return res.status(400).send(`Webhook Error: ${err.message}`);
-		}
-
-		res.status(200);
 	}
 );
 
