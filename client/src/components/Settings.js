@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import { CardHeader } from "@material-ui/core";
+import CheckoutContainer from "../containers/CheckoutContainer.js";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -68,6 +69,8 @@ function Settings({
 		phoneNumber: user.phoneNumber || "+1",
 	});
 
+	const [openPayment, setOpenPayment] = useState<boolean>(false);
+
 	// Fetch user data on mount.
 	useEffect(() => {
 		getUser();
@@ -100,62 +103,93 @@ function Settings({
 	};
 
 	return (
-		<Grid container justify="center">
-			<Grid item xs={12}>
-				<Card className={classes.root} elevation={0}>
-					<CardHeader title="Profile Settings"></CardHeader>
-					<CardContent>
-						<Grid container>
-							<Grid item xs={12}>
-								<TextField
-									className={classes.textField}
-									disabled
-									label="Email"
-									margin="normal"
-									value={userDetails.email}
-								/>
+		<>
+			<CheckoutContainer
+				openPayment={openPayment}
+				onClose={() => {
+					setOpenPayment(false);
+				}}
+			/>
+			<Grid container justifyContent="center">
+				<Grid item xs={12}>
+					<Card className={classes.root} elevation={0}>
+						<CardHeader title="Profile Settings"></CardHeader>
+						<CardContent>
+							<Grid container>
+								<Grid item xs={12}>
+									<TextField
+										className={classes.textField}
+										disabled
+										label="Email"
+										margin="normal"
+										value={userDetails.email}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										className={classes.textField}
+										label="Display name"
+										margin="normal"
+										onChange={handleChange("displayName")}
+										value={userDetails.displayName}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										className={classes.textField}
+										helperText="e.g. +15141234567"
+										label="Phone number"
+										margin="normal"
+										onChange={handleChange("phoneNumber")}
+										type="tel"
+										value={userDetails.phoneNumber}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										className={classes.textField}
+										disabled
+										label="Remaining notifications"
+										margin="normal"
+										value={
+											userDetails.numNotifications ?? 0
+										}
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<Button
+										onClick={() => {
+											setOpenPayment(true);
+										}}
+									>
+										Add Funds
+									</Button>
+								</Grid>
 							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									className={classes.textField}
-									label="Display name"
-									margin="normal"
-									onChange={handleChange("displayName")}
-									value={userDetails.displayName}
-								/>
+						</CardContent>
+						<CardActions>
+							<Grid container justifyContent="flex-end">
+								<Button
+									className={classes.button}
+									onClick={onCancel}
+								>
+									cancel
+								</Button>
+								<Button
+									className={classes.button}
+									color="primary"
+									onClick={onSave}
+									style={{ padding: "0px 32px" }}
+									variant="outlined"
+								>
+									save
+								</Button>
 							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									className={classes.textField}
-									helperText="e.g. +15141234567"
-									label="Phone number"
-									margin="normal"
-									onChange={handleChange("phoneNumber")}
-									type="tel"
-									value={userDetails.phoneNumber}
-								/>
-							</Grid>
-						</Grid>
-					</CardContent>
-					<CardActions>
-						<Grid container justify="flex-end">
-							<Button className={classes.button} onClick={onCancel}>
-								cancel
-							</Button>
-							<Button
-								className={classes.button}
-								color="primary"
-								onClick={onSave}
-								style={{ padding: "0px 32px" }}
-								variant="outlined"
-							>
-								save
-							</Button>
-						</Grid>
-					</CardActions>
-				</Card>
+						</CardActions>
+					</Card>
+				</Grid>
 			</Grid>
-		</Grid>
+		</>
 	);
 }
 

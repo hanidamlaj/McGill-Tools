@@ -11,6 +11,7 @@ import TextField from "@material-ui/core/TextField";
 
 import CourseSubscriptionsContainer from "../../containers/find_a_seat/CourseSubscriptionsContainer";
 import SubscribeToCourse from "./SubscribeToCourse";
+import CheckoutContainer from "../../containers/CheckoutContainer";
 
 // Extracts the additional characters from a possibly autofilled phone number.
 function stripPhoneNumber(phoneNumber) {
@@ -35,9 +36,13 @@ function isPhoneNumberValid(phoneNumber) {
  * This component renders the user's subscribed sections and the search
  * feature to look for desired sections.
  */
-function FindASeat({ updateUserProfile, user }) {
+function FindASeat({ updateUserProfile, user, token, handleStripeCheckout }) {
 	// state to control dialog
 	const [open, setOpen] = useState(!user.phoneNumber);
+
+	const [openPayment, setOpenPayment] = useState(
+		!open && (user.numNotifications ?? 0) <= 0
+	);
 
 	const [isNumberValid, setIsNumberValid] = useState(true);
 
@@ -83,8 +88,8 @@ function FindASeat({ updateUserProfile, user }) {
 				<DialogTitle>Profile</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						To subscribe to sections, please enter your phone number so we can
-						notify you when seats become available.
+						To subscribe to sections, please enter your phone number
+						so we can notify you when seats become available.
 					</DialogContentText>
 					<Grid container>
 						<Grid item xs={12}>
@@ -125,6 +130,10 @@ function FindASeat({ updateUserProfile, user }) {
 					</Button>
 				</DialogActions>
 			</Dialog>
+			<CheckoutContainer
+				openPayment={openPayment}
+				onClose={() => setOpenPayment(false)}
+			/>
 			<CourseSubscriptionsContainer />
 			<SubscribeToCourse />
 		</React.Fragment>

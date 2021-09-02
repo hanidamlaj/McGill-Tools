@@ -16,13 +16,18 @@ import { SmallViewAppbar, BigViewAppbar } from "./Navbar";
 
 import { IsSmallContext } from "../../shared";
 
-import firebase from "./../../firebase";
+import {
+	GoogleAuthProvider,
+	FacebookAuthProvider,
+	signInWithPopup,
+	getAuth,
+} from "firebase/auth";
 
 /**
  * firebase authentication providers (Google and Facebook)
  */
-const GOOGLE_PROVIDER = new firebase.auth.GoogleAuthProvider();
-const FACEBOOK_PROVIDER = new firebase.auth.FacebookAuthProvider();
+const GOOGLE_PROVIDER = new GoogleAuthProvider();
+const FACEBOOK_PROVIDER = new FacebookAuthProvider();
 FACEBOOK_PROVIDER.addScope("email");
 
 const useStyles = makeStyles((theme) => ({
@@ -63,10 +68,8 @@ function Unauthenticated(props: UnauthenticatedProps) {
 
 	const isSmallDevice = React.useContext(IsSmallContext);
 
-	const [
-		continueWithProvider,
-		setContinueWithProvider,
-	] = React.useState<boolean>(false);
+	const [continueWithProvider, setContinueWithProvider] =
+		React.useState<boolean>(false);
 
 	// handles clicks to get users started
 	function handleGetStarted() {
@@ -90,9 +93,7 @@ function Unauthenticated(props: UnauthenticatedProps) {
 		if (isSmallDevice) {
 			history.push(`/auth/${provider.providerId.replace(".com", "")}`);
 		} else
-			firebase
-				.auth()
-				.signInWithPopup(provider)
+			signInWithPopup(getAuth(), provider)
 				.then(async (result) => {
 					if (result.user) {
 						const idToken = await result.user.getIdToken(true);
@@ -100,7 +101,10 @@ function Unauthenticated(props: UnauthenticatedProps) {
 					}
 				})
 				.catch((err) => {
-					if (err.code === "auth/account-exists-with-different-credential") {
+					if (
+						err.code ===
+						"auth/account-exists-with-different-credential"
+					) {
 						setSnackbarError(
 							"This email address is already in use with another sign-in method."
 						);

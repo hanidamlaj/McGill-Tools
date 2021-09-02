@@ -2,8 +2,13 @@
 
 import React, { useEffect } from "react";
 
-import firebase from "firebase/app";
-import "firebase/auth";
+import {
+	getAuth,
+	getRedirectResult,
+	signInWithRedirect,
+	GoogleAuthProvider,
+	FacebookAuthProvider,
+} from "firebase/auth";
 
 type LoginProps = {
 	login: (string) => Promise<void>,
@@ -23,31 +28,24 @@ function Login({
 	const provider = match.params.provider;
 
 	useEffect(() => {
-		firebase
-			.auth()
-			.getRedirectResult()
+		getRedirectResult(getAuth())
 			.then(async (result) => {
 				// check to see if redirection operation was called
 				if (result.user) {
-					const idToken = await firebase
-						.auth()
-						.currentUser.getIdToken(true);
+					const idToken = await getAuth().currentUser.getIdToken(
+						true
+					);
 					login(idToken).then((res) => {
 						if (res instanceof Error) history.push("/");
 					});
 				} else {
 					if (provider === "google")
-						firebase
-							.auth()
-							.signInWithRedirect(
-								new firebase.auth.GoogleAuthProvider()
-							);
+						signInWithRedirect(getAuth(), new GoogleAuthProvider());
 					else if (provider === "facebook")
-						firebase
-							.auth()
-							.signInWithRedirect(
-								new firebase.auth.FacebookAuthProvider()
-							);
+						signInWithRedirect(
+							getAuth(),
+							new FacebookAuthProvider()
+						);
 				}
 			})
 			.catch(function (error) {

@@ -1,5 +1,4 @@
-import firebase from "firebase/app";
-import "firebase/analytics";
+import { initializeApp } from "firebase/app";
 
 // Use different firebase config parameters if we're in a dev environment.
 const firebaseConfig =
@@ -25,7 +24,6 @@ const firebaseConfig =
 				measurementId: "G-86CPR57GQK",
 		  };
 
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+const firebase = initializeApp(firebaseConfig);
 
 export default firebase;

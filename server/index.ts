@@ -9,6 +9,11 @@ import cors = require("cors");
 import path = require("path");
 require("dotenv").config();
 
+// const stripe = require("stripe")(process.env["stripe_key"]);
+const stripe = require("stripe")(
+	"sk_test_51JV8jBFgIV7ohsLwxQFVGzteAaLbtpiFcFPXgrW1vXlGr8sDvozSmK7uvTTPd71Wj8soGPOYyACrYLOeXInsVs1c00WlIinfFO"
+);
+
 // router imports
 import notify from "./routers/notify";
 import courses from "./routers/courses";
@@ -28,6 +33,8 @@ const privKey: string = Buffer.from(
 	process.env["priv_key"],
 	"base64"
 ).toString();
+const stripeHookKey: string = process.env["stripe_hook_key"];
+const DOMAIN = "https://mcgilltools.com";
 
 // middleware functions
 app.use(cors());
@@ -66,10 +73,65 @@ app.post("/login", async (req, res) => {
 			user,
 		});
 	} catch (err) {
-		res
-			.status(401)
-			.json({ error: true, message: err.message || err.toString() });
+		res.status(401).json({
+			error: true,
+			message: err.message || err.toString(),
+		});
 	}
+});
+
+app.post(
+	"/create-checkout-session",
+	verifyJwtToken,
+	async (req: any, res: any) => {
+		try {
+			const session = await stripe.checkout.sessions.create({
+				line_items: [
+					{
+						price: "price_1JVA3mFgIV7ohsLwIUsg76Fg",
+						quantity: 1,
+					},
+				],
+				payment_method_types: ["card"],
+				mode: "payment",
+				success_url: `${DOMAIN}/stripe_payment?success=true`,
+				cancel_url: `${DOMAIN}/stripe_payment?canceled=true`,
+				client_reference_id: req.uid,
+			});
+
+			res.json({ error: false, url: session.url });
+		} catch (err) {
+			res.status(400).json({
+				error: true,
+				message: err.message || err.toString(),
+			});
+		}
+	}
+);
+
+app.post("/webhook", async (req, res) => {
+	const payload = req.body;
+	const sig = req.headers["stripe-signature"];
+
+	try {
+		const event = stripe.webhooks.constructEvent(
+			payload,
+			sig,
+			stripeHookKey
+		);
+
+		if (event.type === "checkout.session.completed") {
+			console.log(event);
+			const session = event.data.object;
+
+			await db.paymentSuccess(session.client_reference_id);
+			await db.createPayment(session.client_reference_id);
+		}
+	} catch (err) {
+		return res.status(400).send(`Webhook Error: ${err.message}`);
+	}
+
+	res.status(200);
 });
 
 // Routers -- users must be authenticated before accessing the following routes.
