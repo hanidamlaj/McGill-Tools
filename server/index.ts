@@ -106,30 +106,34 @@ app.post(
 	}
 );
 
-app.post("/webhook", async (req, res) => {
-	const payload = req.body;
-	const sig = req.headers["stripe-signature"];
+app.post(
+	"/webhook",
+	express.raw({ type: "application/json" }),
+	async (req, res) => {
+		const payload = req.body;
+		const sig = req.headers["stripe-signature"];
 
-	try {
-		const event = stripe.webhooks.constructEvent(
-			payload,
-			sig,
-			stripeHookKey
-		);
+		try {
+			const event = stripe.webhooks.constructEvent(
+				payload,
+				sig,
+				stripeHookKey
+			);
 
-		if (event.type === "checkout.session.completed") {
-			console.log(event);
-			const session = event.data.object;
+			if (event.type === "checkout.session.completed") {
+				console.log(event);
+				const session = event.data.object;
 
-			await db.paymentSuccess(session.client_reference_id);
-			await db.createPayment(session.client_reference_id);
+				await db.paymentSuccess(session.client_reference_id);
+				await db.createPayment(session.client_reference_id);
+			}
+		} catch (err) {
+			return res.status(400).send(`Webhook Error: ${err.message}`);
 		}
-	} catch (err) {
-		return res.status(400).send(`Webhook Error: ${err.message}`);
-	}
 
-	res.status(200);
-});
+		res.status(200);
+	}
+);
 
 // Routers -- users must be authenticated before accessing the following routes.
 app.use("/notify", verifyJwtToken, notify);
