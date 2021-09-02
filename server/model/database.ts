@@ -192,7 +192,7 @@ abstract class Database {
 			}
 
 			// race condition (lol)
-			if (numNotifications <= 0) {
+			if ((numNotifications ?? 0) <= 0) {
 				throw new Error(
 					"You do not have any notifications remaining! Please proceed to checkout."
 				);
