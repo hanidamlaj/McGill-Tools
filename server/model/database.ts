@@ -30,12 +30,12 @@ abstract class Database {
 	// private variable declaration
 	private static db = admin.firestore();
 	private static coursesCollection = Database.db.collection("courses");
-	private static courseDetailsCollection = Database.db.collection(
-		"courseDetails"
-	);
+	private static courseDetailsCollection =
+		Database.db.collection("courseDetails");
 	private static usersCollection = Database.db.collection("users");
 	private static apiRequests = Database.db.collection("apiRequests");
 	private static accessTokens = Database.db.collection("accessTokens");
+	private static paymentOrders = Database.db.collection("payments");
 
 	// public API
 
@@ -75,7 +75,9 @@ abstract class Database {
 	/**
 	 * Method to get all applications for api access
 	 */
-	public static async getAllApiTokenRequests(): Promise<Array<APIRequestDoc>> {
+	public static async getAllApiTokenRequests(): Promise<
+		Array<APIRequestDoc>
+	> {
 		// Fetch all documents within apiRequests collection.
 		const snapshot = await this.apiRequests.get();
 
@@ -147,6 +149,19 @@ abstract class Database {
 		return;
 	}
 
+	public static async paymentSuccess(uid: string) {
+		await this.usersCollection.doc(uid).update({
+			numNotifications: admin.firestore.FieldValue.increment(5),
+		});
+	}
+
+	public static async createPayment(uid: string) {
+		await this.paymentOrders.add({
+			uid,
+			timestamp: admin.firestore.FieldValue.serverTimestamp(),
+		});
+	}
+
 	/**
 	 * Subscribes a user to the section passed as a parameter.
 	 * @param uid unique id of the user
@@ -167,14 +182,27 @@ abstract class Database {
 		try {
 			// Retrieve user profile to verify if phoneNumber is valid
 			const updatedUser = await docRef.get();
-			const { subscribedSections, phoneNumber } = updatedUser.data();
+			const { subscribedSections, phoneNumber, numNotifications } =
+				updatedUser.data();
 
-			if (!phoneNumber)
-				throw new Error("Invalid number! Cannot subscribe user to section.");
+			if (!phoneNumber) {
+				throw new Error(
+					"Invalid number! Cannot subscribe user to section."
+				);
+			}
+
+			// race condition (lol)
+			if ((numNotifications ?? 0) <= 0) {
+				throw new Error(
+					"You do not have any notifications remaining! Please proceed to checkout."
+				);
+			}
 
 			// Add the section to the user's profile.
 			await docRef.update({
-				subscribedSections: admin.firestore.FieldValue.arrayUnion(sectionId),
+				subscribedSections:
+					admin.firestore.FieldValue.arrayUnion(sectionId),
+				numNotifications: admin.firestore.FieldValue.increment(-1),
 			});
 
 			// Add id of section to the Redis HashSet, allowing Heroku worker
@@ -255,6 +283,7 @@ abstract class Database {
 					photoURL,
 					phoneNumber,
 					subscribedSections: [],
+					numNotifications: 0,
 				};
 
 				// Save new profile to Users collections.
@@ -292,7 +321,7 @@ abstract class Database {
 	 * @param uid the unique user id
 	 * @param course data identifying the course/section to unsubscribe from
 	 */
-	public static async removeNotificationCourse(
+	public static async unsubscribeUserFromSection(
 		uid: string,
 		{ subject, course, year, semester, section }: CourseQuery
 	): Promise<string[]> {
@@ -307,12 +336,14 @@ abstract class Database {
 		try {
 			// Remove the section from user's subscribedSections.
 			await docRef.update({
-				subscribedSections: admin.firestore.FieldValue.arrayRemove(sectionId),
+				subscribedSections:
+					admin.firestore.FieldValue.arrayRemove(sectionId),
+				numNotifications: admin.firestore.FieldValue.increment(1),
 			});
 
 			const updatedUser = await docRef.get();
-			const updatedSubscribedSections: string[] = updatedUser.data()
-				.subscribedSections;
+			const updatedSubscribedSections: string[] =
+				updatedUser.data().subscribedSections;
 
 			return updatedSubscribedSections;
 		} catch (err) {
@@ -362,10 +393,14 @@ abstract class Database {
 			const needsRenew =
 				!doc.exists ||
 				new Date().getTime() -
-					(doc.data().updated as admin.firestore.Timestamp).toMillis() >
+					(
+						doc.data().updated as admin.firestore.Timestamp
+					).toMillis() >
 					300000;
 
-			return needsRenew ? null : <Course>{ ...doc.data(), updated: undefined };
+			return needsRenew
+				? null
+				: <Course>{ ...doc.data(), updated: undefined };
 		} catch (err) {
 			throw { error: err.message || err.toString() };
 		}

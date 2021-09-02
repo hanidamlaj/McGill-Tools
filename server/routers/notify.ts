@@ -28,9 +28,12 @@ router.post(
 	"/unsubscribe/:subject/:course/:year/:semester/:section",
 	async (req: any, res: any) => {
 		try {
-			const updatedCourses = await db.removeNotificationCourse(req.uid, {
-				...req.params,
-			});
+			const updatedCourses = await db.unsubscribeUserFromSection(
+				req.uid,
+				{
+					...req.params,
+				}
+			);
 			res.json({ subscribedSections: updatedCourses });
 		} catch (err) {
 			res.json({ error: true, message: err.message || err.toString() });

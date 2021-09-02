@@ -9,7 +9,7 @@ import Controller from "./Controller.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
-import firebase from "./../firebase";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 // ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
 
@@ -39,133 +39,136 @@ const REQUEST_UNSUBSCRIBE: string = "REQUEST_UNSUBSCRIBE";
 /**
  * Retrieve course information.
  */
-export const requestCourse = ({
-	faculty,
-	course,
-	year,
-	semester,
-}: CourseQuery): ThunkAction => (dispatch, getState) => {
-	// request parameters
-	const token = getState().auth.token;
-	const query = [faculty, course, year, semester].join("/");
+export const requestCourse =
+	({ faculty, course, year, semester }: CourseQuery): ThunkAction =>
+	(dispatch, getState) => {
+		// request parameters
+		const token = getState().auth.token;
+		const query = [faculty, course, year, semester].join("/");
 
-	dispatch(addLoaderKey(REQUEST_COURSE));
-	return new Controller(`/courses/${query}`, token ?? "")
-		.setMethod("GET")
-		.send()
-		.then((json) => {
-			// log request
-			firebase
-				.analytics()
-				.logEvent("course_search", { faculty, course, year, semester });
+		dispatch(addLoaderKey(REQUEST_COURSE));
+		return new Controller(`/courses/${query}`, token ?? "")
+			.setMethod("GET")
+			.send()
+			.then((json) => {
+				// log request
+				logEvent(getAnalytics(), "course_search", {
+					faculty,
+					course,
+					year,
+					semester,
+				});
 
-			return json;
-		})
-		.catch((err: Error) => {
-			dispatch(setSnackbarError(err.message));
-			return err;
-		})
-		.finally(() => {
-			dispatch(removeLoaderKey(REQUEST_COURSE));
-		});
-};
+				return json;
+			})
+			.catch((err: Error) => {
+				dispatch(setSnackbarError(err.message));
+				return err;
+			})
+			.finally(() => {
+				dispatch(removeLoaderKey(REQUEST_COURSE));
+			});
+	};
 
 /**
  * Retrieve course name suggestions for user input (i.e. autocomplete feature).
  */
-export const requestCourseSuggestions = (searchKey: string): ThunkAction => (
-	dispatch,
-	getState
-) => {
-	const token = getState().auth.token;
-	dispatch(addLoaderKey(REQUEST_COURSE_SUGGESTIONS));
+export const requestCourseSuggestions =
+	(searchKey: string): ThunkAction =>
+	(dispatch, getState) => {
+		const token = getState().auth.token;
+		dispatch(addLoaderKey(REQUEST_COURSE_SUGGESTIONS));
 
-	return new Controller(`/courses/autocomplete/${searchKey}`, token ?? "")
-		.setMethod("GET")
-		.send()
-		.catch((err: Error) => {
-			dispatch(setSnackbarError(err.message));
-			return err;
-		})
-		.finally(() => {
-			dispatch(removeLoaderKey(REQUEST_COURSE_SUGGESTIONS));
-		});
-};
+		return new Controller(`/courses/autocomplete/${searchKey}`, token ?? "")
+			.setMethod("GET")
+			.send()
+			.catch((err: Error) => {
+				dispatch(setSnackbarError(err.message));
+				return err;
+			})
+			.finally(() => {
+				dispatch(removeLoaderKey(REQUEST_COURSE_SUGGESTIONS));
+			});
+	};
 
 /**
  * Subscribe user to notifications for a course & section.
  */
-export const requestSectionSubscribe = ({
-	faculty,
-	course,
-	year,
-	semester,
-	section,
-}: {
-	...CourseQuery,
-	section: string,
-}): ThunkAction => (dispatch, getState) => {
-	const token = getState().auth.token;
-	const query = [faculty, course, year, semester, section].join("/");
+export const requestSectionSubscribe =
+	({
+		faculty,
+		course,
+		year,
+		semester,
+		section,
+	}: {
+		...CourseQuery,
+		section: string,
+	}): ThunkAction =>
+	(dispatch, getState) => {
+		const token = getState().auth.token;
+		const query = [faculty, course, year, semester, section].join("/");
 
-	dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
-	return new Controller(`/notify/subscribe/${query}`, token ?? "")
-		.setMethod("POST")
-		.send()
-		.then((json) => {
-			// log request
-			firebase.analytics().logEvent("section_subscribe", {
-				faculty,
-				course,
-				year,
-				semester,
-				section,
+		dispatch(addLoaderKey(REQUEST_SUBSCRIBE));
+		return new Controller(`/notify/subscribe/${query}`, token ?? "")
+			.setMethod("POST")
+			.send()
+			.then((json) => {
+				// log request
+				logEvent(getAnalytics(), "section_subscribe", {
+					faculty,
+					course,
+					year,
+					semester,
+					section,
+				});
+
+				dispatch(setSubscribedSections(json.subscribedSections));
+				return json;
+			})
+			.catch((err: Error) => {
+				dispatch(setSnackbarError(err.message));
+				return err;
+			})
+			.finally(() => {
+				dispatch(removeLoaderKey(REQUEST_SUBSCRIBE));
 			});
-
-			dispatch(setSubscribedSections(json.subscribedSections));
-			return json;
-		})
-		.catch((err: Error) => {
-			dispatch(setSnackbarError(err.message));
-			return err;
-		})
-		.finally(() => {
-			dispatch(removeLoaderKey(REQUEST_SUBSCRIBE));
-		});
-};
+	};
 
 /**
  * Unsubscribe user to notifications for a course & section.
  */
-export const requestSectionUnsubscribe = ({
-	faculty,
-	course,
-	year,
-	semester,
-	section,
-}: {
-	...CourseQuery,
-	section: string,
-}): ThunkAction => (dispatch, getState) => {
-	const token = getState().auth.token;
-	const query = [faculty, course, year, semester, section].join("/");
+export const requestSectionUnsubscribe =
+	({
+		faculty,
+		course,
+		year,
+		semester,
+		section,
+	}: {
+		...CourseQuery,
+		section: string,
+	}): ThunkAction =>
+	(dispatch, getState) => {
+		const token = getState().auth.token;
+		const query = [faculty, course, year, semester, section].join("/");
 
-	dispatch(addLoaderKey(REQUEST_UNSUBSCRIBE));
-	return new Controller(`/notify/unsubscribe/${query}`, token ?? "")
-		.setMethod("POST")
-		.send()
-		.then((json) => {
-			dispatch(setSubscribedSections(json.subscribedSections));
-			return json;
-		})
-		.catch((err: Error) => {
-			dispatch(setSnackbarError(err.message));
-			return err;
-		})
-		.finally(() => {
-			dispatch(removeLoaderKey(REQUEST_UNSUBSCRIBE));
-		});
-};
+		dispatch(addLoaderKey(REQUEST_UNSUBSCRIBE));
+		return new Controller(`/notify/unsubscribe/${query}`, token ?? "")
+			.setMethod("POST")
+			.send()
+			.then((json) => {
+				dispatch(setSubscribedSections(json.subscribedSections));
+				return json;
+			})
+			.catch((err: Error) => {
+				dispatch(setSnackbarError(err.message));
+				return err;
+			})
+			.finally(() => {
+				dispatch(removeLoaderKey(REQUEST_UNSUBSCRIBE));
+			});
+	};
 
 /**
  * Retrieve sections subscribed to by user.

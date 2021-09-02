@@ -168,12 +168,6 @@ function CourseSearch({
 					<FormControlLabel
 						className={classes.formGroupLabel}
 						control={<Radio color="primary" />}
-						label="Winter 2021"
-						value="WINTER-2021"
-					/>
-					<FormControlLabel
-						className={classes.formGroupLabel}
-						control={<Radio color="primary" />}
 						label="Summer 2021"
 						value="SUMMER-2021"
 					/>
@@ -182,6 +176,12 @@ function CourseSearch({
 						control={<Radio color="primary" />}
 						label="Fall 2021"
 						value="FALL-2021"
+					/>
+					<FormControlLabel
+						className={classes.formGroupLabel}
+						control={<Radio color="primary" />}
+						label="Winter 2022"
+						value="WINTER-2022"
 					/>
 				</RadioGroup>
 			</FormControl>
@@ -223,9 +223,8 @@ function CourseSearch({
 										];
 
 										// e.g. semester = "SUMMER-2020"
-										const [term, year] = semester.split(
-											"-"
-										);
+										const [term, year] =
+											semester.split("-");
 
 										// Combine to form data to identify a given course (e.g. COMP_250_2019_FALL)
 										const courseId = [

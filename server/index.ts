@@ -9,6 +9,8 @@ import cors = require("cors");
 import path = require("path");
 require("dotenv").config();
 
+const stripe = require("stripe")(process.env["stripe_key"]);
+
 // router imports
 import notify from "./routers/notify";
 import courses from "./routers/courses";
@@ -28,15 +30,50 @@ const privKey: string = Buffer.from(
 	process.env["priv_key"],
 	"base64"
 ).toString();
+const stripeHookKey: string = process.env["stripe_hook_key"];
+const DOMAIN = "https://mcgilltools.com";
 
 // middleware functions
 app.use(cors());
 app.use(logRequests);
 app.use(cookieParser());
-app.use(express.json());
+
+app.post(
+	"/webhook",
+	express.raw({ type: "application/json" }),
+	async (req, res) => {
+		const payload = req.body;
+		const sig = req.headers["stripe-signature"];
+
+		try {
+			const event = stripe.webhooks.constructEvent(
+				payload,
+				sig,
+				stripeHookKey
+			);
+
+			if (event.type === "checkout.session.completed") {
+				console.log(event);
+				const session = event.data.object;
+
+				if (session.client_reference_id) {
+					await db.paymentSuccess(session.client_reference_id);
+					db.createPayment(session.client_reference_id);
+				}
+			}
+		} catch (err) {
+			console.log("error", err);
+			return res.status(400).send(`Webhook Error: ${err.message}`);
+		}
+
+		res.status(200).end();
+	}
+);
 
 // serve static files
 app.use("/static", express.static(path.join(__dirname, "/build/static")));
+
+app.use(express.json());
 
 app.post("/login", async (req, res) => {
 	const idToken: string = req.body.idToken;
@@ -66,11 +103,41 @@ app.post("/login", async (req, res) => {
 			user,
 		});
 	} catch (err) {
-		res
-			.status(401)
-			.json({ error: true, message: err.message || err.toString() });
+		res.status(401).json({
+			error: true,
+			message: err.message || err.toString(),
+		});
 	}
 });
+
+app.post(
+	"/create-checkout-session",
+	verifyJwtToken,
+	async (req: any, res: any) => {
+		try {
+			const session = await stripe.checkout.sessions.create({
+				line_items: [
+					{
+						price: "price_1JV9FcFgIV7ohsLwMShJJZlK",
+						quantity: 1,
+					},
+				],
+				payment_method_types: ["card"],
+				mode: "payment",
+				success_url: `${DOMAIN}/stripe_payment?success=true`,
+				cancel_url: `${DOMAIN}/stripe_payment?canceled=true`,
+				client_reference_id: req.uid,
+			});
+
+			res.json({ error: false, url: session.url });
+		} catch (err) {
+			res.status(400).json({
+				error: true,
+				message: err.message || err.toString(),
+			});
+		}
+	}
+);
 
 // Routers -- users must be authenticated before accessing the following routes.
 app.use("/notify", verifyJwtToken, notify);

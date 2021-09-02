@@ -4,6 +4,7 @@ import type { User } from "../../reducers/types.js";
 
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import classNames from "classnames";
 
 import AppBar from "@material-ui/core/AppBar";
 import Avatar from "@material-ui/core/Avatar";
@@ -19,6 +20,7 @@ import Typography from "@material-ui/core/Typography";
 
 import LogoutIcon from "@material-ui/icons/ExitToApp";
 import SettingsIcon from "@material-ui/icons/Settings";
+import CheckoutContainer from "../../containers/CheckoutContainer.js";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -98,6 +100,8 @@ function NavigationDesktop({
 	// component state for authenticated user
 	const [authenticatedUser, setAuthenticatedUser] = useState<User>(user);
 
+	const [openPayment, setOpenPayment] = useState<boolean>(false);
+
 	// component state for the anchor element
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -159,6 +163,12 @@ function NavigationDesktop({
 
 	return (
 		<div className={classes.root}>
+			<CheckoutContainer
+				openPayment={openPayment}
+				onClose={() => {
+					setOpenPayment(false);
+				}}
+			/>
 			<AppBar className={classes.appbar} position="fixed">
 				<Toolbar>
 					{/* mcgill_tools logo */}
@@ -170,14 +180,30 @@ function NavigationDesktop({
 
 					{/* header for the current url/path */}
 					<Typography className={classes.title} variant="h6">
-						{match.params.path ? match.params.path.split("-").join(" ") : ""}
+						{match.params.path
+							? match.params.path.split("-").join(" ")
+							: ""}
 					</Typography>
 
 					{/* contains the avatar, links, and menu items */}
 					<div>
+						<Button
+							className={classNames(
+								classes.linksWrapper,
+								classes.link
+							)}
+							onClick={() => setOpenPayment(true)}
+							color="primary"
+						>
+							Add Funds
+						</Button>
 						<span className={classes.linksWrapper}>
 							{links.map((link) => (
-								<ButtonLink classes={classes} {...link} key={link.linkTo} />
+								<ButtonLink
+									classes={classes}
+									{...link}
+									key={link.linkTo}
+								/>
 							))}
 						</span>
 
@@ -206,7 +232,9 @@ function NavigationDesktop({
 								onClose={handleClose}
 							>
 								<MenuItem onClick={handleSettings}>
-									<SettingsIcon className={classes.linkIcon} />
+									<SettingsIcon
+										className={classes.linkIcon}
+									/>
 									SETTINGS
 								</MenuItem>
 								<MenuItem onClick={handleLogout}>

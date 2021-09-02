@@ -12,8 +12,8 @@ import Controller from "./Controller.js";
 import { addLoaderKey, removeLoaderKey } from "./loaders";
 import { setSnackbarError } from "./snackbar";
 
-import firebase from "firebase/app";
-import "firebase/auth";
+import { signOut, getAuth } from "firebase/auth";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 // ––––––––––––––––––––– ACTION CREATORS –––––––––––––––––––––
 
@@ -37,7 +37,7 @@ export const setLogin = (auth: AuthReducerState): SetLoginAction => ({
 
 // Action creator to sign the current user out.
 export const setLogout = (): SetLogoutAction => {
-	firebase.auth().signOut();
+	signOut(getAuth());
 	localStorage.clear();
 	return { type: "SET_LOGOUT", payload: null };
 };
@@ -112,7 +112,7 @@ export const updateUserProfile =
 			.send()
 			.then((json) => {
 				// log request
-				firebase.analytics().logEvent("update_profile");
+				logEvent(getAnalytics(), "update_profile");
 
 				dispatch(setUser(json));
 				return json;

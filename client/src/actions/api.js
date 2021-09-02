@@ -8,6 +8,7 @@ import { setSnackbarError } from "./snackbar";
 
 const FETCH_ACCESS_TOKEN_REQUEST: string = "FETCH_ACCESS_TOKEN_REQUEST";
 const CREATE_ACCESS_TOKEN_REQUEST: string = "CREATE_ACCESS_TOKEN_REQUEST";
+const HANDLE_STRIPE_CHECKOUT: string = "HANDLE_STRIPE_CHECKOUT";
 
 /**
  * retrieve the state of the application for api access token
@@ -56,7 +57,7 @@ export function createAccessTokenReq(formData: any): ThunkAction {
 
 		dispatch(addLoaderKey(CREATE_ACCESS_TOKEN_REQUEST));
 
-		return new Controller("api/request-access", token ?? "")
+		return new Controller("/api/request-access", token ?? "")
 			.setMethod("POST")
 			.setBody(formData)
 			.send()
@@ -66,6 +67,29 @@ export function createAccessTokenReq(formData: any): ThunkAction {
 			})
 			.finally(() => {
 				dispatch(removeLoaderKey(CREATE_ACCESS_TOKEN_REQUEST));
+			});
+	};
+}
+
+export function handleStripeCheckout(): ThunkAction {
+	return function (dispatch, getState) {
+		// request parameters
+		const token = getState().auth.token;
+
+		dispatch(addLoaderKey(HANDLE_STRIPE_CHECKOUT));
+
+		return new Controller("/create-checkout-session", token ?? "")
+			.setMethod("POST")
+			.send()
+			.then((json) => {
+				window.location.href = json.url;
+			})
+			.catch((err: Error) => {
+				dispatch(setSnackbarError(err.message || err.toString()));
+				return err;
+			})
+			.finally(() => {
+				dispatch(removeLoaderKey(HANDLE_STRIPE_CHECKOUT));
 			});
 	};
 }
@@ -96,20 +120,19 @@ export const fetchAccessTokenApplications: ThunkAction = (
 /**
  * Admin can approve applications for access tokens.
  */
-export const approveAccessTokenApplication = (uid: string): ThunkAction => (
-	dispatch,
-	getState
-) => {
-	const token = getState().auth.token;
-	dispatch(addLoaderKey("APPROVE_ACCESS_TOKEN_APPLICATION"));
+export const approveAccessTokenApplication =
+	(uid: string): ThunkAction =>
+	(dispatch, getState) => {
+		const token = getState().auth.token;
+		dispatch(addLoaderKey("APPROVE_ACCESS_TOKEN_APPLICATION"));
 
-	return new Controller(`/api/approveToken/${uid}`, token ?? "")
-		.setMethod("POST")
-		.send()
-		.catch((err: Error) => {
-			dispatch(setSnackbarError(err.message || err.toString()));
-		})
-		.finally(() => {
-			dispatch(removeLoaderKey("APPROVE_ACCESS_TOKEN_APPLICATION"));
-		});
-};
+		return new Controller(`/api/approveToken/${uid}`, token ?? "")
+			.setMethod("POST")
+			.send()
+			.catch((err: Error) => {
+				dispatch(setSnackbarError(err.message || err.toString()));
+			})
+			.finally(() => {
+				dispatch(removeLoaderKey("APPROVE_ACCESS_TOKEN_APPLICATION"));
+			});
+	};
