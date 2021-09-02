@@ -9,7 +9,7 @@
 		"@types/react": "^16.14.8",
 		"@types/react-dom": "^16.9.13",
 		"classnames": "^2.3.1",
-		"firebase": "^8.6.2",
+		"firebase": "^9.0.0",
 		"flow-bin": "^0.133.0",
 		"lodash.throttle": "^4.1.1",
 		"prop-types": "^15.7.2",

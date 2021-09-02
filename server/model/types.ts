@@ -73,6 +73,7 @@ export interface UserInfo {
 	subscribedSections?: Array<string>;
 	newUser?: boolean;
 	isAdmin?: boolean;
+	numNotifications?: number;
 }
 
 export interface UserRequest extends express.Request {

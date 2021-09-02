@@ -40,14 +40,18 @@ function Donate() {
 						<Grid container>
 							<Grid item xs={12}>
 								<Typography>
-									Hello students! My name is Hani, I'm a third year computer
-									science student at McGill University. This year I started the
-									McGill-Tools project to serve our community; the interest and
-									support in the service surpassed all expectations. That said,
-									the success of the application comes with considerable costs.
-									In my pledge to keep the service free, your generosity would
-									go a long way to ease the costs incurred. Any contributions
-									would help me keep this project alive. Thanks!
+									Hello students! My name is Hani, I'm a
+									recently graduated computer science student
+									from McGill University. I started the
+									McGill-Tools project to serve our community;
+									the interest and support in the service
+									surpassed all expectations. That said, the
+									success of the application comes with
+									considerable costs. In my pledge to keep the
+									service free, your generosity would go a
+									long way to ease the costs incurred. Any
+									contributions would help me keep this
+									project alive. Thanks!
 								</Typography>
 							</Grid>
 							<Grid item xs={12}>

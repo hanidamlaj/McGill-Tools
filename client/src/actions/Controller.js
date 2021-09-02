@@ -71,7 +71,9 @@ export default class Controller {
 						// to relogin rather than having to clear the localStorage manually.
 						throw new Error("Invalid token.");
 					}
-					throw new Error(`An error has occurred! Status code: ${res.status}`);
+					throw new Error(
+						`An error has occurred! Status code: ${res.status}`
+					);
 				}
 				return res.json();
 			})
