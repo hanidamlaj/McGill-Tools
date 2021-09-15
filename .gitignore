@@ -12,10 +12,8 @@
 # production
 /client/build
 /server/build
-/server/.env
-/server/.dev-env
-/server/.prod-env
-/dump.rdb
+/server/.*env
+/**/dump.rdb
 
 # misc
 .DS_Store

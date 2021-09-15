@@ -28,24 +28,22 @@ function Login({
 	const provider = match.params.provider;
 
 	useEffect(() => {
-		getRedirectResult(getAuth())
+		const auth = getAuth();
+
+		getRedirectResult(auth)
 			.then(async (result) => {
 				// check to see if redirection operation was called
-				if (result.user) {
-					const idToken = await getAuth().currentUser.getIdToken(
-						true
-					);
+				if (result?.user) {
+					const idToken = await auth.currentUser.getIdToken(true);
 					login(idToken).then((res) => {
 						if (res instanceof Error) history.push("/");
 					});
-				} else {
-					if (provider === "google")
-						signInWithRedirect(getAuth(), new GoogleAuthProvider());
-					else if (provider === "facebook")
-						signInWithRedirect(
-							getAuth(),
-							new FacebookAuthProvider()
-						);
+				} else if (provider === "google") {
+					signInWithRedirect(auth, new GoogleAuthProvider());
+				} else if (provider === "facebook") {
+					const fbAuthProvider = new FacebookAuthProvider();
+					fbAuthProvider.addScope("email");
+					signInWithRedirect(auth, fbAuthProvider);
 				}
 			})
 			.catch(function (error) {
