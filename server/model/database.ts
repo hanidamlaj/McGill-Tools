@@ -15,6 +15,7 @@ import { firestore } from "firebase-admin";
 // Extract the environment variables that are needed.
 const redis_url = process.env["REDIS_URL"];
 const worker_url = process.env["worker_url"];
+const cache_time = Number(process.env["CACHE_TIME"] ?? 30000);
 
 // Connect to the Redis client.
 const client = redis.createClient({
@@ -396,7 +397,7 @@ abstract class Database {
 					(
 						doc.data().updated as admin.firestore.Timestamp
 					).toMillis() >
-					300000;
+					cache_time;
 
 			return needsRenew
 				? null
